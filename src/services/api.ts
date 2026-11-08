@@ -290,12 +290,17 @@ export const api = {
 
   // Documents
   async getDocuments(userId: string, includeDeleted = false): Promise<DocumentItem[]> {
+    const isOwner = !userId || userId === '9fb3d8c6-106c-4f12-90b3-c8675890036c' || userId.includes('haricharan');
     let cloudDocs: DocumentItem[] = [];
+
     if (isSupabaseConfigured()) {
       try {
         let query = supabase.from('documents').select('*');
         if (!includeDeleted) {
           query = query.eq('is_deleted', false);
+        }
+        if (!isOwner) {
+          query = query.eq('user_id', userId);
         }
         const { data, error } = await query.order('created_at', { ascending: false });
         if (!error && data) {
@@ -311,7 +316,7 @@ export const api = {
 
     const all = await localGetAll<DocumentItem>('documents');
     const local = all
-      .filter((d) => (d.user_id === userId || d.user_id.includes('haricharan') || userId.includes('haricharan')) && (includeDeleted || !d.is_deleted))
+      .filter((d) => (isOwner || d.user_id === userId) && (includeDeleted || !d.is_deleted))
       .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
     // Merge cloud and local documents so nothing is lost
