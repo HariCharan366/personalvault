@@ -148,8 +148,8 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
   };
 
   const startUpload = async () => {
-    if (!user || !vaultKek || !isUnlocked) {
-      showToast('error', 'Vault Locked', 'Please unlock your vault with your PIN before uploading files.');
+    if (!user || !vaultKek) {
+      showToast('error', 'Encryption Error', 'Unable to access encryption key. Please refresh or re-login.');
       return;
     }
 

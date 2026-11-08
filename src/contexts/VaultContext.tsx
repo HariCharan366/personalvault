@@ -33,9 +33,9 @@ const VaultContext = createContext<VaultContextType | undefined>(undefined);
 export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
   const [vaultSettings, setVaultSettings] = useState<VaultSettings | null>(null);
-  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(true);
   const [vaultKek, setVaultKek] = useState<CryptoKey | null>(null);
-  const [autoLockMinutes, setAutoLockState] = useState<number>(15);
+  const [autoLockMinutes, setAutoLockState] = useState<number>(0);
   const [isLockedOut, setIsLockedOut] = useState(false);
   const [lockoutRemainingSeconds, setLockoutRemainingSeconds] = useState(0);
 
@@ -135,35 +135,16 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   }, [user]);
 
-  // Inactivity auto-lock mechanism
+  // Inactivity auto-lock mechanism (disabled - vault stays unlocked for authenticated session)
   const resetInactivityTimer = useCallback(() => {
     if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
-    if (isUnlocked && autoLockMinutes > 0) {
-      inactivityTimerRef.current = setTimeout(() => {
-        lockVault();
-      }, autoLockMinutes * 60 * 1000);
-    }
-  }, [isUnlocked, autoLockMinutes, lockVault]);
+  }, []);
 
   useEffect(() => {
-    if (!isUnlocked) return;
-
-    const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'];
-    const handleActivity = () => resetInactivityTimer();
-
-    for (const evt of events) {
-      window.addEventListener(evt, handleActivity, { passive: true });
-    }
-
-    resetInactivityTimer();
-
     return () => {
-      for (const evt of events) {
-        window.removeEventListener(evt, handleActivity);
-      }
       if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
     };
-  }, [isUnlocked, resetInactivityTimer]);
+  }, []);
 
   const initializeVault = async (pin: string): Promise<{ recoveryPhrase: string[]; error?: string }> => {
     if (!user) return { recoveryPhrase: [], error: 'User not authenticated' };

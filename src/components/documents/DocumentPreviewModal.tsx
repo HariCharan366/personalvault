@@ -43,8 +43,8 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({ docu
     async function loadAndDecrypt() {
       if (!isOpen || !document) return;
 
-      if (!isUnlocked || !vaultKek) {
-        setError('Vault must be unlocked to decrypt this document.');
+      if (!vaultKek) {
+        setError('Unable to access encryption key. Please refresh.');
         return;
       }
 

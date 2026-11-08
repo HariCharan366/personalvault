@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/contexts/ToastContext';
 import { api } from '@/services/api';
-import { VaultStatusBadge } from '@/components/vault/VaultStatusBadge';
 import {
   Menu,
   Search,
@@ -144,9 +143,6 @@ export const TopNav: React.FC<TopNavProps> = ({
           <Upload className="w-3.5 h-3.5" />
           <span className="hidden md:inline">Upload Document</span>
         </button>
-
-        {/* Vault Status Badge */}
-        <VaultStatusBadge />
 
         {/* Theme Toggle */}
         <button
