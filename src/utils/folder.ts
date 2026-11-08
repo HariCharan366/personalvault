@@ -74,8 +74,6 @@ export function getFolderHierarchy(
     ? new Set([excludeDescendantsOfId, ...getDescendantFolderIds(excludeDescendantsOfId, folders)])
     : new Set<string>();
 
-  const map = new Map(folders.map((f) => [f.id, f]));
-
   return folders
     .filter((f) => !excludedIds.has(f.id))
     .map((f) => {

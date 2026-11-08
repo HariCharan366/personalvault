@@ -8,7 +8,7 @@ import { encryptDocument } from '@/services/crypto';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { History, UploadCloud, RotateCcw, Calendar, HardDrive, CheckCircle2 } from 'lucide-react';
+import { History, UploadCloud, RotateCcw, HardDrive, CheckCircle2 } from 'lucide-react';
 import type { DocumentItem, DocumentVersion } from '@/types';
 
 interface DocumentVersionModalProps {

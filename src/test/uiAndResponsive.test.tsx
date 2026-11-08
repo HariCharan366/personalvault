@@ -7,7 +7,6 @@ import { VaultProvider } from '@/contexts/VaultContext';
 import { ToastProvider } from '@/contexts/ToastContext';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Login } from '@/pages/Login';
 import 'fake-indexeddb/auto';
@@ -15,11 +14,12 @@ import 'fake-indexeddb/auto';
 describe('UI Components & Responsive Layout Checks', () => {
   it('renders Sidebar with responsive navigation links', () => {
     let closed = false;
-    render(
+    const { unmount } = render(
       <BrowserRouter>
         <Sidebar isOpen={true} onClose={() => { closed = true; }} storageUsedBytes={10485760} />
       </BrowserRouter>
     );
+    expect(closed).toBe(false);
 
     expect(screen.getByText('PersonalVault')).toBeInTheDocument();
     expect(screen.getByText('Dashboard')).toBeInTheDocument();

@@ -39,7 +39,6 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [isLockedOut, setIsLockedOut] = useState(false);
   const [lockoutRemainingSeconds, setLockoutRemainingSeconds] = useState(0);
 
-  const inactivityTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lockoutIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Fetch vault settings whenever user changes
@@ -123,7 +122,6 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const lockVault = useCallback(async () => {
     setVaultKek(null);
     setIsUnlocked(false);
-    if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
 
     if (user) {
       await api.logActivity({
@@ -134,17 +132,6 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       });
     }
   }, [user]);
-
-  // Inactivity auto-lock mechanism (disabled - vault stays unlocked for authenticated session)
-  const resetInactivityTimer = useCallback(() => {
-    if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
-    };
-  }, []);
 
   const initializeVault = async (pin: string): Promise<{ recoveryPhrase: string[]; error?: string }> => {
     if (!user) return { recoveryPhrase: [], error: 'User not authenticated' };

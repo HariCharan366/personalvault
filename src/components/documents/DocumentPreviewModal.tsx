@@ -13,11 +13,9 @@ import {
   ShieldAlert,
   Loader2,
   Lock,
-  ExternalLink,
   Info,
   Calendar,
   HardDrive,
-  Hash,
 } from 'lucide-react';
 import type { DocumentItem } from '@/types';
 

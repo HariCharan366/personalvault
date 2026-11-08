@@ -15,7 +15,6 @@ import {
   X,
   CheckCircle2,
   AlertTriangle,
-  Lock,
   Tag,
   Calendar,
   Folder as FolderIcon,
@@ -68,7 +67,7 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
   onUploadComplete,
 }) => {
   const { user } = useAuth();
-  const { isUnlocked, vaultKek } = useVault();
+  const { vaultKek } = useVault();
   const { showToast } = useToast();
 
   const [queue, setQueue] = useState<QueuedFile[]>([]);

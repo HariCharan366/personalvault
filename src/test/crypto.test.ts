@@ -10,7 +10,6 @@ import {
   encryptDocument,
   decryptDocument,
   bufferToBase64,
-  base64ToBuffer,
 } from '@/services/crypto';
 
 describe('PersonalVault Cryptographic Engine (AES-256-GCM & PBKDF2)', () => {

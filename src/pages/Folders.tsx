@@ -103,7 +103,7 @@ export const Folders: React.FC = () => {
 
     setIsLoading(true);
     try {
-      const created = await api.createFolder({
+      await api.createFolder({
         user_id: user.id,
         name: folderName.trim(),
         parent_id: parentId || null,

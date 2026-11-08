@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { api } from '@/services/api';
 import { uploadEncryptedFile, downloadEncryptedFile, deleteEncryptedFile } from '@/services/storage';
 import { calculateSha256 } from '@/services/crypto';

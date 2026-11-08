@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useTransition } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase, isSupabaseConfigured } from '@/integrations/supabase';
 import { api } from '@/services/api';
 import { detectDeviceInfo, fetchIpAndLocation } from '@/utils/device';

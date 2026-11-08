@@ -5,7 +5,6 @@ import {
   LayoutDashboard,
   Files,
   FolderOpen,
-  KeyRound,
   Activity,
   ShieldCheck,
   Trash2,

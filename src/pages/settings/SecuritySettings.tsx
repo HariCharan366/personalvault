@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Key, Lock, KeyRound } from 'lucide-react';
 
 export const SecuritySettings: React.FC = () => {
-  const { updatePassword, profile } = useAuth();
+  const { updatePassword } = useAuth();
   const { showToast } = useToast();
 
   const [password, setPassword] = useState('');
