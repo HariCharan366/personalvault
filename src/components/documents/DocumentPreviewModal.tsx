@@ -12,7 +12,6 @@ import {
   Download,
   ShieldAlert,
   Loader2,
-  Lock,
   Info,
   Calendar,
   HardDrive,
@@ -330,34 +329,6 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
                   <span className="font-semibold text-amber-400">{document.expiry_date}</span>
                 </div>
               )}
-            </div>
-          </div>
-
-          {/* Cryptographic Proof */}
-          <div className="p-4 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-slate-50/50 dark:bg-obsidian-900/60 backdrop-blur-sm space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-              <Lock className="w-4 h-4 text-emerald-500 dark:text-neon-mint" /> Security & Integrity
-            </h4>
-
-            <div className="space-y-2 text-xs">
-              <div>
-                <span className="text-slate-500 block text-[11px]">Cipher Algorithm</span>
-                <span className="font-mono text-[11px] text-emerald-500 dark:text-neon-mint font-semibold">AES-256-GCM (W3C WebCrypto)</span>
-              </div>
-
-              <div>
-                <span className="text-slate-500 block text-[11px]">SHA-256 Fingerprint</span>
-                <span className="font-mono text-[10px] text-slate-400 break-all block p-2 rounded-lg bg-slate-200 dark:bg-obsidian-950 border border-slate-300 dark:border-white/[0.06]">
-                  {document.sha256_hash}
-                </span>
-              </div>
-
-              <div>
-                <span className="text-slate-500 block text-[11px]">Storage Object Path</span>
-                <span className="font-mono text-[10px] text-slate-400 break-all block">
-                  {document.storage_path}
-                </span>
-              </div>
             </div>
           </div>
 
