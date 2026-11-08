@@ -34,7 +34,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/documents', label: 'All Documents', icon: Files },
     { to: '/folders', label: 'Folders', icon: FolderOpen },
-    { to: '/vault', label: 'Vault Security', icon: KeyRound },
     { to: '/activity', label: 'Activity Logs', icon: Activity },
     { to: '/security', label: 'Security & Logins', icon: ShieldCheck },
     { to: '/trash', label: 'Trash', icon: Trash2 },

@@ -8,6 +8,7 @@ import { encryptDocument, calculateSha256 } from '@/services/crypto';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { getFolderHierarchy } from '@/utils/folder';
 import {
   UploadCloud,
   File,
@@ -312,9 +313,9 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
               className="w-full text-xs rounded-lg border border-slate-300 dark:border-white/[0.08] bg-white dark:bg-obsidian-850 px-2.5 py-1.5 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint transition-colors"
             >
               <option value="">Root (No Folder)</option>
-              {folders.map((f) => (
+              {getFolderHierarchy(folders).map((f) => (
                 <option key={f.id} value={f.id}>
-                  {f.name}
+                  {'— '.repeat(f.depth)}📁 {f.path}
                 </option>
               ))}
             </select>

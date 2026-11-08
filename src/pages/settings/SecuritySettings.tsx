@@ -87,22 +87,18 @@ export const SecuritySettings: React.FC = () => {
         </form>
       </Card>
 
-      {/* Vault Master PIN Settings */}
+      {/* Zero-Knowledge Security Status */}
       <Card className="p-6 space-y-4">
         <div className="flex items-center justify-between">
-          <div>
+          <div className="space-y-1">
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <KeyRound className="w-4 h-4 text-cyan-400" /> Vault Master PIN & Key Hierarchy
+              <KeyRound className="w-4 h-4 text-emerald-500 dark:text-neon-mint" /> Zero-Knowledge Encryption
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Your vault PIN is separate from your account password and protects your zero-knowledge AES-256-GCM keys.
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              All cloud files are sealed with AES-256-GCM. Plaintext never leaves your browser.
             </p>
           </div>
-          <Link to="/vault">
-            <Button variant="outline" size="sm">
-              Manage Vault PIN
-            </Button>
-          </Link>
+          <Badge variant="success">AES-256-GCM Active</Badge>
         </div>
       </Card>
 

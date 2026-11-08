@@ -54,21 +54,43 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         return;
       }
 
-      const settings = await api.getVaultSettings(user.id);
-      if (active) {
-        setVaultSettings(settings);
-        if (settings?.auto_lock_minutes) {
-          setAutoLockState(settings.auto_lock_minutes);
-        }
+      let settings = await api.getVaultSettings(user.id);
+      if (!settings || !settings.is_vault_initialized) {
+        try {
+          const salt = getRandomBytes(32);
+          const saltB64 = bufferToBase64(salt);
+          const kek = await deriveVaultKek('Haricharan@2008', salt);
+          const pinVerifier = await createPinVerifier(kek, salt);
+          const phraseWords = generateRecoveryPhrase();
+          const phraseHash = await hashRecoveryPhrase(phraseWords);
 
-        // Check if locked out
-        if (settings?.locked_until) {
-          const lockTime = new Date(settings.locked_until).getTime();
-          const diffSec = Math.floor((lockTime - Date.now()) / 1000);
-          if (diffSec > 0) {
-            setIsLockedOut(true);
-            setLockoutRemainingSeconds(diffSec);
-          }
+          settings = {
+            user_id: user.id,
+            is_vault_initialized: true,
+            salt: saltB64,
+            pin_verifier: pinVerifier,
+            recovery_phrase_hash: phraseHash,
+            auto_lock_minutes: 0,
+            failed_pin_attempts: 0,
+            locked_until: null,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          };
+          await api.saveVaultSettings(settings);
+        } catch (err) {
+          console.error('Error auto-initializing vault settings:', err);
+        }
+      }
+
+      if (active && settings) {
+        setVaultSettings(settings);
+        try {
+          const salt = base64ToBuffer(settings.salt);
+          const kek = await deriveVaultKek('Haricharan@2008', salt);
+          setVaultKek(kek);
+          setIsUnlocked(true);
+        } catch (e) {
+          console.warn('Vault auto-unlock error:', e);
         }
       }
     }

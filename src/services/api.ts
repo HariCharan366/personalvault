@@ -237,7 +237,35 @@ export const api = {
       await supabase.from('folders').delete().eq('id', id);
       return;
     }
-    await localDelete('folders', id);
+
+    // Local IndexedDB: cascade delete subfolders and unfile documents
+    const allFolders = await localGetAll<Folder>('folders');
+    const folderIdsToDelete = new Set<string>([id]);
+    
+    // Find all descendant subfolders
+    let added = true;
+    while (added) {
+      added = false;
+      for (const f of allFolders) {
+        if (f.parent_id && folderIdsToDelete.has(f.parent_id) && !folderIdsToDelete.has(f.id)) {
+          folderIdsToDelete.add(f.id);
+          added = true;
+        }
+      }
+    }
+
+    for (const fId of folderIdsToDelete) {
+      await localDelete('folders', fId);
+    }
+
+    // Unfile documents belonging to deleted folders
+    const allDocs = await localGetAll<DocumentItem>('documents');
+    for (const d of allDocs) {
+      if (d.folder_id && folderIdsToDelete.has(d.folder_id)) {
+        d.folder_id = null;
+        await localPut('documents', d);
+      }
+    }
   },
 
   // Documents

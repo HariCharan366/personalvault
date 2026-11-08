@@ -19,7 +19,6 @@ import { Dashboard } from '@/pages/Dashboard';
 import { Documents } from '@/pages/Documents';
 import { DocumentDetails } from '@/pages/DocumentDetails';
 import { Folders } from '@/pages/Folders';
-import { Vault } from '@/pages/Vault';
 import { Activity } from '@/pages/Activity';
 import { Security } from '@/pages/security/Security';
 import { Trash } from '@/pages/Trash';
@@ -50,7 +49,7 @@ export const App: React.FC = () => {
                 <Route path="/documents" element={<Documents />} />
                 <Route path="/documents/:id" element={<DocumentDetails />} />
                 <Route path="/folders" element={<Folders />} />
-                <Route path="/vault" element={<Vault />} />
+                <Route path="/vault" element={<Navigate to="/documents" replace />} />
                 <Route path="/activity" element={<Activity />} />
 
                 {/* Security Routes */}

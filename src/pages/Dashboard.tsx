@@ -108,13 +108,13 @@ export const Dashboard: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
-            <Link to="/vault">
+            <Link to="/documents">
               <Button
-                variant={isUnlocked ? 'secondary' : 'primary'}
+                variant="primary"
                 size="md"
-                leftIcon={isUnlocked ? <Unlock className="w-4 h-4 text-emerald-500 dark:text-neon-mint" /> : <Lock className="w-4 h-4" />}
+                leftIcon={<Files className="w-4 h-4" />}
               >
-                {isUnlocked ? 'Vault Security' : 'Unlock Documents'}
+                Browse All Documents
               </Button>
             </Link>
           </div>

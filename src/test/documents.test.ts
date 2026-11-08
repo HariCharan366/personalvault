@@ -137,5 +137,43 @@ describe('Document Management Lifecycle & Storage Operations', () => {
     expect(duplicate).toBeDefined();
     expect(duplicate?.original_filename).toBe('original.pdf');
   });
+
+  it('supports creating folders inside folders (nested subfolders)', async () => {
+    // 1. Create root folder
+    const rootFolder = await api.createFolder({
+      user_id: userId,
+      name: 'Work',
+      parent_id: null,
+      color: '#00F5A0',
+    });
+    expect(rootFolder.id).toBeDefined();
+    expect(rootFolder.parent_id).toBeNull();
+
+    // 2. Create subfolder inside root folder (folder in folder)
+    const subFolder = await api.createFolder({
+      user_id: userId,
+      name: 'Projects',
+      parent_id: rootFolder.id,
+      color: '#00D9F5',
+    });
+    expect(subFolder.id).toBeDefined();
+    expect(subFolder.parent_id).toBe(rootFolder.id);
+
+    // 3. Create subfolder inside subfolder (deep nesting: folder in folder in folder)
+    const deepFolder = await api.createFolder({
+      user_id: userId,
+      name: '2026 Q1',
+      parent_id: subFolder.id,
+      color: '#38bdf8',
+    });
+    expect(deepFolder.id).toBeDefined();
+    expect(deepFolder.parent_id).toBe(subFolder.id);
+
+    // 4. Retrieve all folders for user
+    const userFolders = await api.getFolders(userId);
+    expect(userFolders.some((f) => f.id === rootFolder.id)).toBe(true);
+    expect(userFolders.some((f) => f.id === subFolder.id)).toBe(true);
+    expect(userFolders.some((f) => f.id === deepFolder.id)).toBe(true);
+  });
 });
 

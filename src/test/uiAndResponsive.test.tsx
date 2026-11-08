@@ -24,7 +24,8 @@ describe('UI Components & Responsive Layout Checks', () => {
     expect(screen.getByText('PersonalVault')).toBeInTheDocument();
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
     expect(screen.getByText('All Documents')).toBeInTheDocument();
-    expect(screen.getByText('Vault Security')).toBeInTheDocument();
+    expect(screen.getByText('Folders')).toBeInTheDocument();
+    expect(screen.queryByText('Vault Security')).not.toBeInTheDocument();
     expect(screen.getByText('Security & Logins')).toBeInTheDocument();
     expect(screen.getByText('Trash')).toBeInTheDocument();
 

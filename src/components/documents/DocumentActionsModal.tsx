@@ -6,6 +6,7 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Edit3, Folder as FolderIcon, Calendar, Tag } from 'lucide-react';
+import { getFolderHierarchy } from '@/utils/folder';
 import type { DocumentItem, Folder as FolderType } from '@/types';
 
 interface DocumentActionsModalProps {
@@ -127,9 +128,9 @@ export const DocumentActionsModal: React.FC<DocumentActionsModalProps> = ({
             className="w-full text-xs rounded-xl border border-slate-300 dark:border-white/[0.08] bg-white dark:bg-obsidian-850 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint transition-colors"
           >
             <option value="">Root / No Folder</option>
-            {folders.map((f) => (
+            {getFolderHierarchy(folders).map((f) => (
               <option key={f.id} value={f.id}>
-                {f.name}
+                {'— '.repeat(f.depth)}📁 {f.path}
               </option>
             ))}
           </select>

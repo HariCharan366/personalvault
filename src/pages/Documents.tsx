@@ -11,6 +11,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { DocumentPreviewModal } from '@/components/documents/DocumentPreviewModal';
 import { DocumentActionsModal } from '@/components/documents/DocumentActionsModal';
 import { DocumentVersionModal } from '@/components/documents/DocumentVersionModal';
+import { getFolderHierarchy } from '@/utils/folder';
 import {
   Files,
   LayoutGrid,
@@ -172,9 +173,9 @@ export const Documents: React.FC = () => {
               className="w-full rounded-xl bg-slate-50 dark:bg-obsidian-900 border border-slate-200 dark:border-white/[0.08] px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint transition-colors"
             >
               <option value="all">All Folders</option>
-              {folders.map((f) => (
+              {getFolderHierarchy(folders).map((f) => (
                 <option key={f.id} value={f.id}>
-                  {f.name}
+                  {'— '.repeat(f.depth)}📁 {f.path}
                 </option>
               ))}
             </select>
