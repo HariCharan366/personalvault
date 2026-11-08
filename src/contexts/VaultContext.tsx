@@ -30,6 +30,12 @@ interface VaultContextType {
 
 const VaultContext = createContext<VaultContextType | undefined>(undefined);
 
+const MASTER_VAULT_SALT_BYTES = new Uint8Array([
+  0x70, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61, 0x6c, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x68, 0x61,
+  0x72, 0x69, 0x63, 0x68, 0x61, 0x72, 0x61, 0x6e, 0x5f, 0x32, 0x30, 0x30, 0x38, 0x5f, 0x76, 0x31
+]);
+const MASTER_VAULT_SALT_B64 = bufferToBase64(MASTER_VAULT_SALT_BYTES);
+
 export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
   const [vaultSettings, setVaultSettings] = useState<VaultSettings | null>(null);
@@ -56,8 +62,8 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       let settings = await api.getVaultSettings(user.id);
       if (!settings || !settings.is_vault_initialized) {
         try {
-          const salt = getRandomBytes(32);
-          const saltB64 = bufferToBase64(salt);
+          const salt = MASTER_VAULT_SALT_BYTES;
+          const saltB64 = MASTER_VAULT_SALT_B64;
           const kek = await deriveVaultKek('Haricharan@2008', salt);
           const pinVerifier = await createPinVerifier(kek, salt);
           const phraseWords = generateRecoveryPhrase();
@@ -84,7 +90,7 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       if (active && settings) {
         setVaultSettings(settings);
         try {
-          const salt = base64ToBuffer(settings.salt);
+          const salt = settings.salt ? base64ToBuffer(settings.salt) : MASTER_VAULT_SALT_BYTES;
           const kek = await deriveVaultKek('Haricharan@2008', salt);
           setVaultKek(kek);
           setIsUnlocked(true);

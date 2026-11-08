@@ -84,6 +84,12 @@ export async function downloadEncryptedFile(storagePath: string): Promise<{ data
 
       if (!error && data) {
         const buffer = await data.arrayBuffer();
+        // Cache to local IndexedDB for future instant offline access
+        try {
+          const db = await openLocalDb();
+          const tx = db.transaction(STORE_NAME, 'readwrite');
+          tx.objectStore(STORE_NAME).put(new Uint8Array(buffer), storagePath);
+        } catch {}
         return { data: buffer };
       }
     } catch (err: any) {
@@ -122,6 +128,44 @@ export async function downloadEncryptedFile(storagePath: string): Promise<{ data
     return { data: buffer };
   } catch (err: any) {
     return { data: null, error: err?.message || 'Local storage read failed' };
+  }
+}
+
+/**
+ * Syncs any locally stored encrypted ciphertext blobs up to Supabase Storage.
+ */
+export async function syncLocalFilesToCloud(): Promise<void> {
+  if (!isSupabaseConfigured()) return;
+  try {
+    const db = await openLocalDb();
+    const keys = await new Promise<IDBValidKey[]>((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readonly');
+      const store = tx.objectStore(STORE_NAME);
+      const req = store.getAllKeys();
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+
+    for (const key of keys) {
+      const storagePath = String(key);
+      const rawData = await new Promise<any>((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.get(storagePath);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+
+      if (rawData) {
+        const blob = new Blob([rawData], { type: 'application/octet-stream' });
+        await supabase.storage.from(STORAGE_BUCKET).upload(storagePath, blob, {
+          contentType: 'application/octet-stream',
+          upsert: true,
+        });
+      }
+    }
+  } catch (e) {
+    console.warn('Sync local files to cloud fallback:', e);
   }
 }
 

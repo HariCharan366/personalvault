@@ -282,12 +282,23 @@ export const api = {
   async getDocuments(userId: string, includeDeleted = false): Promise<DocumentItem[]> {
     if (isSupabaseConfigured()) {
       try {
-        let query = supabase.from('documents').select('*').eq('user_id', userId);
+        let query = supabase.from('documents').select('*');
         if (!includeDeleted) {
           query = query.eq('is_deleted', false);
         }
         const { data, error } = await query.order('created_at', { ascending: false });
-        if (!error && data && data.length > 0) {
+        if (!error && data) {
+          for (const d of data) {
+            await localPut('documents', d);
+          }
+          // Also sync any local docs that aren't yet in cloud up to Supabase
+          const local = await localGetAll<DocumentItem>('documents');
+          const remoteIds = new Set(data.map((d) => d.id));
+          for (const lDoc of local) {
+            if (!remoteIds.has(lDoc.id)) {
+              Promise.resolve(supabase.from('documents').insert(lDoc)).catch(() => {});
+            }
+          }
           return data;
         }
       } catch (e) {
@@ -296,9 +307,17 @@ export const api = {
     }
 
     const all = await localGetAll<DocumentItem>('documents');
-    return all
+    const local = all
       .filter((d) => (d.user_id === userId || d.user_id.includes('haricharan') || userId.includes('haricharan')) && (includeDeleted || !d.is_deleted))
       .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+    if (isSupabaseConfigured() && local.length > 0) {
+      for (const d of local) {
+        Promise.resolve(supabase.from('documents').upsert(d, { onConflict: 'id' })).catch(() => {});
+      }
+    }
+
+    return local;
   },
 
   async getDocumentById(id: string): Promise<DocumentItem | null> {

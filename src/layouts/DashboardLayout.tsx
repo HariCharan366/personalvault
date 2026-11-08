@@ -5,6 +5,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { TopNav } from '@/components/layout/TopNav';
 import { DocumentUploadModal } from '@/components/documents/DocumentUploadModal';
 import { api } from '@/services/api';
+import { syncLocalFilesToCloud } from '@/services/storage';
 import type { Folder, DocumentItem } from '@/types';
 
 export const DashboardLayout: React.FC = () => {
@@ -30,6 +31,9 @@ export const DashboardLayout: React.FC = () => {
 
       const totalBytes = docs.reduce((acc, d) => acc + (d.file_size || 0), 0);
       setStorageUsedBytes(totalBytes);
+
+      // Background sync any local encrypted blobs to Supabase Storage
+      syncLocalFilesToCloud().catch(() => {});
     } catch (e) {
       console.error('Error loading vault data:', e);
     }
