@@ -239,11 +239,10 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
     if (successCount > 0) {
       showToast('success', 'Upload Successful', `${successCount} document(s) safely encrypted and stored.`);
       onUploadComplete();
-      // Remove completed items
-      setQueue((prev) => prev.filter((q) => q.status !== 'complete'));
-      if (queue.every((q) => q.status === 'complete')) {
-        onClose();
-      }
+      setQueue([]);
+      setTagsInput('');
+      setExpiryDate('');
+      onClose();
     }
   };
 

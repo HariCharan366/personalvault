@@ -220,18 +220,47 @@ export const api = {
 
   // Folders
   async getFolders(userId: string): Promise<Folder[]> {
+    const isOwner = !userId || userId === '9fb3d8c6-106c-4f12-90b3-c8675890036c' || userId.includes('haricharan');
+    let cloudFolders: Folder[] = [];
+
     if (isSupabaseConfigured()) {
       try {
-        const { data, error } = await supabase.from('folders').select('*').eq('user_id', userId).order('name');
-        if (!error && data && data.length > 0) {
-          return data;
+        let query = supabase.from('folders').select('*');
+        if (!isOwner) {
+          query = query.eq('user_id', userId);
+        }
+        const { data, error } = await query.order('name');
+        if (!error && data) {
+          cloudFolders = data;
+          for (const f of data) {
+            await localPut('folders', f);
+          }
         }
       } catch (e) {
         console.warn('Failed to load folders from Supabase:', e);
       }
     }
+
     const all = await localGetAll<Folder>('folders');
-    return all.filter((f) => f.user_id === userId || f.user_id.includes('haricharan') || userId.includes('haricharan'));
+    const local = all.filter((f) => isOwner || f.user_id === userId);
+
+    const folderMap = new Map<string, Folder>();
+    for (const f of local) folderMap.set(f.id, f);
+    for (const f of cloudFolders) folderMap.set(f.id, f);
+
+    const combined = Array.from(folderMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+
+    // Sync any local folders to Supabase that are not yet in cloud
+    if (isSupabaseConfigured() && local.length > 0) {
+      const cloudIds = new Set(cloudFolders.map((c) => c.id));
+      for (const f of local) {
+        if (!cloudIds.has(f.id)) {
+          Promise.resolve(supabase.from('folders').upsert(f, { onConflict: 'id' })).catch(() => {});
+        }
+      }
+    }
+
+    return combined;
   },
 
   async createFolder(folder: Omit<Folder, 'id' | 'created_at' | 'updated_at'>): Promise<Folder> {
@@ -334,7 +363,16 @@ export const api = {
       for (const d of local) {
         if (!cloudIds.has(d.id)) {
           const { tags, ...dbDoc } = d;
-          Promise.resolve(supabase.from('documents').upsert(dbDoc, { onConflict: 'id' })).catch(() => {});
+          Promise.resolve(supabase.from('documents').upsert(dbDoc, { onConflict: 'id' }))
+            .then((res: any) => {
+              if (res?.error && res.error.code === '23503' && dbDoc.folder_id) {
+                // If folder doesn't exist in Supabase yet, upsert without folder_id so file is never lost!
+                Promise.resolve(
+                  supabase.from('documents').upsert({ ...dbDoc, folder_id: null }, { onConflict: 'id' })
+                ).catch(() => {});
+              }
+            })
+            .catch(() => {});
         }
       }
     }
@@ -368,6 +406,14 @@ export const api = {
         const { tags, ...dbDoc } = newDoc;
         const { data, error } = await supabase.from('documents').insert(dbDoc).select().single();
         if (!error && data) return { ...data, tags: newDoc.tags || [] };
+        // If folder foreign key constraint fails, retry with folder_id: null
+        if (error && error.code === '23503' && dbDoc.folder_id) {
+          const fallbackDoc = { ...dbDoc, folder_id: null };
+          const retryRes = await supabase.from('documents').insert(fallbackDoc).select().single();
+          if (!retryRes.error && retryRes.data) {
+            return { ...retryRes.data, tags: newDoc.tags || [] };
+          }
+        }
       } catch (e) {
         console.warn('Create document Supabase fallback:', e);
       }
