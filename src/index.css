@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --border: 214 32% 91%;
+  }
+
+  .dark {
+    --background: 222 47% 5%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 8%;
+    --card-foreground: 210 40% 98%;
+    --border: 217 33% 18%;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900 dark:bg-vault-950 dark:text-slate-100 antialiased min-h-screen transition-colors duration-200 selection:bg-indigo-500/20 selection:text-indigo-400;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+/* Glassmorphism helpers */
+.glass-panel {
+  @apply bg-white/70 dark:bg-vault-900/70 backdrop-blur-md border border-slate-200/80 dark:border-vault-700/50 shadow-glass;
+}
+
+.glass-card {
+  @apply bg-white/80 dark:bg-vault-900/80 backdrop-blur-sm border border-slate-200/80 dark:border-vault-800/80 hover:border-indigo-500/40 transition-all duration-200;
+}
+
+/* Subtle custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.45);
+}
