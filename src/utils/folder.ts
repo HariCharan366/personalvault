@@ -86,3 +86,4 @@ export function getFolderHierarchy(
     })
     .sort((a, b) => a.path.localeCompare(b.path));
 }
+

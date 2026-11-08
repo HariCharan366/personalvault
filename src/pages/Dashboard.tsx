@@ -100,7 +100,7 @@ export const Dashboard: React.FC = () => {
             </div>
 
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              Welcome back, {profile?.full_name || 'Vault Owner'}
+              Welcome back, {profile?.full_name || 'Haricharan'}
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-300 max-w-xl leading-relaxed">
               Your confidential documents are secured with end-to-end client encryption (AES-256-GCM). Data is encrypted on your device prior to cloud transmission.

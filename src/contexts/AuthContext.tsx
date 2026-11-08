@@ -29,7 +29,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const VAULT_MASTER_PASSWORD = 'Haricharan@2008';
-export const DEFAULT_VAULT_EMAIL = 'haricharan@personalvault.local';
+export const DEFAULT_VAULT_EMAIL = 'panduhari718@gmail.com';
 export const DEFAULT_VAULT_NAME = 'Haricharan';
 
 const LOCAL_STORAGE_AUTH_KEY = 'personalvault_demo_session';
@@ -68,6 +68,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (cached && mounted) {
           try {
             const parsed = JSON.parse(cached);
+            if (parsed.user) {
+              parsed.user.email = DEFAULT_VAULT_EMAIL;
+              parsed.user.user_metadata = { ...parsed.user.user_metadata, full_name: DEFAULT_VAULT_NAME };
+            }
+            if (parsed.profile) {
+              parsed.profile.email = DEFAULT_VAULT_EMAIL;
+              parsed.profile.full_name = DEFAULT_VAULT_NAME;
+            }
             setUser(parsed.user);
             setProfile(parsed.profile);
             setCurrentSessionId(parsed.sessionId);
@@ -232,6 +240,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
+      await api.updateProfile(prof);
+    } else if (prof.email !== DEFAULT_VAULT_EMAIL || prof.full_name !== DEFAULT_VAULT_NAME) {
+      prof.email = DEFAULT_VAULT_EMAIL;
+      prof.full_name = DEFAULT_VAULT_NAME;
       await api.updateProfile(prof);
     }
 
