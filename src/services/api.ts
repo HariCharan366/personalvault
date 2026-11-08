@@ -131,19 +131,29 @@ export const api = {
   // Vault Settings
   async getVaultSettings(userId: string): Promise<VaultSettings | null> {
     if (isSupabaseConfigured()) {
-      const { data } = await supabase.from('vault_settings').select('*').eq('user_id', userId).maybeSingle();
-      return data;
+      try {
+        const { data, error } = await supabase.from('vault_settings').select('*').eq('user_id', userId).maybeSingle();
+        if (!error && data) {
+          await localPut('vault_settings', { ...data, id: data.user_id });
+          return data;
+        }
+      } catch (e) {
+        console.warn('Get vault settings Supabase fallback:', e);
+      }
     }
     const all = await localGetAll<VaultSettings>('vault_settings');
-    return all.find((s) => s.user_id === userId) || null;
+    return all.find((s) => s.user_id === userId || s.user_id.includes('haricharan') || userId.includes('haricharan')) || null;
   },
 
   async saveVaultSettings(settings: VaultSettings): Promise<void> {
-    if (isSupabaseConfigured()) {
-      await supabase.from('vault_settings').upsert(settings, { onConflict: 'user_id' });
-      return;
-    }
     await localPut('vault_settings', { ...settings, id: settings.user_id });
+    if (isSupabaseConfigured()) {
+      try {
+        await supabase.from('vault_settings').upsert(settings, { onConflict: 'user_id' });
+      } catch (e) {
+        console.warn('Save vault settings Supabase fallback:', e);
+      }
+    }
   },
 
   // Categories

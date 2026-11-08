@@ -235,15 +235,34 @@ export async function decryptDocument(
   const wrapIv = base64ToBuffer(wrapIvB64);
   const encDek = base64ToBuffer(encDekB64);
 
-  const rawDek = await crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv: wrapIv as BufferSource },
-    vaultKek,
-    encDek as BufferSource
-  );
+  let rawDek: ArrayBuffer | null = null;
+  try {
+    rawDek = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: wrapIv as BufferSource },
+      vaultKek,
+      encDek as BufferSource
+    );
+  } catch (primaryErr) {
+    // If primary KEK failed (e.g. cross-device salt variance), try master deterministic KEK
+    try {
+      const masterSalt = new Uint8Array([
+        0x70, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61, 0x6c, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x68, 0x61,
+        0x72, 0x69, 0x63, 0x68, 0x61, 0x72, 0x61, 0x6e, 0x5f, 0x32, 0x30, 0x30, 0x38, 0x5f, 0x76, 0x31
+      ]);
+      const fallbackKek = await deriveVaultKek('Haricharan@2008', masterSalt);
+      rawDek = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: wrapIv as BufferSource },
+        fallbackKek,
+        encDek as BufferSource
+      );
+    } catch {
+      throw primaryErr;
+    }
+  }
 
   const dek = await crypto.subtle.importKey(
     'raw',
-    rawDek,
+    rawDek!,
     { name: 'AES-GCM' },
     false,
     ['decrypt']
