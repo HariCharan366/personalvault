@@ -229,6 +229,15 @@ export const api = {
       '55555555-aaaa-bbbb-cccc-555555555555',
       '66666666-aaaa-bbbb-cccc-666666666666',
     ]);
+    const PRUNED_DEFAULT_FOLDER_NAMES = new Set([
+      'Identity Documents',
+      'Education Documents',
+      'Banking & Financial',
+      'Medical & Health',
+      'Employment & Career',
+      'Personal Records',
+    ]);
+    const isPruned = (f: Folder) => PRUNED_DEFAULT_FOLDER_IDS.has(f.id) || PRUNED_DEFAULT_FOLDER_NAMES.has(f.name);
 
     let cloudFolders: Folder[] = [];
 
@@ -240,7 +249,7 @@ export const api = {
         }
         const { data, error } = await query.order('name');
         if (!error && data) {
-          cloudFolders = data.filter((f) => !PRUNED_DEFAULT_FOLDER_IDS.has(f.id));
+          cloudFolders = data.filter((f) => !isPruned(f));
           for (const f of cloudFolders) {
             await localPut('folders', f);
           }
@@ -253,12 +262,12 @@ export const api = {
     const all = await localGetAll<Folder>('folders');
     // Clean up any pruned default folders from local IndexedDB
     for (const f of all) {
-      if (PRUNED_DEFAULT_FOLDER_IDS.has(f.id)) {
+      if (isPruned(f)) {
         await localDelete('folders', f.id);
       }
     }
 
-    const local = all.filter((f) => (isOwner || f.user_id === userId) && !PRUNED_DEFAULT_FOLDER_IDS.has(f.id));
+    const local = all.filter((f) => (isOwner || f.user_id === userId) && !isPruned(f));
 
     const folderMap = new Map<string, Folder>();
     for (const f of local) folderMap.set(f.id, f);
@@ -270,7 +279,7 @@ export const api = {
     if (isSupabaseConfigured() && local.length > 0) {
       const cloudIds = new Set(cloudFolders.map((c) => c.id));
       for (const f of local) {
-        if (!cloudIds.has(f.id) && !PRUNED_DEFAULT_FOLDER_IDS.has(f.id)) {
+        if (!cloudIds.has(f.id) && !isPruned(f)) {
           Promise.resolve(supabase.from('folders').upsert(f, { onConflict: 'id' })).catch(() => {});
         }
       }
