@@ -138,3 +138,4 @@ describe('Security, Login History & User Isolation', () => {
     expect(['Desktop', 'Mobile', 'Tablet']).toContain(device.deviceType);
   });
 });
+

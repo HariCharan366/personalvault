@@ -54,3 +54,4 @@ export const VaultStatusBadge: React.FC = () => {
     </>
   );
 };
+

@@ -50,3 +50,4 @@ export const SettingsLayout: React.FC = () => {
     </div>
   );
 };
+

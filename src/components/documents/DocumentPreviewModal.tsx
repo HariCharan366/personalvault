@@ -252,13 +252,6 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({ docu
               </div>
 
               <div>
-                <span className="text-slate-500 block text-[11px]">Category</span>
-                <span className="font-semibold text-slate-800 dark:text-slate-200">
-                  {document.category?.name || 'Uncategorized'}
-                </span>
-              </div>
-
-              <div>
                 <span className="text-slate-500 block text-[11px]">Uploaded At</span>
                 <span className="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1">
                   <Calendar className="w-3.5 h-3.5 text-slate-400" />
@@ -318,3 +311,4 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({ docu
     </Modal>
   );
 };
+

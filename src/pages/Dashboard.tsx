@@ -10,8 +10,7 @@ import { DocumentPreviewModal } from '@/components/documents/DocumentPreviewModa
 import {
   Files,
   HardDrive,
-  Layers,
-  Star,
+  FolderOpen,
   Clock,
   Shield,
   UploadCloud,
@@ -21,19 +20,20 @@ import {
   Activity,
   ArrowUpRight,
   Unlock,
+  ShieldCheck,
 } from 'lucide-react';
-import type { DocumentItem, Category, ActivityLog } from '@/types';
+import type { DocumentItem, Folder, ActivityLog } from '@/types';
 
 interface ContextType {
   refreshData: () => void;
-  categories: Category[];
+  folders: Folder[];
   documents: DocumentItem[];
 }
 
 export const Dashboard: React.FC = () => {
   const { user, profile } = useAuth();
   const { isVaultInitialized, isUnlocked } = useVault();
-  const { categories, documents, refreshData } = useOutletContext<ContextType>();
+  const { folders, documents, refreshData } = useOutletContext<ContextType>();
 
   const [recentActivities, setRecentActivities] = useState<ActivityLog[]>([]);
   const [selectedDocForPreview, setSelectedDocForPreview] = useState<DocumentItem | null>(null);
@@ -62,9 +62,6 @@ export const Dashboard: React.FC = () => {
   // Recently uploaded
   const recentlyUploaded = [...documents].slice(0, 5);
 
-  // Favorites
-  const favorites = documents.filter((d) => d.is_favorite).slice(0, 5);
-
   // Upcoming expirations (next 30 days)
   const today = new Date();
   const thirtyDaysLater = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
@@ -72,20 +69,6 @@ export const Dashboard: React.FC = () => {
     if (!d.expiry_date) return false;
     const exp = new Date(d.expiry_date);
     return exp >= today && exp <= thirtyDaysLater;
-  });
-
-  // Category storage distribution
-  const categoryStats = categories.map((cat) => {
-    const docs = documents.filter((d) => d.category_id === cat.id);
-    const bytes = docs.reduce((sum, d) => sum + (d.file_size || 0), 0);
-    return {
-      id: cat.id,
-      name: cat.name,
-      color: cat.color || '#6366f1',
-      count: docs.length,
-      bytes,
-      percentage: totalStorageBytes > 0 ? (bytes / totalStorageBytes) * 100 : 0,
-    };
   });
 
   return (
@@ -128,7 +111,7 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Expiry Warning Alert (if any documents expiring) */}
+      {/* Expiry Warning Alert */}
       {expiringSoon.length > 0 && (
         <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3 text-xs text-amber-200">
           <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
@@ -190,69 +173,58 @@ export const Dashboard: React.FC = () => {
           </div>
         </Card>
 
-        {/* Total Categories */}
+        {/* Total Folders */}
         <Card className="p-5 flex items-center justify-between">
           <div>
-            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Active Categories</p>
+            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Active Folders</p>
             <h3 className="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
-              {categories.length}
+              {folders.length}
             </h3>
-            <p className="text-[11px] text-purple-400 font-medium mt-1">Organized lockers</p>
+            <p className="text-[11px] text-purple-400 font-medium mt-1">Structured directories</p>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-500 dark:text-purple-400 flex items-center justify-center">
-            <Layers className="w-6 h-6" />
+            <FolderOpen className="w-6 h-6" />
           </div>
         </Card>
       </div>
 
-      {/* Main Grid: Storage Distribution & Recently Uploaded */}
+      {/* Main Grid: Storage Status & Recently Uploaded */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Storage Distribution Chart & Breakdown */}
+        {/* Storage Capacity & Security Specifications */}
         <Card className="p-6 lg:col-span-1 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <HardDrive className="w-4 h-4 text-indigo-400" /> Storage Breakdown
+              <HardDrive className="w-4 h-4 text-indigo-400" /> Storage Capacity
             </h3>
-            <span className="text-xs font-mono text-slate-400">{usedPercentage.toFixed(1)}% Used</span>
+            <span className="text-xs font-mono text-slate-400">{usedPercentage.toFixed(1)}%</span>
           </div>
 
-          {/* Visual Bar */}
-          <div className="w-full bg-slate-100 dark:bg-vault-800 rounded-full h-3 overflow-hidden flex">
-            {categoryStats.map(
-              (cat) =>
-                cat.percentage > 0 && (
-                  <div
-                    key={cat.id}
-                    title={`${cat.name}: ${(cat.bytes / 1024).toFixed(1)} KB (${cat.percentage.toFixed(1)}%)`}
-                    style={{ width: `${cat.percentage}%`, backgroundColor: cat.color }}
-                    className="h-full transition-all duration-300"
-                  />
-                )
-            )}
-            {totalStorageBytes === 0 && <div className="w-full h-full bg-slate-700/30" />}
+          {/* Progress Bar */}
+          <div className="w-full bg-slate-100 dark:bg-vault-800 rounded-full h-3 overflow-hidden">
+            <div
+              className="bg-gradient-to-r from-indigo-500 to-sky-400 h-3 rounded-full transition-all duration-500"
+              style={{ width: `${Math.max(usedPercentage, 2)}%` }}
+            />
           </div>
 
-          {/* Category-wise breakdown list */}
-          <div className="space-y-2 pt-2 divide-y divide-slate-100 dark:divide-vault-800 text-xs">
-            {categoryStats.slice(0, 6).map((cat) => (
-              <div key={cat.id} className="pt-2 flex items-center justify-between">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: cat.color }} />
-                  <span className="text-slate-700 dark:text-slate-300 font-medium truncate">{cat.name}</span>
-                </div>
-                <div className="text-right shrink-0">
-                  <span className="font-mono text-slate-600 dark:text-slate-400">
-                    {(cat.bytes / 1024).toFixed(0)} KB
-                  </span>
-                  <span className="text-[10px] text-slate-400 ml-1.5">({cat.count} files)</span>
-                </div>
-              </div>
-            ))}
+          <div className="space-y-3 pt-2 text-xs">
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800 flex items-center justify-between">
+              <span className="text-slate-500">Encrypted Documents</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200">{totalDocuments} files</span>
+            </div>
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800 flex items-center justify-between">
+              <span className="text-slate-500">Active Folders</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200">{folders.length} folders</span>
+            </div>
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800 flex items-center justify-between">
+              <span className="text-slate-500">Cipher Protocol</span>
+              <span className="font-mono text-indigo-400 font-semibold">AES-256-GCM</span>
+            </div>
           </div>
 
           <div className="pt-2 border-t border-slate-100 dark:border-vault-800">
             <Link to="/settings/storage" className="text-xs font-semibold text-indigo-500 hover:underline flex items-center gap-1">
-              <span>View storage settings & Supabase cloud</span>
+              <span>View storage settings & cloud status</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -262,7 +234,7 @@ export const Dashboard: React.FC = () => {
         <Card className="p-6 lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <Clock className="w-4 h-4 text-sky-400" /> Recently Uploaded
+              <Clock className="w-4 h-4 text-sky-400" /> Recent Document Uploads
             </h3>
             <Link to="/documents" className="text-xs font-semibold text-indigo-500 hover:underline">
               View all ({totalDocuments}) →
@@ -294,15 +266,12 @@ export const Dashboard: React.FC = () => {
                       <div className="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">
                         <span>{(doc.file_size / 1024).toFixed(1)} KB</span>
                         <span>•</span>
-                        <span>{doc.category?.name || 'Uncategorized'}</span>
-                        <span>•</span>
                         <span>{new Date(doc.created_at).toLocaleDateString()}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 shrink-0">
-                    {doc.is_favorite && <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />}
                     <Badge variant="outline" size="sm">
                       AES-256
                     </Badge>
@@ -315,92 +284,48 @@ export const Dashboard: React.FC = () => {
         </Card>
       </div>
 
-      {/* Bottom Grid: Favorites & Recent Security Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Starred Favorites */}
-        <Card className="p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <Star className="w-4 h-4 text-amber-400" /> Starred Favorites
-            </h3>
-            <Link to="/favorites" className="text-xs font-semibold text-indigo-500 hover:underline">
-              View all →
-            </Link>
-          </div>
+      {/* Recent Security & Activity Audit */}
+      <Card className="p-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <Activity className="w-4 h-4 text-purple-400" /> Recent Security & Vault Activity
+          </h3>
+          <Link to="/activity" className="text-xs font-semibold text-indigo-500 hover:underline">
+            Full audit trail →
+          </Link>
+        </div>
 
-          {favorites.length === 0 ? (
-            <p className="text-xs text-slate-400 text-center py-6">
-              No favorites marked. Click the star icon on any document to pin it here.
-            </p>
-          ) : (
-            <div className="space-y-2">
-              {favorites.map((fav) => (
-                <div
-                  key={fav.id}
-                  onClick={() => setSelectedDocForPreview(fav)}
-                  className="p-3 rounded-xl border border-slate-200 dark:border-vault-800 hover:border-amber-500/40 bg-white dark:bg-vault-900 flex items-center justify-between cursor-pointer transition-all"
-                >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <Star className="w-4 h-4 fill-amber-400 text-amber-400 shrink-0" />
-                    <div className="min-w-0">
-                      <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
-                        {fav.title || fav.original_filename}
-                      </p>
-                      <p className="text-[10px] text-slate-400">{(fav.file_size / 1024).toFixed(1)} KB</p>
-                    </div>
-                  </div>
-                  <Badge variant="purple" size="sm">
-                    Favorite
-                  </Badge>
+        {recentActivities.length === 0 ? (
+          <p className="text-xs text-slate-400 text-center py-6">No recent actions recorded.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+            {recentActivities.map((act) => (
+              <div
+                key={act.id}
+                className="p-3 rounded-xl bg-slate-50 dark:bg-vault-850/60 border border-slate-200/60 dark:border-vault-800 flex items-center justify-between gap-2"
+              >
+                <div className="min-w-0">
+                  <p className="font-medium text-slate-800 dark:text-slate-200 truncate">
+                    {act.action.replace(/_/g, ' ')}
+                    {act.entity_name ? ` • "${act.entity_name}"` : ''}
+                  </p>
+                  <p className="text-[10px] text-slate-400">
+                    {new Date(act.created_at).toLocaleString([], {
+                      month: 'short',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </p>
                 </div>
-              ))}
-            </div>
-          )}
-        </Card>
-
-        {/* Recent Audit & Security Activity */}
-        <Card className="p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <Activity className="w-4 h-4 text-purple-400" /> Recent Activity Log
-            </h3>
-            <Link to="/activity" className="text-xs font-semibold text-indigo-500 hover:underline">
-              Audit trail →
-            </Link>
+                <Badge variant="outline" size="sm">
+                  {act.entity_type}
+                </Badge>
+              </div>
+            ))}
           </div>
-
-          {recentActivities.length === 0 ? (
-            <p className="text-xs text-slate-400 text-center py-6">No recent actions recorded.</p>
-          ) : (
-            <div className="space-y-2.5 text-xs">
-              {recentActivities.map((act) => (
-                <div
-                  key={act.id}
-                  className="p-2.5 rounded-xl bg-slate-50 dark:bg-vault-850/60 flex items-center justify-between gap-2"
-                >
-                  <div className="min-w-0">
-                    <p className="font-medium text-slate-800 dark:text-slate-200 truncate">
-                      {act.action.replace(/_/g, ' ')}
-                      {act.entity_name ? ` • "${act.entity_name}"` : ''}
-                    </p>
-                    <p className="text-[10px] text-slate-400">
-                      {new Date(act.created_at).toLocaleString([], {
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </p>
-                  </div>
-                  <Badge variant="outline" size="sm">
-                    {act.entity_type}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          )}
-        </Card>
-      </div>
+        )}
+      </Card>
 
       {/* Document Preview Modal */}
       <DocumentPreviewModal

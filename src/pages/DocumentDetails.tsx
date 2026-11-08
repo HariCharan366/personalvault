@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useVault } from '@/contexts/VaultContext';
 import { useToast } from '@/contexts/ToastContext';
 import { api } from '@/services/api';
 import { Card } from '@/components/ui/Card';
@@ -13,19 +12,17 @@ import { DocumentVersionModal } from '@/components/documents/DocumentVersionModa
 import {
   FileText,
   ArrowLeft,
-  Download,
   Eye,
   Trash2,
   Edit,
   History,
   Lock,
   Calendar,
-  Layers,
   HardDrive,
   Hash,
-  Star,
+  FolderOpen,
 } from 'lucide-react';
-import type { DocumentItem, Category, Folder } from '@/types';
+import type { DocumentItem, Folder } from '@/types';
 
 export const DocumentDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,7 +31,6 @@ export const DocumentDetails: React.FC = () => {
   const { showToast } = useToast();
 
   const [document, setDocument] = useState<DocumentItem | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [folders, setFolders] = useState<Folder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -45,13 +41,11 @@ export const DocumentDetails: React.FC = () => {
   const loadDoc = async () => {
     if (!id || !user) return;
     setIsLoading(true);
-    const [doc, cats, flds] = await Promise.all([
+    const [doc, flds] = await Promise.all([
       api.getDocumentById(id),
-      api.getCategories(user.id),
       api.getFolders(user.id),
     ]);
     setDocument(doc);
-    setCategories(cats);
     setFolders(flds);
     setIsLoading(false);
   };
@@ -82,20 +76,14 @@ export const DocumentDetails: React.FC = () => {
     );
   }
 
-  const handleToggleFavorite = async () => {
-    if (!user) return;
-    const newStatus = !document.is_favorite;
-    await api.updateDocument(document.id, { is_favorite: newStatus });
-    setDocument({ ...document, is_favorite: newStatus });
-    showToast('info', newStatus ? 'Favorited' : 'Removed from Favorites');
-  };
-
   const handleDelete = async () => {
     if (!user) return;
     await api.softDeleteDocument(document.id);
     showToast('warning', 'Moved to Trash', `"${document.title}" moved to trash.`);
     navigate('/documents');
   };
+
+  const assignedFolder = folders.find((f) => f.id === document.folder_id);
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
@@ -110,20 +98,6 @@ export const DocumentDetails: React.FC = () => {
         </Link>
 
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleToggleFavorite}
-            leftIcon={
-              <Star
-                className={`w-4 h-4 ${
-                  document.is_favorite ? 'fill-amber-400 text-amber-400' : ''
-                }`}
-              />
-            }
-          >
-            {document.is_favorite ? 'Favorited' : 'Favorite'}
-          </Button>
           <Button
             variant="outline"
             size="sm"
@@ -159,8 +133,8 @@ export const DocumentDetails: React.FC = () => {
               <div className="flex flex-wrap items-center gap-2 mt-3">
                 <Badge variant="success">AES-256-GCM Encrypted</Badge>
                 <Badge variant="outline">Version {document.current_version}</Badge>
-                {document.category && (
-                  <Badge variant="purple">{document.category.name}</Badge>
+                {assignedFolder && (
+                  <Badge variant="info">Folder: {assignedFolder.name}</Badge>
                 )}
               </div>
             </div>
@@ -217,10 +191,10 @@ export const DocumentDetails: React.FC = () => {
 
           <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800">
             <span className="text-slate-500 flex items-center gap-1.5 mb-1">
-              <Layers className="w-3.5 h-3.5 text-emerald-400" /> Category
+              <FolderOpen className="w-3.5 h-3.5 text-emerald-400" /> Folder
             </span>
             <p className="font-semibold text-slate-800 dark:text-slate-200">
-              {document.category?.name || 'Uncategorized'}
+              {assignedFolder ? assignedFolder.name : 'Root (No Folder)'}
             </p>
           </div>
 
@@ -266,7 +240,6 @@ export const DocumentDetails: React.FC = () => {
         document={document}
         isOpen={showActions}
         onClose={() => setShowActions(false)}
-        categories={categories}
         folders={folders}
         onUpdated={loadDoc}
       />

@@ -136,3 +136,4 @@ describe('PersonalVault Cryptographic Engine (AES-256-GCM & PBKDF2)', () => {
     expect(hash1).not.toBe(wrongHash);
   });
 });
+

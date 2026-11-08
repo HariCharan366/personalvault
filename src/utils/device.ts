@@ -88,3 +88,4 @@ export async function fetchIpAndLocation(): Promise<{ ip: string; location: stri
     };
   }
 }
+

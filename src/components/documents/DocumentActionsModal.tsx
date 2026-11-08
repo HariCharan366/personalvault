@@ -5,14 +5,13 @@ import { api } from '@/services/api';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Edit3, Folder, Layers, Calendar, Tag } from 'lucide-react';
-import type { DocumentItem, Category, Folder as FolderType } from '@/types';
+import { Edit3, Folder as FolderIcon, Calendar, Tag } from 'lucide-react';
+import type { DocumentItem, Folder as FolderType } from '@/types';
 
 interface DocumentActionsModalProps {
   document: DocumentItem | null;
   isOpen: boolean;
   onClose: () => void;
-  categories: Category[];
   folders: FolderType[];
   onUpdated: () => void;
 }
@@ -21,7 +20,6 @@ export const DocumentActionsModal: React.FC<DocumentActionsModalProps> = ({
   document,
   isOpen,
   onClose,
-  categories,
   folders,
   onUpdated,
 }) => {
@@ -29,7 +27,6 @@ export const DocumentActionsModal: React.FC<DocumentActionsModalProps> = ({
   const { showToast } = useToast();
 
   const [title, setTitle] = useState('');
-  const [categoryId, setCategoryId] = useState('');
   const [folderId, setFolderId] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [tagsInput, setTagsInput] = useState('');
@@ -38,7 +35,6 @@ export const DocumentActionsModal: React.FC<DocumentActionsModalProps> = ({
   useEffect(() => {
     if (document) {
       setTitle(document.title || document.original_filename);
-      setCategoryId(document.category_id || '');
       setFolderId(document.folder_id || '');
       setExpiryDate(document.expiry_date || '');
       setTagsInput(document.tags?.join(', ') || '');
@@ -58,13 +54,11 @@ export const DocumentActionsModal: React.FC<DocumentActionsModalProps> = ({
         .map((t) => t.trim())
         .filter(Boolean);
 
-      const oldCategory = document.category_id;
-      const isMoved = oldCategory !== (categoryId || null);
       const isRenamed = document.title !== title;
+      const isMoved = document.folder_id !== (folderId || null);
 
       await api.updateDocument(document.id, {
         title: title.trim(),
-        category_id: categoryId || null,
         folder_id: folderId || null,
         expiry_date: expiryDate || null,
         tags,
@@ -109,7 +103,7 @@ export const DocumentActionsModal: React.FC<DocumentActionsModalProps> = ({
           <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500">
             <Edit3 className="w-5 h-5" />
           </div>
-          <span>Edit Document & Properties</span>
+          <span>Edit Document Properties</span>
         </div>
       }
       description={`Update metadata and organization for "${document.original_filename}"`}
@@ -123,42 +117,22 @@ export const DocumentActionsModal: React.FC<DocumentActionsModalProps> = ({
           required
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
-              <Layers className="w-3.5 h-3.5 text-indigo-400" /> Category
-            </label>
-            <select
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
-              className="w-full text-xs rounded-xl border border-slate-300 dark:border-vault-700 bg-white dark:bg-vault-900 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none"
-            >
-              <option value="">Uncategorized</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
-              <Folder className="w-3.5 h-3.5 text-sky-400" /> Folder
-            </label>
-            <select
-              value={folderId}
-              onChange={(e) => setFolderId(e.target.value)}
-              className="w-full text-xs rounded-xl border border-slate-300 dark:border-vault-700 bg-white dark:bg-vault-900 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none"
-            >
-              <option value="">Root / No Folder</option>
-              {folders.map((f) => (
-                <option key={f.id} value={f.id}>
-                  {f.name}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
+            <FolderIcon className="w-3.5 h-3.5 text-sky-400" /> Destination Folder
+          </label>
+          <select
+            value={folderId}
+            onChange={(e) => setFolderId(e.target.value)}
+            className="w-full text-xs rounded-xl border border-slate-300 dark:border-vault-700 bg-white dark:bg-vault-900 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none"
+          >
+            <option value="">Root / No Folder</option>
+            {folders.map((f) => (
+              <option key={f.id} value={f.id}>
+                {f.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>

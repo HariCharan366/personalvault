@@ -134,3 +134,4 @@ export const SecuritySettings: React.FC = () => {
     </div>
   );
 };
+

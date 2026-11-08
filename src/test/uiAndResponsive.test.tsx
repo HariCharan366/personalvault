@@ -74,3 +74,4 @@ describe('UI Components & Responsive Layout Checks', () => {
     expect(screen.getByText('Upload First File')).toBeInTheDocument();
   });
 });
+

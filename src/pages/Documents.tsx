@@ -16,25 +16,17 @@ import {
   LayoutGrid,
   List,
   Search,
-  Filter,
-  ArrowUpDown,
-  Star,
   FileText,
-  MoreVertical,
-  Download,
   Trash2,
   Edit,
   History,
   Eye,
-  Shield,
-  Layers,
-  Unlock,
+  FolderOpen,
 } from 'lucide-react';
-import type { DocumentItem, Category, Folder } from '@/types';
+import type { DocumentItem, Folder } from '@/types';
 
 interface ContextType {
   refreshData: () => void;
-  categories: Category[];
   folders: Folder[];
   documents: DocumentItem[];
   searchQuery?: string;
@@ -44,12 +36,12 @@ export const Documents: React.FC = () => {
   const { user } = useAuth();
   const { isUnlocked } = useVault();
   const { showToast } = useToast();
-  const { categories, folders, documents, refreshData, searchQuery: globalSearch } = useOutletContext<ContextType>();
+  const { folders, documents, refreshData, searchQuery: globalSearch } = useOutletContext<ContextType>();
   const [searchParams] = useSearchParams();
 
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || globalSearch || '');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedFolder, setSelectedFolder] = useState<string>(searchParams.get('folder') || 'all');
   const [selectedType, setSelectedType] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'date_desc' | 'date_asc' | 'name_asc' | 'name_desc' | 'size_desc' | 'size_asc'>('date_desc');
 
@@ -68,9 +60,9 @@ export const Documents: React.FC = () => {
         doc.original_filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
         doc.tags?.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
 
-      // Category filter
-      const matchesCategory =
-        selectedCategory === 'all' || doc.category_id === selectedCategory;
+      // Folder filter
+      const matchesFolder =
+        selectedFolder === 'all' || doc.folder_id === selectedFolder;
 
       // Type filter
       let matchesType = true;
@@ -84,7 +76,7 @@ export const Documents: React.FC = () => {
           doc.mime_type.includes('spreadsheet') ||
           doc.mime_type.includes('document');
 
-      return matchesSearch && matchesCategory && matchesType;
+      return matchesSearch && matchesFolder && matchesType;
     }).sort((a, b) => {
       if (sortBy === 'date_desc') return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       if (sortBy === 'date_asc') return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
@@ -94,24 +86,7 @@ export const Documents: React.FC = () => {
       if (sortBy === 'size_asc') return a.file_size - b.file_size;
       return 0;
     });
-  }, [documents, searchQuery, selectedCategory, selectedType, sortBy]);
-
-  // Toggle favorite
-  const handleToggleFavorite = async (doc: DocumentItem, e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!user) return;
-    const newStatus = !doc.is_favorite;
-    await api.updateDocument(doc.id, { is_favorite: newStatus });
-    await api.logActivity({
-      user_id: user.id,
-      action: newStatus ? 'favorite_added' : 'favorite_removed',
-      entity_type: 'document',
-      entity_id: doc.id,
-      entity_name: doc.title,
-    });
-    refreshData();
-    showToast('info', newStatus ? 'Favorited' : 'Removed from Favorites', doc.title);
-  };
+  }, [documents, searchQuery, selectedFolder, selectedType, sortBy]);
 
   // Move to trash
   const handleMoveToTrash = async (doc: DocumentItem, e: React.MouseEvent) => {
@@ -189,17 +164,17 @@ export const Documents: React.FC = () => {
             />
           </div>
 
-          {/* Category filter */}
+          {/* Folder filter */}
           <div>
             <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
+              value={selectedFolder}
+              onChange={(e) => setSelectedFolder(e.target.value)}
               className="w-full rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-700 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-indigo-500"
             >
-              <option value="all">All Categories</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
+              <option value="all">All Folders</option>
+              {folders.map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.name}
                 </option>
               ))}
             </select>
@@ -260,17 +235,6 @@ export const Documents: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-1">
                     <button
-                      onClick={(e) => handleToggleFavorite(doc, e)}
-                      className="p-1.5 text-slate-400 hover:text-amber-400 transition-colors"
-                      title={doc.is_favorite ? 'Remove Favorite' : 'Mark Favorite'}
-                    >
-                      <Star
-                        className={`w-4 h-4 ${
-                          doc.is_favorite ? 'fill-amber-400 text-amber-400' : ''
-                        }`}
-                      />
-                    </button>
-                    <button
                       onClick={(e) => {
                         e.stopPropagation();
                         setActionDoc(doc);
@@ -279,6 +243,13 @@ export const Documents: React.FC = () => {
                       title="Edit Properties"
                     >
                       <Edit className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={(e) => handleMoveToTrash(doc, e)}
+                      className="p-1.5 text-slate-400 hover:text-rose-400 transition-colors"
+                      title="Move to Trash"
+                    >
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
@@ -318,13 +289,6 @@ export const Documents: React.FC = () => {
                   >
                     <History className="w-3.5 h-3.5" />
                   </button>
-                  <button
-                    onClick={(e) => handleMoveToTrash(doc, e)}
-                    className="p-1 text-slate-400 hover:text-rose-400"
-                    title="Move to Trash"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
                 </div>
               </div>
             </Card>
@@ -338,7 +302,6 @@ export const Documents: React.FC = () => {
               <thead>
                 <tr className="border-b border-slate-200 dark:border-vault-800 bg-slate-50 dark:bg-vault-850/60 text-slate-500 uppercase tracking-wider text-[11px]">
                   <th className="p-3 pl-4">Name</th>
-                  <th className="p-3">Category</th>
                   <th className="p-3">Size</th>
                   <th className="p-3">Uploaded</th>
                   <th className="p-3">Version</th>
@@ -358,10 +321,8 @@ export const Documents: React.FC = () => {
                         <span className="font-semibold text-slate-900 dark:text-slate-100 truncate max-w-xs">
                           {doc.title || doc.original_filename}
                         </span>
-                        {doc.is_favorite && <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400 shrink-0" />}
                       </div>
                     </td>
-                    <td className="p-3 text-slate-400">{doc.category?.name || 'Uncategorized'}</td>
                     <td className="p-3 font-mono text-slate-400">{(doc.file_size / 1024).toFixed(1)} KB</td>
                     <td className="p-3 text-slate-400">{new Date(doc.created_at).toLocaleDateString()}</td>
                     <td className="p-3">
@@ -420,7 +381,6 @@ export const Documents: React.FC = () => {
         document={actionDoc}
         isOpen={Boolean(actionDoc)}
         onClose={() => setActionDoc(null)}
-        categories={categories}
         folders={folders}
         onUpdated={refreshData}
       />

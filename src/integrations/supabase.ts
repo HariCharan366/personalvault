@@ -56,3 +56,4 @@ export async function testSupabaseConnection(): Promise<{ success: boolean; mess
     return { success: false, message: err?.message || 'Failed to connect to Supabase.' };
   }
 }
+

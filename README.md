@@ -178,12 +178,9 @@ Restart `npm run dev`. PersonalVault will now connect directly to your live Supa
 | `/forgot-password` | Password recovery request |
 | `/reset-password` | Set new account password |
 | `/dashboard` | Real-time statistics, storage breakdown chart, quick upload, and recent activity |
-| `/documents` | Full document manager (Grid/List, filter by type/category, sort, favorites) |
+| `/documents` | Full document manager (Grid/List, filter by folder & file type, sort, versions) |
 | `/documents/:id` | Detailed document inspector, cryptographic hash, and version history |
 | `/folders` | Directory manager with nested subfolder support |
-| `/categories` | Document category management & color/icon customization |
-| `/favorites` | Starred quick-access documents |
-| `/recent` | Chronological upload history |
 | `/vault` | Vault PIN settings, auto-lock timeout, and cryptographic specs |
 | `/activity` | Tamper-resistant audit trail with date/type filtering |
 | `/security/login-history` | Authentication audit log with CSV export |

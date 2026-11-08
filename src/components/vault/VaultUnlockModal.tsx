@@ -347,3 +347,4 @@ export const VaultUnlockModal: React.FC<VaultUnlockModalProps> = ({ isOpen, onCl
     </Modal>
   );
 };
+

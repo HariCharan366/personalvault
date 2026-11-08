@@ -201,3 +201,4 @@ export interface EncryptionResult {
   sha256Hash: string; // hex
   plainSize: number;
 }
+

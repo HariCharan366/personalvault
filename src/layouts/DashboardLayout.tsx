@@ -5,7 +5,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { TopNav } from '@/components/layout/TopNav';
 import { DocumentUploadModal } from '@/components/documents/DocumentUploadModal';
 import { api } from '@/services/api';
-import type { Category, Folder, DocumentItem } from '@/types';
+import type { Folder, DocumentItem } from '@/types';
 
 export const DashboardLayout: React.FC = () => {
   const { user, isLoading } = useAuth();
@@ -13,7 +13,6 @@ export const DashboardLayout: React.FC = () => {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [folders, setFolders] = useState<Folder[]>([]);
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [storageUsedBytes, setStorageUsedBytes] = useState<number>(0);
@@ -22,12 +21,10 @@ export const DashboardLayout: React.FC = () => {
   const loadData = useCallback(async () => {
     if (!user) return;
     try {
-      const [cats, flds, docs] = await Promise.all([
-        api.getCategories(user.id),
+      const [flds, docs] = await Promise.all([
         api.getFolders(user.id),
         api.getDocuments(user.id),
       ]);
-      setCategories(cats);
       setFolders(flds);
       setDocuments(docs);
 
@@ -77,7 +74,7 @@ export const DashboardLayout: React.FC = () => {
         />
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
-          <Outlet context={{ refreshData: loadData, searchQuery, categories, folders, documents }} />
+          <Outlet context={{ refreshData: loadData, searchQuery, folders, documents }} />
         </main>
       </div>
 
@@ -85,7 +82,6 @@ export const DashboardLayout: React.FC = () => {
       <DocumentUploadModal
         isOpen={uploadModalOpen}
         onClose={() => setUploadModalOpen(false)}
-        categories={categories}
         folders={folders}
         onUploadComplete={loadData}
       />

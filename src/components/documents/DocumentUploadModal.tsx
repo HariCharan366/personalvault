@@ -7,7 +7,6 @@ import { uploadEncryptedFile } from '@/services/storage';
 import { encryptDocument, calculateSha256 } from '@/services/crypto';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
 import {
   UploadCloud,
@@ -18,16 +17,14 @@ import {
   Lock,
   Tag,
   Calendar,
-  Layers,
+  Folder as FolderIcon,
 } from 'lucide-react';
-import type { Category, Folder } from '@/types';
+import type { Folder } from '@/types';
 
 interface DocumentUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
-  categories: Category[];
   folders: Folder[];
-  currentCategoryId?: string;
   currentFolderId?: string;
   onUploadComplete: () => void;
 }
@@ -65,9 +62,7 @@ const MAX_FILE_SIZE = 52428800; // 50MB
 export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
   isOpen,
   onClose,
-  categories,
   folders,
-  currentCategoryId,
   currentFolderId,
   onUploadComplete,
 }) => {
@@ -76,7 +71,6 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
   const { showToast } = useToast();
 
   const [queue, setQueue] = useState<QueuedFile[]>([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>(currentCategoryId || '');
   const [selectedFolderId, setSelectedFolderId] = useState<string>(currentFolderId || '');
   const [expiryDate, setExpiryDate] = useState<string>('');
   const [tagsInput, setTagsInput] = useState<string>('');
@@ -205,7 +199,7 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
           storage_path: storagePath,
           file_size: item.size,
           mime_type: item.type,
-          category_id: selectedCategoryId || null,
+          category_id: null,
           folder_id: selectedFolderId || null,
           sha256_hash: encryptionResult.sha256Hash,
           encryption_iv: encryptionResult.iv,
@@ -306,21 +300,21 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
           </p>
         </div>
 
-        {/* Categorization & Metadata Fields */}
+        {/* Organization & Metadata Fields */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800">
           <div>
             <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1 flex items-center gap-1">
-              <Layers className="w-3.5 h-3.5" /> Category
+              <FolderIcon className="w-3.5 h-3.5 text-sky-400" /> Destination Folder
             </label>
             <select
-              value={selectedCategoryId}
-              onChange={(e) => setSelectedCategoryId(e.target.value)}
+              value={selectedFolderId}
+              onChange={(e) => setSelectedFolderId(e.target.value)}
               className="w-full text-xs rounded-lg border border-slate-300 dark:border-vault-700 bg-white dark:bg-vault-900 px-2.5 py-1.5 text-slate-800 dark:text-slate-200 outline-none"
             >
-              <option value="">Uncategorized</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
+              <option value="">Root (No Folder)</option>
+              {folders.map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.name}
                 </option>
               ))}
             </select>
@@ -328,7 +322,7 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
 
           <div>
             <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1 flex items-center gap-1">
-              <Calendar className="w-3.5 h-3.5" /> Expiry Date (Optional)
+              <Calendar className="w-3.5 h-3.5 text-amber-400" /> Expiry Date (Optional)
             </label>
             <input
               type="date"
@@ -340,7 +334,7 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
 
           <div>
             <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1 flex items-center gap-1">
-              <Tag className="w-3.5 h-3.5" /> Tags (Comma separated)
+              <Tag className="w-3.5 h-3.5 text-purple-400" /> Tags (Comma separated)
             </label>
             <input
               type="text"

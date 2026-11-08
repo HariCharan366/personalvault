@@ -19,9 +19,6 @@ import { Dashboard } from '@/pages/Dashboard';
 import { Documents } from '@/pages/Documents';
 import { DocumentDetails } from '@/pages/DocumentDetails';
 import { Folders } from '@/pages/Folders';
-import { Categories } from '@/pages/Categories';
-import { Favorites } from '@/pages/Favorites';
-import { Recent } from '@/pages/Recent';
 import { Vault } from '@/pages/Vault';
 import { Activity } from '@/pages/Activity';
 import { Security } from '@/pages/security/Security';
@@ -53,9 +50,6 @@ export const App: React.FC = () => {
                 <Route path="/documents" element={<Documents />} />
                 <Route path="/documents/:id" element={<DocumentDetails />} />
                 <Route path="/folders" element={<Folders />} />
-                <Route path="/categories" element={<Categories />} />
-                <Route path="/favorites" element={<Favorites />} />
-                <Route path="/recent" element={<Recent />} />
                 <Route path="/vault" element={<Vault />} />
                 <Route path="/activity" element={<Activity />} />
 

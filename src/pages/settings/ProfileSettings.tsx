@@ -72,3 +72,4 @@ export const ProfileSettings: React.FC = () => {
     </Card>
   );
 };
+

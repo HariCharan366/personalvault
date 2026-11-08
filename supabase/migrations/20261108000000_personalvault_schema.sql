@@ -372,3 +372,4 @@ CREATE POLICY "Users can delete own vault documents" ON storage.objects
         bucket_id = 'vault-documents' 
         AND auth.uid()::text = (storage.foldername(name))[1]
     );
+
