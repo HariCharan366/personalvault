@@ -18,7 +18,7 @@ interface AuthContextType {
   profile: Profile | null;
   isLoading: boolean;
   currentSessionId: string | null;
-  signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  signIn: (emailOrPassword: string, maybePassword?: string) => Promise<{ success: boolean; error?: string }>;
   signUp: (email: string, password: string, fullName?: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
@@ -27,6 +27,10 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const VAULT_MASTER_PASSWORD = 'Haricharan@2008';
+export const DEFAULT_VAULT_EMAIL = 'haricharan@personalvault.local';
+export const DEFAULT_VAULT_NAME = 'Haricharan';
 
 const LOCAL_STORAGE_AUTH_KEY = 'personalvault_demo_session';
 
@@ -113,32 +117,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signIn = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+  const signIn = async (
+    emailOrPassword: string,
+    maybePassword?: string
+  ): Promise<{ success: boolean; error?: string }> => {
     const device = detectDeviceInfo();
     const { ip, location } = await fetchIpAndLocation();
     const sessionId = crypto.randomUUID();
 
+    let email = DEFAULT_VAULT_EMAIL;
+    let password = emailOrPassword;
+
+    if (typeof maybePassword === 'string') {
+      email = emailOrPassword || DEFAULT_VAULT_EMAIL;
+      password = maybePassword;
+    }
+
+    // Require master password Haricharan@2008
+    if (password !== VAULT_MASTER_PASSWORD) {
+      await api.recordLogin({
+        user_id: '00000000-0000-0000-0000-000000000000',
+        status: 'Failed',
+        timestamp: new Date().toISOString(),
+        ip_address: ip,
+        browser: device.browser,
+        browser_version: device.browserVersion,
+        os: device.os,
+        device_type: device.deviceType,
+        approximate_location: location,
+        session_id: sessionId,
+      });
+      return { success: false, error: 'Incorrect master password. Access denied.' };
+    }
+
     if (isSupabaseConfigured()) {
       try {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) {
-          // Record failed login
-          await api.recordLogin({
-            user_id: '00000000-0000-0000-0000-000000000000',
-            status: 'Failed',
-            timestamp: new Date().toISOString(),
-            ip_address: ip,
-            browser: device.browser,
-            browser_version: device.browserVersion,
-            os: device.os,
-            device_type: device.deviceType,
-            approximate_location: location,
-            session_id: sessionId,
-          });
-          return { success: false, error: error.message };
-        }
-
-        if (data.user) {
+        if (!error && data?.user) {
           const u: AuthUser = {
             id: data.user.id,
             email: data.user.email || email,
@@ -192,31 +207,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
           return { success: true };
         }
-        return { success: false, error: 'User data not returned' };
       } catch (err: any) {
-        return { success: false, error: err.message || 'Login failed' };
+        console.warn('Supabase auth fallback to local vault session:', err);
       }
     }
 
-    // Local / Offline demo authentication
-    if (!email || !password || password.length < 6) {
-      return { success: false, error: 'Password must be at least 6 characters.' };
-    }
-
-    // Create or retrieve local user deterministically by email
-    const localUserId = 'usr_' + btoa(email.toLowerCase()).replace(/[^a-zA-Z0-9]/g, '').slice(0, 16);
+    // Local / Offline authentication for Haricharan
+    const localUserId = 'usr_haricharan_vault';
     const mockUser: AuthUser = {
       id: localUserId,
-      email: email.toLowerCase(),
-      user_metadata: { full_name: email.split('@')[0] },
+      email: DEFAULT_VAULT_EMAIL,
+      user_metadata: { full_name: DEFAULT_VAULT_NAME },
     };
 
     let prof = await api.getProfile(localUserId);
     if (!prof) {
       prof = {
         id: localUserId,
-        email: email.toLowerCase(),
-        full_name: email.split('@')[0],
+        email: DEFAULT_VAULT_EMAIL,
+        full_name: DEFAULT_VAULT_NAME,
         avatar_url: null,
         two_factor_enabled: false,
         storage_quota_bytes: 5368709120,
@@ -225,9 +234,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       };
       await api.updateProfile(prof);
     }
-
-    // Seed default categories for local user if needed
-    await api.getCategories(localUserId);
 
     setUser(mockUser);
     setProfile(prof);

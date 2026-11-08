@@ -32,7 +32,7 @@ describe('UI Components & Responsive Layout Checks', () => {
     expect(screen.getByText(/10.0 MB/)).toBeInTheDocument();
   });
 
-  it('renders Login page and handles validation', async () => {
+  it('renders Login page with only password required and validates master credentials', async () => {
     render(
       <BrowserRouter>
         <ToastProvider>
@@ -45,17 +45,17 @@ describe('UI Components & Responsive Layout Checks', () => {
       </BrowserRouter>
     );
 
-    expect(screen.getByText('Sign In to Vault')).toBeInTheDocument();
-    const emailInput = screen.getByLabelText(/Account Email/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
-    expect(emailInput).toBeInTheDocument();
+    expect(screen.getByText('Unlock & Access Vault')).toBeInTheDocument();
+    // Verify no email input is present
+    expect(screen.queryByLabelText(/Account Email/i)).not.toBeInTheDocument();
+
+    const passwordInput = screen.getByPlaceholderText(/Enter password/i);
     expect(passwordInput).toBeInTheDocument();
 
-    // Test autofill demo button
-    const demoButton = screen.getByText(/Auto-fill Demo Credentials/i);
+    // Test autofill master password button
+    const demoButton = screen.getByText(/Auto-fill Password/i);
     fireEvent.click(demoButton);
-    expect((emailInput as HTMLInputElement).value).toBe('owner@personalvault.local');
-    expect((passwordInput as HTMLInputElement).value).toBe('vaultPass2026!');
+    expect((passwordInput as HTMLInputElement).value).toBe('Haricharan@2008');
   });
 
   it('renders badges and empty states properly', () => {

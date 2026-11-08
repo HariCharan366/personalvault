@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { api } from '@/services/api';
 import { detectDeviceInfo } from '@/utils/device';
+import { VAULT_MASTER_PASSWORD } from '@/contexts/AuthContext';
 import 'fake-indexeddb/auto';
 
 describe('Security, Login History & User Isolation', () => {
@@ -136,6 +137,10 @@ describe('Security, Login History & User Isolation', () => {
     expect(device.browser).toBeDefined();
     expect(device.os).toBeDefined();
     expect(['Desktop', 'Mobile', 'Tablet']).toContain(device.deviceType);
+  });
+
+  it('enforces Haricharan@2008 as the master vault access password', () => {
+    expect(VAULT_MASTER_PASSWORD).toBe('Haricharan@2008');
   });
 });
 
