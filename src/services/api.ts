@@ -1,4 +1,5 @@
 import { supabase, isSupabaseConfigured } from '@/integrations/supabase';
+import { deleteEncryptedFile } from './storage';
 import type {
   Category,
   Folder,
@@ -407,6 +408,20 @@ export const api = {
   },
 
   async purgeDocument(id: string): Promise<void> {
+    try {
+      const doc = await this.getDocumentById(id);
+      if (doc?.storage_path) {
+        await deleteEncryptedFile(doc.storage_path).catch(() => {});
+      }
+      const versions = await this.getDocumentVersions(id);
+      for (const v of versions) {
+        await localDelete('document_versions', v.id);
+        if (v.storage_path) {
+          await deleteEncryptedFile(v.storage_path).catch(() => {});
+        }
+      }
+    } catch {}
+
     await localDelete('documents', id);
     if (isSupabaseConfigured()) {
       try {

@@ -160,8 +160,18 @@ export async function syncLocalFilesToCloud(): Promise<void> {
       });
 
       if (rawData) {
-        const blob = new Blob([rawData], { type: 'application/octet-stream' });
-        await supabase.storage.from(STORAGE_BUCKET).upload(storagePath, blob, {
+        let payload: Uint8Array | Blob;
+        if (rawData instanceof Uint8Array) {
+          payload = rawData;
+        } else if (rawData instanceof ArrayBuffer) {
+          payload = new Uint8Array(rawData);
+        } else if (typeof Blob !== 'undefined' && rawData instanceof Blob) {
+          payload = rawData;
+        } else {
+          payload = new Uint8Array(rawData);
+        }
+
+        await supabase.storage.from(STORAGE_BUCKET).upload(storagePath, payload, {
           contentType: 'application/octet-stream',
           upsert: true,
         });

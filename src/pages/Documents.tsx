@@ -373,6 +373,7 @@ export const Documents: React.FC = () => {
         document={previewDoc}
         isOpen={Boolean(previewDoc)}
         onClose={() => setPreviewDoc(null)}
+        onDeleted={refreshData}
       />
 
       <DocumentActionsModal

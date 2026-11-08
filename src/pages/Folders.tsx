@@ -473,6 +473,7 @@ export const Folders: React.FC = () => {
         document={previewDoc}
         isOpen={Boolean(previewDoc)}
         onClose={() => setPreviewDoc(null)}
+        onDeleted={refreshData}
       />
     </div>
   );

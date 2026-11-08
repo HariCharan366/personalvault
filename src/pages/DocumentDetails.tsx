@@ -234,6 +234,7 @@ export const DocumentDetails: React.FC = () => {
         document={document}
         isOpen={showPreview}
         onClose={() => setShowPreview(false)}
+        onDeleted={() => navigate('/documents')}
       />
 
       <DocumentActionsModal

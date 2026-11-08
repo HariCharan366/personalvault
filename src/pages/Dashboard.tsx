@@ -42,6 +42,20 @@ export const Dashboard: React.FC = () => {
     loadActivity();
   }, [user]);
 
+  const handleActivityClick = async (act: ActivityLog) => {
+    if (act.entity_type === 'document' && act.entity_id) {
+      const existing = documents.find((d) => d.id === act.entity_id);
+      if (existing) {
+        setSelectedDocForPreview(existing);
+        return;
+      }
+      const fetched = await api.getDocumentById(act.entity_id);
+      if (fetched) {
+        setSelectedDocForPreview(fetched);
+      }
+    }
+  };
+
   // Statistics calculation
   const totalDocuments = documents.length;
   const totalStorageBytes = documents.reduce((sum, d) => sum + (d.file_size || 0), 0);
@@ -270,7 +284,10 @@ export const Dashboard: React.FC = () => {
             {recentActivities.map((act) => (
               <div
                 key={act.id}
-                className="p-3 rounded-xl bg-slate-50 dark:bg-obsidian-850/70 border border-slate-200/80 dark:border-white/[0.06] flex items-center justify-between gap-2 hover:border-emerald-500/30 transition-colors"
+                onClick={() => handleActivityClick(act)}
+                className={`p-3 rounded-xl bg-slate-50 dark:bg-obsidian-850/70 border border-slate-200/80 dark:border-white/[0.06] flex items-center justify-between gap-2 hover:border-emerald-500/30 transition-colors ${
+                  act.entity_type === 'document' && act.entity_id ? 'cursor-pointer hover:bg-slate-100 dark:hover:bg-obsidian-800/80' : ''
+                }`}
               >
                 <div className="min-w-0">
                   <p className="font-semibold text-slate-800 dark:text-slate-200 truncate">
@@ -300,6 +317,7 @@ export const Dashboard: React.FC = () => {
         document={selectedDocForPreview}
         isOpen={Boolean(selectedDocForPreview)}
         onClose={() => setSelectedDocForPreview(null)}
+        onDeleted={refreshData}
       />
     </div>
   );

@@ -16,6 +16,7 @@ import {
   Info,
   Calendar,
   HardDrive,
+  Trash2,
 } from 'lucide-react';
 import type { DocumentItem } from '@/types';
 
@@ -23,13 +24,20 @@ interface DocumentPreviewModalProps {
   document: DocumentItem | null;
   isOpen: boolean;
   onClose: () => void;
+  onDeleted?: () => void;
 }
 
-export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({ document, isOpen, onClose }) => {
+export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
+  document,
+  isOpen,
+  onClose,
+  onDeleted,
+}) => {
   const { isUnlocked, vaultKek } = useVault();
   const { showToast } = useToast();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [decryptedBlobUrl, setDecryptedBlobUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [textContent, setTextContent] = useState<string | null>(null);
@@ -135,6 +143,54 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({ docu
     showToast('success', 'Download Started', `Decrypted "${document.original_filename}" saved to your device.`);
   };
 
+  const handleDelete = async () => {
+    if (!document) return;
+    if (window.confirm(`Move "${document.original_filename}" to Trash?`)) {
+      setIsDeleting(true);
+      try {
+        await api.softDeleteDocument(document.id);
+        await api.logActivity({
+          user_id: document.user_id,
+          action: 'document_deleted',
+          entity_type: 'document',
+          entity_id: document.id,
+          entity_name: document.original_filename,
+        });
+        showToast('warning', 'Moved to Trash', `"${document.title || document.original_filename}" was moved to trash.`);
+        if (onDeleted) onDeleted();
+        onClose();
+      } catch (err: any) {
+        showToast('error', 'Delete Failed', err?.message);
+      } finally {
+        setIsDeleting(false);
+      }
+    }
+  };
+
+  const handlePermanentDelete = async () => {
+    if (!document) return;
+    if (window.confirm(`Permanently eliminate "${document.original_filename}"? This cannot be undone.`)) {
+      setIsDeleting(true);
+      try {
+        await api.purgeDocument(document.id);
+        await api.logActivity({
+          user_id: document.user_id,
+          action: 'document_purged',
+          entity_type: 'document',
+          entity_id: document.id,
+          entity_name: document.original_filename,
+        });
+        showToast('info', 'Document Removed', `"${document.title || document.original_filename}" has been deleted.`);
+        if (onDeleted) onDeleted();
+        onClose();
+      } catch (err: any) {
+        showToast('error', 'Delete Failed', err?.message);
+      } finally {
+        setIsDeleting(false);
+      }
+    }
+  };
+
   const isImage = document.mime_type.startsWith('image/');
   const isPdf = document.mime_type === 'application/pdf';
 
@@ -177,6 +233,17 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({ docu
               <p className="text-xs text-slate-400">
                 PersonalVault verifies cryptographic integrity before displaying any file.
               </p>
+              <div className="flex items-center gap-2 mt-2">
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={handlePermanentDelete}
+                  isLoading={isDeleting}
+                  leftIcon={<Trash2 className="w-3.5 h-3.5" />}
+                >
+                  Delete Damaged File
+                </Button>
+              </div>
             </div>
           )}
 
@@ -294,16 +361,40 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({ docu
             </div>
           </div>
 
-          {/* Download Button */}
-          <Button
-            variant="primary"
-            className="w-full"
-            onClick={handleDownload}
-            disabled={!decryptedBlobUrl || isLoading}
-            leftIcon={<Download className="w-4 h-4" />}
-          >
-            Download Decrypted File
-          </Button>
+          {/* Action Buttons */}
+          <div className="space-y-2 pt-2">
+            <Button
+              variant="primary"
+              className="w-full"
+              onClick={handleDownload}
+              disabled={!decryptedBlobUrl || isLoading}
+              leftIcon={<Download className="w-4 h-4" />}
+            >
+              Download Decrypted File
+            </Button>
+
+            <Button
+              variant="danger"
+              className="w-full"
+              onClick={handleDelete}
+              isLoading={isDeleting}
+              leftIcon={<Trash2 className="w-4 h-4" />}
+            >
+              Move to Trash
+            </Button>
+
+            {error && (
+              <Button
+                variant="outline"
+                className="w-full text-rose-400 border-rose-500/30 hover:bg-rose-500/10"
+                onClick={handlePermanentDelete}
+                isLoading={isDeleting}
+                leftIcon={<Trash2 className="w-4 h-4" />}
+              >
+                Permanently Delete
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </Modal>
