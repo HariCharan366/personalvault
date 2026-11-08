@@ -82,11 +82,8 @@ export const Activity: React.FC = () => {
       <div>
         <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
           <ActivityIcon className="w-6 h-6 text-emerald-500 dark:text-neon-mint" />
-          <span>Activity Audit Trail</span>
+          <span>Activity</span>
         </h1>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-          Comprehensive tamper-resistant logging of all document operations and vault state changes
-        </p>
       </div>
 
       {/* Filter and Search controls */}

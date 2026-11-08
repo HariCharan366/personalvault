@@ -46,16 +46,18 @@ describe('UI Components & Responsive Layout Checks', () => {
       </BrowserRouter>
     );
 
-    expect(screen.getByText('Unlock & Access Vault')).toBeInTheDocument();
+    // Verify heading is Personal Vault
+    expect(screen.getByRole('heading', { level: 1, name: 'Personal Vault' })).toBeInTheDocument();
+    // Verify Unlock button is present
+    expect(screen.getByRole('button', { name: /Unlock/i })).toBeInTheDocument();
     // Verify no email input is present
     expect(screen.queryByLabelText(/Account Email/i)).not.toBeInTheDocument();
 
-    const passwordInput = screen.getByPlaceholderText(/Enter password/i);
+    const passwordInput = screen.getByPlaceholderText(/^Password$/i);
     expect(passwordInput).toBeInTheDocument();
 
-    // Test autofill master password button
-    const demoButton = screen.getByText(/Auto-fill Password/i);
-    fireEvent.click(demoButton);
+    // Type master password
+    fireEvent.change(passwordInput, { target: { value: 'Haricharan@2008' } });
     expect((passwordInput as HTMLInputElement).value).toBe('Haricharan@2008');
   });
 

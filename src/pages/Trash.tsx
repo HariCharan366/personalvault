@@ -6,7 +6,7 @@ import { deleteEncryptedFile } from '@/services/storage';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { Trash2, RotateCcw, AlertTriangle, FileText, ShieldAlert } from 'lucide-react';
+import { Trash2, RotateCcw, FileText } from 'lucide-react';
 import type { DocumentItem } from '@/types';
 
 export const Trash: React.FC = () => {
@@ -102,11 +102,8 @@ export const Trash: React.FC = () => {
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
             <Trash2 className="w-6 h-6 text-rose-500" />
-            <span>Vault Trash / Recycle Bin</span>
+            <span>Trash</span>
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Recover deleted documents or permanently shred cloud ciphertext
-          </p>
         </div>
 
         {trashedDocs.length > 0 && (
@@ -116,7 +113,7 @@ export const Trash: React.FC = () => {
             onClick={handleEmptyTrash}
             leftIcon={<Trash2 className="w-4 h-4" />}
           >
-            Empty Recycle Bin ({trashedDocs.length})
+            Empty Trash ({trashedDocs.length})
           </Button>
         )}
       </div>
@@ -124,18 +121,11 @@ export const Trash: React.FC = () => {
       {trashedDocs.length === 0 ? (
         <EmptyState
           icon={<Trash2 className="w-8 h-8 text-slate-400" />}
-          title="Recycle Bin is Empty"
-          description="Documents you delete will remain here for safe recovery until you empty the trash."
+          title="Trash is Empty"
+          description="No deleted documents."
         />
       ) : (
         <div className="space-y-3">
-          <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
-            <span>
-              Items in the Recycle Bin will be automatically purged after your configured retention period (30 days default).
-            </span>
-          </div>
-
           <Card className="divide-y divide-slate-100 dark:divide-white/[0.06] overflow-hidden">
             {trashedDocs.map((doc) => (
               <div

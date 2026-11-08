@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/contexts/ToastContext';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
-import { Shield, Key, Lock, KeyRound, Smartphone, CheckCircle2 } from 'lucide-react';
+import { Key, Lock, KeyRound } from 'lucide-react';
 
 export const SecuritySettings: React.FC = () => {
   const { updatePassword, profile } = useAuth();
@@ -48,11 +47,8 @@ export const SecuritySettings: React.FC = () => {
       {/* Change Password Card */}
       <Card className="p-6 space-y-4">
         <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-          <Key className="w-4 h-4 text-emerald-500 dark:text-neon-mint" /> Change Account Password
+          <Key className="w-4 h-4 text-emerald-500 dark:text-neon-mint" /> Change Password
         </h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400">
-          Update the password used to authenticate into your personal cloud account.
-        </p>
 
         <form onSubmit={handlePasswordChange} className="space-y-4 max-w-md">
           <Input
@@ -87,44 +83,13 @@ export const SecuritySettings: React.FC = () => {
         </form>
       </Card>
 
-      {/* Zero-Knowledge Security Status */}
-      <Card className="p-6 space-y-4">
+      {/* Security Status */}
+      <Card className="p-6">
         <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <KeyRound className="w-4 h-4 text-emerald-500 dark:text-neon-mint" /> Zero-Knowledge Encryption
-            </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              All cloud files are sealed with AES-256-GCM. Plaintext never leaves your browser.
-            </p>
-          </div>
-          <Badge variant="success">AES-256-GCM Active</Badge>
-        </div>
-      </Card>
-
-      {/* Two-Factor Authentication (2FA) */}
-      <Card className="p-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                <Smartphone className="w-4 h-4 text-emerald-400" /> Two-Factor Authentication (TOTP)
-              </h3>
-              <Badge variant="outline" size="sm">
-                Supported
-              </Badge>
-            </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Add an additional layer of security using an authenticator app (Google Authenticator, 1Password, or Authy).
-            </p>
-          </div>
-        </div>
-
-        <div className="p-4 rounded-xl bg-slate-50 dark:bg-obsidian-900/60 border border-slate-200 dark:border-white/[0.08] text-xs text-slate-400 flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-emerald-500 dark:text-neon-mint shrink-0" />
-          <span>
-            Two-factor authentication is configured in your Supabase Auth dashboard under Authentication → Providers.
-          </span>
+          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <KeyRound className="w-4 h-4 text-emerald-500 dark:text-neon-mint" /> Encryption
+          </h3>
+          <Badge variant="success">Active</Badge>
         </div>
       </Card>
     </div>

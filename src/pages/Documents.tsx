@@ -112,11 +112,8 @@ export const Documents: React.FC = () => {
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
             <Files className="w-6 h-6 text-emerald-500 dark:text-neon-mint" />
-            <span>Vault Documents</span>
+            <span>Documents</span>
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            {filteredDocuments.length} files encrypted with zero-knowledge AES-256-GCM
-          </p>
         </div>
 
         {/* View toggles */}

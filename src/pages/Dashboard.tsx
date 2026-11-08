@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useVault } from '@/contexts/VaultContext';
 import { api } from '@/services/api';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -14,16 +13,10 @@ import {
   Clock,
   Shield,
   UploadCloud,
-  ChevronRight,
   AlertTriangle,
   FileText,
   Activity,
   ArrowUpRight,
-  Unlock,
-  Lock,
-  Sparkles,
-  ShieldCheck,
-  CheckCircle2,
 } from 'lucide-react';
 import type { DocumentItem, Folder, ActivityLog } from '@/types';
 
@@ -35,7 +28,6 @@ interface ContextType {
 
 export const Dashboard: React.FC = () => {
   const { user, profile } = useAuth();
-  const { isVaultInitialized, isUnlocked } = useVault();
   const { folders, documents, refreshData } = useOutletContext<ContextType>();
 
   const [recentActivities, setRecentActivities] = useState<ActivityLog[]>([]);
@@ -75,36 +67,17 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
-      {/* Hero Digital Locker Banner */}
+      {/* Hero Banner */}
       <div className="relative overflow-hidden rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-obsidian-900 via-obsidian-850 to-obsidian-900 border border-white/[0.08] shadow-2xl">
         {/* Subtle decorative glow accents */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-neon-mint/[0.08] rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-1/3 w-60 h-60 bg-neon-cyan/[0.05] rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2.5">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-bold bg-neon-mint/10 text-emerald-600 dark:text-neon-mint border border-neon-mint/30 uppercase tracking-wider">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-neon-mint animate-pulse" />
-                Zero-Knowledge Cryptographic Locker
-              </span>
-              {isUnlocked ? (
-                <Badge variant="success" size="sm">
-                  Active Session
-                </Badge>
-              ) : (
-                <Badge variant="outline" size="sm">
-                  Encrypted & Locked
-                </Badge>
-              )}
-            </div>
-
+          <div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              Welcome back, {profile?.full_name || 'Haricharan'}
+              Welcome, {profile?.full_name || 'Haricharan'}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-300 max-w-xl leading-relaxed">
-              Your confidential documents are secured with end-to-end client encryption (AES-256-GCM). Data is encrypted on your device prior to cloud transmission.
-            </p>
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
@@ -114,7 +87,7 @@ export const Dashboard: React.FC = () => {
                 size="md"
                 leftIcon={<Files className="w-4 h-4" />}
               >
-                Browse All Documents
+                Browse Documents
               </Button>
             </Link>
           </div>
@@ -148,10 +121,6 @@ export const Dashboard: React.FC = () => {
             <h3 className="text-2xl font-black text-slate-900 dark:text-white mt-1 group-hover:text-emerald-500 dark:group-hover:text-neon-mint transition-colors">
               {totalDocuments}
             </h3>
-            <p className="text-[11px] text-emerald-600 dark:text-neon-mint font-medium mt-1 flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3" />
-              <span>Encrypted in cloud</span>
-            </p>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-neon-mint flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
             <Files className="w-6 h-6" />
@@ -165,7 +134,7 @@ export const Dashboard: React.FC = () => {
             <h3 className="text-2xl font-black text-slate-900 dark:text-white mt-1 group-hover:text-neon-cyan transition-colors">
               {usedMB} <span className="text-sm font-semibold text-slate-400 font-normal">MB</span>
             </h3>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">{usedPercentage.toFixed(1)}% of {totalQuotaGB} GB</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">{usedPercentage.toFixed(1)}%</p>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-neon-cyan flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
             <HardDrive className="w-6 h-6" />
@@ -179,7 +148,6 @@ export const Dashboard: React.FC = () => {
             <h3 className="text-2xl font-black text-slate-900 dark:text-white mt-1 group-hover:text-neon-mint transition-colors">
               {availableGB} <span className="text-sm font-semibold text-slate-400 font-normal">GB</span>
             </h3>
-            <p className="text-[11px] text-emerald-600 dark:text-neon-mint font-medium mt-1">High headroom</p>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-neon-teal flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
             <Shield className="w-6 h-6" />
@@ -193,7 +161,6 @@ export const Dashboard: React.FC = () => {
             <h3 className="text-2xl font-black text-slate-900 dark:text-white mt-1 group-hover:text-purple-400 transition-colors">
               {folders.length}
             </h3>
-            <p className="text-[11px] text-purple-400 font-medium mt-1">Structured storage</p>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
             <FolderOpen className="w-6 h-6" />
@@ -222,24 +189,13 @@ export const Dashboard: React.FC = () => {
 
           <div className="space-y-2.5 pt-2 text-xs">
             <div className="p-3 rounded-xl bg-slate-50 dark:bg-obsidian-850 border border-slate-200 dark:border-white/[0.06] flex items-center justify-between">
-              <span className="text-slate-500 dark:text-slate-400">Encrypted Documents</span>
-              <span className="font-semibold text-slate-800 dark:text-slate-200 font-mono">{totalDocuments} files</span>
+              <span className="text-slate-500 dark:text-slate-400">Total Documents</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200 font-mono">{totalDocuments}</span>
             </div>
             <div className="p-3 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-white/[0.06] flex items-center justify-between">
               <span className="text-slate-500 dark:text-slate-400">Active Folders</span>
-              <span className="font-semibold text-slate-800 dark:text-slate-200 font-mono">{folders.length} folders</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200 font-mono">{folders.length}</span>
             </div>
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-white/[0.06] flex items-center justify-between">
-              <span className="text-slate-500 dark:text-slate-400">Encryption Standard</span>
-              <span className="font-mono text-emerald-600 dark:text-neon-mint font-bold">AES-256-GCM</span>
-            </div>
-          </div>
-
-          <div className="pt-2 border-t border-slate-200 dark:border-white/[0.06]">
-            <Link to="/settings/storage" className="text-xs font-semibold text-emerald-600 dark:text-neon-mint hover:underline flex items-center gap-1">
-              <span>View storage settings & cloud status</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
           </div>
         </Card>
 
@@ -247,7 +203,7 @@ export const Dashboard: React.FC = () => {
         <Card className="p-6 lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <Clock className="w-4 h-4 text-cyan-500 dark:text-neon-cyan" /> Recent Document Uploads
+              <Clock className="w-4 h-4 text-cyan-500 dark:text-neon-cyan" /> Recent Uploads
             </h3>
             <Link to="/documents" className="text-xs font-semibold text-emerald-600 dark:text-neon-mint hover:underline">
               View all ({totalDocuments}) →
@@ -257,8 +213,7 @@ export const Dashboard: React.FC = () => {
           {recentlyUploaded.length === 0 ? (
             <div className="p-10 text-center rounded-2xl bg-slate-50 dark:bg-obsidian-850/60 border border-dashed border-slate-200 dark:border-white/[0.08]">
               <UploadCloud className="w-8 h-8 text-emerald-500 dark:text-neon-mint mx-auto mb-2 opacity-80" />
-              <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">Your vault is clean</p>
-              <p className="text-[11px] text-slate-400 mt-1">Upload your first confidential file to get started.</p>
+              <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">No documents</p>
             </div>
           ) : (
             <div className="divide-y divide-slate-100 dark:divide-white/[0.06]">
@@ -297,14 +252,14 @@ export const Dashboard: React.FC = () => {
         </Card>
       </div>
 
-      {/* Recent Security & Activity Audit */}
+      {/* Recent Activity */}
       <Card className="p-6 space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <Activity className="w-4 h-4 text-purple-400" /> Recent Security & Vault Activity
+            <Activity className="w-4 h-4 text-purple-400" /> Recent Activity
           </h3>
           <Link to="/activity" className="text-xs font-semibold text-emerald-600 dark:text-neon-mint hover:underline">
-            Full audit trail →
+            View all →
           </Link>
         </div>
 

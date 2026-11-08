@@ -180,11 +180,8 @@ export const Folders: React.FC = () => {
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
             <FolderOpen className="w-6 h-6 text-emerald-500 dark:text-neon-mint" />
-            <span>Vault Directories</span>
+            <span>Folders</span>
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Organize documents into nested directories (create folders inside folders)
-          </p>
         </div>
 
         <div className="flex items-center gap-2">

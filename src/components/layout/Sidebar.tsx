@@ -12,7 +12,6 @@ import {
   Settings,
   HardDrive,
   X,
-  Sparkles,
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -72,9 +71,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div>
               <span className="font-extrabold text-base tracking-tight text-slate-900 dark:text-white block group-hover:text-neon-mint transition-colors">
                 PersonalVault
-              </span>
-              <span className="text-[10px] text-emerald-600 dark:text-neon-mint font-mono tracking-wider block -mt-0.5 font-bold">
-                E2EE DIGITAL LOCKER
               </span>
             </div>
           </NavLink>
@@ -145,11 +141,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
               className="bg-gradient-to-r from-emerald-400 via-neon-mint to-teal-400 h-1.5 rounded-full transition-all duration-500 shadow-glow-sm"
               style={{ width: `${percentage}%` }}
             />
-          </div>
-
-          <div className="flex items-center justify-center gap-1 text-[10px] text-slate-400 dark:text-slate-500 mt-2 font-mono">
-            <Sparkles className="w-2.5 h-2.5 text-emerald-500 dark:text-neon-mint" />
-            <span>AES-256 Client-Side Encrypted</span>
           </div>
         </div>
       </aside>

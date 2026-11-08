@@ -405,26 +405,19 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
         )}
 
         {/* Action Controls */}
-        <div className="flex items-center justify-between pt-2">
-          <div className="text-xs text-slate-500 flex items-center gap-1.5">
-            <Lock className="w-3.5 h-3.5 text-emerald-500 dark:text-neon-mint" />
-            <span className="font-mono text-[11px]">AES-256-GCM zero-knowledge encryption</span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={onClose} disabled={isProcessing}>
-              Cancel
-            </Button>
-            <Button
-              variant="primary"
-              onClick={startUpload}
-              disabled={queue.length === 0 || isProcessing}
-              isLoading={isProcessing}
-              leftIcon={<UploadCloud className="w-4 h-4" />}
-            >
-              Upload & Seal ({queue.length})
-            </Button>
-          </div>
+        <div className="flex items-center justify-end gap-2 pt-2">
+          <Button variant="outline" onClick={onClose} disabled={isProcessing}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            onClick={startUpload}
+            disabled={queue.length === 0 || isProcessing}
+            isLoading={isProcessing}
+            leftIcon={<UploadCloud className="w-4 h-4" />}
+          >
+            Upload ({queue.length})
+          </Button>
         </div>
       </div>
     </Modal>

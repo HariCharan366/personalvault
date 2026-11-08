@@ -150,11 +150,8 @@ export const Security: React.FC = () => {
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
             <ShieldCheck className="w-6 h-6 text-emerald-500 dark:text-neon-mint" />
-            <span>Security & Login History</span>
+            <span>Security & Logins</span>
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Cryptographic audit of authentication events, active sessions, and anomalous access detection
-          </p>
         </div>
 
         <div className="flex items-center gap-2">

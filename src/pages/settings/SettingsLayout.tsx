@@ -7,17 +7,14 @@ import { twMerge } from 'tailwind-merge';
 export const SettingsLayout: React.FC = () => {
   const tabs = [
     { to: '/settings/profile', label: 'Profile', icon: User },
-    { to: '/settings/security', label: 'Security & Auth', icon: Shield },
-    { to: '/settings/storage', label: 'Storage & Supabase', icon: HardDrive },
+    { to: '/settings/security', label: 'Security', icon: Shield },
+    { to: '/settings/storage', label: 'Storage', icon: HardDrive },
   ];
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       <div>
-        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">Account & Vault Settings</h1>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-          Configure personal credentials, security keys, and cloud storage providers
-        </p>
+        <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">Settings</h1>
       </div>
 
       {/* Tabs */}
