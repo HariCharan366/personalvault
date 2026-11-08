@@ -13,20 +13,14 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO anon, authentic
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO anon, authenticated, service_role;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON ROUTINES TO anon, authenticated, service_role;
 
--- 2. CONFIRM USER EMAIL FOR HARICHARAN SO SUPABASE AUTH SESSION SUCCEEDS
-UPDATE auth.users 
-SET email_confirmed_at = COALESCE(email_confirmed_at, now()),
-    updated_at = now()
-WHERE email = 'panduhari718@gmail.com';
-
--- 3. PROFILES RLS
+-- 2. PROFILES RLS
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
 DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
 DROP POLICY IF EXISTS "Allow all profiles" ON public.profiles;
 CREATE POLICY "Allow all profiles" ON public.profiles FOR ALL USING (true) WITH CHECK (true);
 
--- 4. VAULT SETTINGS RLS
+-- 3. VAULT SETTINGS RLS
 ALTER TABLE public.vault_settings ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can view own vault settings" ON public.vault_settings;
 DROP POLICY IF EXISTS "Users can insert own vault settings" ON public.vault_settings;
@@ -34,7 +28,7 @@ DROP POLICY IF EXISTS "Users can update own vault settings" ON public.vault_sett
 DROP POLICY IF EXISTS "Allow all vault_settings" ON public.vault_settings;
 CREATE POLICY "Allow all vault_settings" ON public.vault_settings FOR ALL USING (true) WITH CHECK (true);
 
--- 5. CATEGORIES RLS
+-- 4. CATEGORIES RLS
 ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can view own categories" ON public.categories;
 DROP POLICY IF EXISTS "Users can insert own categories" ON public.categories;
@@ -43,7 +37,7 @@ DROP POLICY IF EXISTS "Users can delete own categories" ON public.categories;
 DROP POLICY IF EXISTS "Allow all categories" ON public.categories;
 CREATE POLICY "Allow all categories" ON public.categories FOR ALL USING (true) WITH CHECK (true);
 
--- 6. FOLDERS RLS
+-- 5. FOLDERS RLS
 ALTER TABLE public.folders ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can view own folders" ON public.folders;
 DROP POLICY IF EXISTS "Users can insert own folders" ON public.folders;
@@ -52,7 +46,7 @@ DROP POLICY IF EXISTS "Users can delete own folders" ON public.folders;
 DROP POLICY IF EXISTS "Allow all folders" ON public.folders;
 CREATE POLICY "Allow all folders" ON public.folders FOR ALL USING (true) WITH CHECK (true);
 
--- 7. DOCUMENTS RLS (Encrypted AES-256-GCM metadata)
+-- 6. DOCUMENTS RLS (Encrypted AES-256-GCM metadata)
 ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can view own documents" ON public.documents;
 DROP POLICY IF EXISTS "Users can insert own documents" ON public.documents;
@@ -61,7 +55,7 @@ DROP POLICY IF EXISTS "Users can delete own documents" ON public.documents;
 DROP POLICY IF EXISTS "Allow all documents" ON public.documents;
 CREATE POLICY "Allow all documents" ON public.documents FOR ALL USING (true) WITH CHECK (true);
 
--- 8. DOCUMENT VERSIONS & TAGS
+-- 7. DOCUMENT VERSIONS & TAGS
 ALTER TABLE public.document_versions ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can view own document versions" ON public.document_versions;
 DROP POLICY IF EXISTS "Users can insert own document versions" ON public.document_versions;
@@ -76,14 +70,14 @@ DROP POLICY IF EXISTS "Users can delete own document tags" ON public.document_ta
 DROP POLICY IF EXISTS "Allow all document_tags" ON public.document_tags;
 CREATE POLICY "Allow all document_tags" ON public.document_tags FOR ALL USING (true) WITH CHECK (true);
 
--- 9. ACTIVITY LOGS
+-- 8. ACTIVITY LOGS
 ALTER TABLE public.activity_logs ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can view own activity logs" ON public.activity_logs;
 DROP POLICY IF EXISTS "Users can insert own activity logs" ON public.activity_logs;
 DROP POLICY IF EXISTS "Allow all activity_logs" ON public.activity_logs;
 CREATE POLICY "Allow all activity_logs" ON public.activity_logs FOR ALL USING (true) WITH CHECK (true);
 
--- 10. LOGIN HISTORY & ACTIVE SESSIONS
+-- 9. LOGIN HISTORY & ACTIVE SESSIONS
 ALTER TABLE public.login_history ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can view own login history" ON public.login_history;
 DROP POLICY IF EXISTS "Users can insert own login history" ON public.login_history;
@@ -99,7 +93,7 @@ DROP POLICY IF EXISTS "Users can delete own active sessions" ON public.active_se
 DROP POLICY IF EXISTS "Allow all active_sessions" ON public.active_sessions;
 CREATE POLICY "Allow all active_sessions" ON public.active_sessions FOR ALL USING (true) WITH CHECK (true);
 
--- 11. NOTIFICATIONS
+-- 10. NOTIFICATIONS
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can view own notifications" ON public.notifications;
 DROP POLICY IF EXISTS "Users can update own notifications" ON public.notifications;
@@ -108,7 +102,7 @@ DROP POLICY IF EXISTS "Users can delete own notifications" ON public.notificatio
 DROP POLICY IF EXISTS "Allow all notifications" ON public.notifications;
 CREATE POLICY "Allow all notifications" ON public.notifications FOR ALL USING (true) WITH CHECK (true);
 
--- 12. STORAGE BUCKET CONFIGURATION & POLICIES (AES-256-GCM Encrypted Blobs)
+-- 11. STORAGE BUCKET CONFIGURATION & POLICIES (AES-256-GCM Encrypted Blobs)
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES (
     'vault-documents', 
