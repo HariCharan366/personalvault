@@ -23,7 +23,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         )}
         <div className="relative flex items-center">
           {leftIcon && (
-            <div className="absolute left-3 text-slate-400 dark:text-slate-500 pointer-events-none flex items-center">
+            <div className="absolute left-3.5 text-slate-400 dark:text-slate-500 pointer-events-none flex items-center">
               {leftIcon}
             </div>
           )}
@@ -32,8 +32,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             className={twMerge(
               clsx(
-                'w-full rounded-xl border bg-white dark:bg-vault-900 px-3.5 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all duration-200 outline-none',
-                'border-slate-300 dark:border-vault-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20',
+                'w-full rounded-xl border bg-white dark:bg-obsidian-850 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all duration-200 outline-none',
+                'border-slate-300 dark:border-white/[0.08] focus:border-emerald-500 dark:focus:border-neon-mint focus:ring-2 focus:ring-emerald-500/20 dark:focus:ring-neon-mint/20',
                 leftIcon && 'pl-10',
                 rightIcon && 'pr-10',
                 error && 'border-rose-500 focus:border-rose-500 focus:ring-rose-500/20',
@@ -42,7 +42,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             )}
             {...props}
           />
-          {rightIcon && <div className="absolute right-3 flex items-center text-slate-400">{rightIcon}</div>}
+          {rightIcon && <div className="absolute right-3.5 flex items-center text-slate-400">{rightIcon}</div>}
         </div>
         {error && <p className="text-xs text-rose-500 font-medium">{error}</p>}
         {!error && helperText && <p className="text-xs text-slate-500 dark:text-slate-400">{helperText}</p>}
@@ -52,4 +52,3 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 );
 
 Input.displayName = 'Input';
-

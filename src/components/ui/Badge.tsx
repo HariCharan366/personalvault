@@ -15,13 +15,13 @@ export const Badge: React.FC<BadgeProps> = ({
   ...props
 }) => {
   const variants = {
-    default: 'bg-slate-100 text-slate-700 dark:bg-vault-800 dark:text-slate-300 border-slate-200 dark:border-vault-700',
-    success: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
-    warning: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
-    danger: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20',
-    info: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20',
-    purple: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20',
-    outline: 'border border-slate-300 dark:border-vault-700 text-slate-700 dark:text-slate-300',
+    default: 'bg-slate-100 text-slate-700 dark:bg-obsidian-800 dark:text-slate-300 border-slate-200 dark:border-white/[0.08]',
+    success: 'bg-emerald-500/10 text-emerald-600 dark:text-neon-mint border-emerald-500/20 dark:border-neon-mint/30 shadow-sm shadow-emerald-500/5',
+    warning: 'bg-amber-500/10 text-amber-600 dark:text-amber-300 border-amber-500/20 shadow-sm shadow-amber-500/5',
+    danger: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20 shadow-sm shadow-rose-500/5',
+    info: 'bg-cyan-500/10 text-cyan-600 dark:text-neon-cyan border-cyan-500/20 shadow-sm shadow-cyan-500/5',
+    purple: 'bg-purple-500/10 text-purple-600 dark:text-neon-violet border-purple-500/20',
+    outline: 'border border-slate-300 dark:border-white/[0.12] text-slate-700 dark:text-slate-300',
   };
 
   const sizes = {
@@ -33,7 +33,7 @@ export const Badge: React.FC<BadgeProps> = ({
     <span
       className={twMerge(
         clsx(
-          'inline-flex items-center gap-1 rounded-full border tracking-wide uppercase',
+          'inline-flex items-center gap-1.5 rounded-full border tracking-wide uppercase',
           variants[variant],
           sizes[size],
           className
@@ -41,8 +41,8 @@ export const Badge: React.FC<BadgeProps> = ({
       )}
       {...props}
     >
+      <span className="w-1.5 h-1.5 rounded-full bg-current opacity-75 shrink-0" />
       {children}
     </span>
   );
 };
-

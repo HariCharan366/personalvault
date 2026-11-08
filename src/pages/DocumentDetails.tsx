@@ -57,7 +57,7 @@ export const DocumentDetails: React.FC = () => {
   if (isLoading) {
     return (
       <div className="p-8 text-center text-slate-500">
-        <div className="w-8 h-8 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin mx-auto mb-3" />
+        <div className="w-8 h-8 border-4 border-emerald-500/20 border-t-neon-mint rounded-full animate-spin mx-auto mb-3" />
         <p className="text-xs">Loading document record...</p>
       </div>
     );
@@ -119,9 +119,9 @@ export const DocumentDetails: React.FC = () => {
 
       {/* Main Document Details Card */}
       <Card className="p-6 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-slate-100 dark:border-vault-800 pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-slate-100 dark:border-white/[0.08] pb-6">
           <div className="flex items-start gap-4">
-            <div className="p-4 rounded-2xl bg-indigo-500/10 text-indigo-500 shrink-0">
+            <div className="p-4 rounded-2xl bg-emerald-500/10 text-emerald-500 dark:text-neon-mint shrink-0">
               <FileText className="w-8 h-8" />
             </div>
             <div>
@@ -162,34 +162,34 @@ export const DocumentDetails: React.FC = () => {
 
         {/* Detailed Metadata Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs">
-          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800">
+          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-obsidian-900/60 border border-slate-200 dark:border-white/[0.08]">
             <span className="text-slate-500 flex items-center gap-1.5 mb-1">
-              <HardDrive className="w-3.5 h-3.5 text-indigo-400" /> File Size
+              <HardDrive className="w-3.5 h-3.5 text-emerald-500 dark:text-neon-mint" /> File Size
             </span>
             <p className="font-semibold text-slate-800 dark:text-slate-200">
               {(document.file_size / 1024).toFixed(1)} KB ({document.file_size.toLocaleString()} bytes)
             </p>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800">
+          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-obsidian-900/60 border border-slate-200 dark:border-white/[0.08]">
             <span className="text-slate-500 flex items-center gap-1.5 mb-1">
-              <Calendar className="w-3.5 h-3.5 text-sky-400" /> Upload Date
+              <Calendar className="w-3.5 h-3.5 text-cyan-400" /> Upload Date
             </span>
             <p className="font-semibold text-slate-800 dark:text-slate-200">
               {new Date(document.created_at).toLocaleString()}
             </p>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800">
+          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-obsidian-900/60 border border-slate-200 dark:border-white/[0.08]">
             <span className="text-slate-500 flex items-center gap-1.5 mb-1">
-              <Calendar className="w-3.5 h-3.5 text-purple-400" /> Last Modified
+              <Calendar className="w-3.5 h-3.5 text-teal-400" /> Last Modified
             </span>
             <p className="font-semibold text-slate-800 dark:text-slate-200">
               {new Date(document.updated_at).toLocaleString()}
             </p>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800">
+          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-obsidian-900/60 border border-slate-200 dark:border-white/[0.08]">
             <span className="text-slate-500 flex items-center gap-1.5 mb-1">
               <FolderOpen className="w-3.5 h-3.5 text-emerald-400" /> Folder
             </span>
@@ -198,7 +198,7 @@ export const DocumentDetails: React.FC = () => {
             </p>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800">
+          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-obsidian-900/60 border border-slate-200 dark:border-white/[0.08]">
             <span className="text-slate-500 flex items-center gap-1.5 mb-1">
               <Calendar className="w-3.5 h-3.5 text-amber-400" /> Expiry Date
             </span>
@@ -207,9 +207,9 @@ export const DocumentDetails: React.FC = () => {
             </p>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800">
+          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-obsidian-900/60 border border-slate-200 dark:border-white/[0.08]">
             <span className="text-slate-500 flex items-center gap-1.5 mb-1">
-              <Lock className="w-3.5 h-3.5 text-indigo-400" /> MIME Type
+              <Lock className="w-3.5 h-3.5 text-emerald-500 dark:text-neon-mint" /> MIME Type
             </span>
             <p className="font-semibold text-slate-800 dark:text-slate-200 font-mono">
               {document.mime_type}
@@ -218,12 +218,12 @@ export const DocumentDetails: React.FC = () => {
         </div>
 
         {/* Cryptographic Signature & Hash */}
-        <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-700/60 font-mono text-xs space-y-2">
-          <div className="flex items-center gap-2 text-indigo-400 font-semibold">
+        <div className="p-4 rounded-xl bg-obsidian-950/80 border border-white/[0.08] font-mono text-xs space-y-2">
+          <div className="flex items-center gap-2 text-emerald-500 dark:text-neon-mint font-semibold">
             <Hash className="w-4 h-4" />
             <span>Cryptographic Fingerprint (SHA-256 Plaintext Hash):</span>
           </div>
-          <p className="text-[11px] text-slate-300 break-all bg-vault-950 p-2 rounded-lg border border-vault-800">
+          <p className="text-[11px] text-emerald-400/90 break-all bg-obsidian-900/90 p-2.5 rounded-lg border border-white/[0.06]">
             {document.sha256_hash}
           </p>
         </div>

@@ -15,7 +15,6 @@ import {
   Shield,
   LogOut,
   ChevronDown,
-  CheckCircle2,
   HardDrive,
 } from 'lucide-react';
 import type { NotificationItem } from '@/types';
@@ -70,7 +69,7 @@ export const TopNav: React.FC<TopNavProps> = ({
       }
     }
     loadNotifs();
-    const interval = setInterval(loadNotifs, 30000); // 30s poll
+    const interval = setInterval(loadNotifs, 30000);
     return () => clearInterval(interval);
   }, [user]);
 
@@ -105,12 +104,12 @@ export const TopNav: React.FC<TopNavProps> = ({
   };
 
   return (
-    <header className="h-16 bg-white/80 dark:bg-vault-900/80 backdrop-blur-md border-b border-slate-200 dark:border-vault-800 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30">
+    <header className="h-16 bg-white/70 dark:bg-obsidian-950/70 backdrop-blur-xl border-b border-slate-200 dark:border-white/[0.07] px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 transition-colors">
       {/* Left: Mobile hamburger & Search bar */}
       <div className="flex items-center gap-3 flex-1 max-w-lg">
         <button
           onClick={onMenuToggle}
-          className="lg:hidden p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-vault-800"
+          className="lg:hidden p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-obsidian-850"
           aria-label="Toggle navigation menu"
         >
           <Menu className="w-5 h-5" />
@@ -120,7 +119,7 @@ export const TopNav: React.FC<TopNavProps> = ({
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
-            placeholder="Search encrypted documents, tags, folders..."
+            placeholder="Search encrypted files, tags, folders..."
             value={searchQuery}
             onChange={(e) => {
               if (onSearchChange) onSearchChange(e.target.value);
@@ -130,7 +129,7 @@ export const TopNav: React.FC<TopNavProps> = ({
                 navigate(`/documents?q=${encodeURIComponent(searchQuery)}`);
               }
             }}
-            className="w-full text-xs rounded-xl bg-slate-100 dark:bg-vault-850 border border-slate-200 dark:border-vault-700/60 pl-9 pr-4 py-2 text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
+            className="w-full text-xs rounded-xl bg-slate-100 dark:bg-obsidian-900/80 border border-slate-200 dark:border-white/[0.08] pl-9 pr-4 py-2 text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-emerald-500 dark:focus:border-neon-mint transition-colors"
           />
         </div>
       </div>
@@ -140,7 +139,7 @@ export const TopNav: React.FC<TopNavProps> = ({
         {/* Quick Upload Button */}
         <button
           onClick={onOpenUpload}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm shadow-indigo-600/20 transition-all active:scale-95"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-400 via-neon-mint to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-obsidian-950 shadow-md shadow-emerald-500/20 hover:shadow-glow-brand transition-all active:scale-95 cursor-pointer"
         >
           <Upload className="w-3.5 h-3.5" />
           <span className="hidden md:inline">Upload Document</span>
@@ -152,41 +151,41 @@ export const TopNav: React.FC<TopNavProps> = ({
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
-          className="p-2 rounded-xl text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-vault-800 transition-colors"
+          className="p-2 rounded-xl text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-obsidian-850 transition-colors cursor-pointer"
           title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           aria-label="Toggle theme"
         >
-          {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-500" />}
+          {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-emerald-600" />}
         </button>
 
         {/* Notification Bell & Dropdown */}
         <div className="relative" ref={notifRef}>
           <button
             onClick={() => setShowNotifDropdown(!showNotifDropdown)}
-            className="p-2 rounded-xl text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-vault-800 transition-colors relative"
+            className="p-2 rounded-xl text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-obsidian-850 transition-colors relative cursor-pointer"
             aria-label="View notifications"
           >
             <Bell className="w-4 h-4" />
             {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-vault-900" />
+              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-obsidian-950" />
             )}
           </button>
 
           {showNotifDropdown && (
-            <div className="absolute right-0 mt-2 w-80 rounded-2xl bg-white dark:bg-vault-900 border border-slate-200 dark:border-vault-700/80 shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95">
-              <div className="p-3 border-b border-slate-200 dark:border-vault-800 flex items-center justify-between">
+            <div className="absolute right-0 mt-2 w-80 rounded-2xl bg-white dark:bg-obsidian-900 border border-slate-200 dark:border-white/[0.1] shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95">
+              <div className="p-3 border-b border-slate-200 dark:border-white/[0.08] flex items-center justify-between">
                 <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Notifications</span>
                 {unreadCount > 0 && (
                   <button
                     onClick={handleMarkAllRead}
-                    className="text-[11px] text-indigo-500 hover:underline"
+                    className="text-[11px] text-emerald-500 dark:text-neon-mint hover:underline"
                   >
                     Mark all read
                   </button>
                 )}
               </div>
 
-              <div className="max-h-64 overflow-y-auto divide-y divide-slate-100 dark:divide-vault-800">
+              <div className="max-h-64 overflow-y-auto divide-y divide-slate-100 dark:divide-white/[0.06]">
                 {notifications.length === 0 ? (
                   <div className="p-6 text-center text-xs text-slate-500">No notifications yet.</div>
                 ) : (
@@ -194,12 +193,12 @@ export const TopNav: React.FC<TopNavProps> = ({
                     <div
                       key={n.id}
                       className={`p-3 text-xs transition-colors ${
-                        n.is_read ? 'opacity-70' : 'bg-indigo-500/5'
+                        n.is_read ? 'opacity-70' : 'bg-emerald-500/5'
                       }`}
                     >
                       <p className="font-semibold text-slate-800 dark:text-slate-200">{n.title}</p>
                       <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{n.message}</p>
-                      <span className="text-[10px] text-slate-400 mt-1 block">
+                      <span className="text-[10px] text-slate-400 mt-1 block font-mono">
                         {new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
@@ -207,11 +206,11 @@ export const TopNav: React.FC<TopNavProps> = ({
                 )}
               </div>
 
-              <div className="p-2 border-t border-slate-200 dark:border-vault-800 text-center">
+              <div className="p-2 border-t border-slate-200 dark:border-white/[0.08] text-center">
                 <Link
                   to="/notifications"
                   onClick={() => setShowNotifDropdown(false)}
-                  className="text-xs font-semibold text-indigo-500 hover:underline"
+                  className="text-xs font-semibold text-emerald-500 dark:text-neon-mint hover:underline"
                 >
                   View all notifications →
                 </Link>
@@ -224,17 +223,17 @@ export const TopNav: React.FC<TopNavProps> = ({
         <div className="relative" ref={profileRef}>
           <button
             onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-            className="flex items-center gap-2 p-1 pl-2 rounded-xl hover:bg-slate-100 dark:hover:bg-vault-800 transition-colors"
+            className="flex items-center gap-2 p-1 pl-2 rounded-xl hover:bg-slate-100 dark:hover:bg-obsidian-850 transition-colors cursor-pointer"
           >
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 text-white font-bold text-xs flex items-center justify-center uppercase shadow-sm">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-400 to-teal-500 text-obsidian-950 font-black text-xs flex items-center justify-center uppercase shadow-sm">
               {user?.email?.charAt(0) || 'U'}
             </div>
             <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
           </button>
 
           {showProfileDropdown && (
-            <div className="absolute right-0 mt-2 w-56 rounded-2xl bg-white dark:bg-vault-900 border border-slate-200 dark:border-vault-700/80 shadow-2xl z-50 overflow-hidden py-1.5 animate-in fade-in zoom-in-95">
-              <div className="px-4 py-2 border-b border-slate-200 dark:border-vault-800">
+            <div className="absolute right-0 mt-2 w-56 rounded-2xl bg-white dark:bg-obsidian-900 border border-slate-200 dark:border-white/[0.1] shadow-2xl z-50 overflow-hidden py-1.5 animate-in fade-in zoom-in-95">
+              <div className="px-4 py-2 border-b border-slate-200 dark:border-white/[0.08]">
                 <p className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
                   {profile?.full_name || 'Primary Vault Owner'}
                 </p>
@@ -244,7 +243,7 @@ export const TopNav: React.FC<TopNavProps> = ({
               <Link
                 to="/settings/profile"
                 onClick={() => setShowProfileDropdown(false)}
-                className="flex items-center gap-2.5 px-4 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-vault-800"
+                className="flex items-center gap-2.5 px-4 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-obsidian-850"
               >
                 <User className="w-3.5 h-3.5 text-slate-400" />
                 <span>Profile Settings</span>
@@ -253,26 +252,26 @@ export const TopNav: React.FC<TopNavProps> = ({
               <Link
                 to="/settings/security"
                 onClick={() => setShowProfileDropdown(false)}
-                className="flex items-center gap-2.5 px-4 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-vault-800"
+                className="flex items-center gap-2.5 px-4 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-obsidian-850"
               >
-                <Shield className="w-3.5 h-3.5 text-indigo-400" />
+                <Shield className="w-3.5 h-3.5 text-emerald-500 dark:text-neon-mint" />
                 <span>Security Settings</span>
               </Link>
 
               <Link
                 to="/settings/storage"
                 onClick={() => setShowProfileDropdown(false)}
-                className="flex items-center gap-2.5 px-4 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-vault-800"
+                className="flex items-center gap-2.5 px-4 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-obsidian-850"
               >
                 <HardDrive className="w-3.5 h-3.5 text-sky-400" />
-                <span>Storage & Supabase</span>
+                <span>Storage & Cloud</span>
               </Link>
 
-              <div className="my-1 border-t border-slate-200 dark:border-vault-800" />
+              <div className="my-1 border-t border-slate-200 dark:border-white/[0.08]" />
 
               <button
                 onClick={handleSignOut}
-                className="w-full flex items-center gap-2.5 px-4 py-2 text-xs text-rose-500 hover:bg-rose-500/10 text-left transition-colors"
+                className="w-full flex items-center gap-2.5 px-4 py-2 text-xs text-rose-500 hover:bg-rose-500/10 text-left transition-colors cursor-pointer"
               >
                 <LogOut className="w-3.5 h-3.5" />
                 <span>Sign Out</span>
@@ -284,4 +283,3 @@ export const TopNav: React.FC<TopNavProps> = ({
     </header>
   );
 };
-

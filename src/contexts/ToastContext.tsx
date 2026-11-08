@@ -45,17 +45,17 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
         {toasts.map((toast) => {
           const icons = {
-            success: <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />,
+            success: <CheckCircle2 className="w-5 h-5 text-neon-mint shrink-0" />,
             error: <AlertCircle className="w-5 h-5 text-rose-400 shrink-0" />,
             warning: <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />,
-            info: <Info className="w-5 h-5 text-blue-400 shrink-0" />,
+            info: <Info className="w-5 h-5 text-cyan-400 shrink-0" />,
           };
 
           const borders = {
-            success: 'border-emerald-500/30 bg-emerald-950/80 text-emerald-100',
-            error: 'border-rose-500/30 bg-rose-950/80 text-rose-100',
-            warning: 'border-amber-500/30 bg-amber-950/80 text-amber-100',
-            info: 'border-blue-500/30 bg-blue-950/80 text-blue-100',
+            success: 'border-emerald-500/40 bg-obsidian-900/95 text-emerald-100 shadow-[0_12px_32px_rgba(0,245,160,0.18)]',
+            error: 'border-rose-500/40 bg-obsidian-900/95 text-rose-100 shadow-[0_12px_32px_rgba(244,63,94,0.18)]',
+            warning: 'border-amber-500/40 bg-obsidian-900/95 text-amber-100 shadow-[0_12px_32px_rgba(245,158,11,0.18)]',
+            info: 'border-cyan-500/40 bg-obsidian-900/95 text-cyan-100 shadow-[0_12px_32px_rgba(0,217,245,0.18)]',
           };
 
           return (

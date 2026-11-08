@@ -147,7 +147,7 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({ docu
       maxWidth="4xl"
       title={
         <div className="flex items-center gap-2.5 truncate">
-          <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500 shrink-0">
+          <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-500 dark:text-neon-mint shrink-0">
             <FileText className="w-5 h-5" />
           </div>
           <span className="truncate">{document.original_filename}</span>
@@ -164,10 +164,10 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({ docu
     >
       <div className="flex flex-col lg:flex-row gap-6 h-full min-h-[450px]">
         {/* Preview Viewer Canvas */}
-        <div className="flex-1 bg-slate-100 dark:bg-vault-950 rounded-2xl border border-slate-200 dark:border-vault-800 flex items-center justify-center p-4 relative overflow-hidden min-h-[300px]">
+        <div className="flex-1 bg-slate-100 dark:bg-obsidian-950/80 rounded-2xl border border-slate-200 dark:border-white/[0.08] flex items-center justify-center p-4 relative overflow-hidden min-h-[300px]">
           {isLoading && (
             <div className="flex flex-col items-center gap-3 text-slate-500">
-              <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
+              <Loader2 className="w-8 h-8 animate-spin text-emerald-500 dark:text-neon-mint" />
               <p className="text-xs font-semibold">Decrypting file with your Vault KEK...</p>
             </div>
           )}
@@ -196,19 +196,19 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({ docu
                 <iframe
                   src={decryptedBlobUrl}
                   title={document.original_filename}
-                  className="w-full h-[500px] rounded-xl border border-slate-200 dark:border-vault-800"
+                  className="w-full h-[500px] rounded-xl border border-slate-200 dark:border-white/[0.08]"
                 />
               )}
 
               {textContent !== null && (
-                <pre className="w-full h-[450px] p-4 text-xs font-mono bg-white dark:bg-vault-900 rounded-xl overflow-auto border border-slate-200 dark:border-vault-800 text-slate-800 dark:text-slate-200 whitespace-pre-wrap">
+                <pre className="w-full h-[450px] p-4 text-xs font-mono bg-white dark:bg-obsidian-900 rounded-xl overflow-auto border border-slate-200 dark:border-white/[0.08] text-slate-800 dark:text-slate-200 whitespace-pre-wrap">
                   {textContent}
                 </pre>
               )}
 
               {!isImage && !isPdf && textContent === null && (
                 <div className="flex flex-col items-center gap-4 text-center p-8">
-                  <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+                  <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-500 dark:text-neon-mint flex items-center justify-center">
                     <FileText className="w-8 h-8" />
                   </div>
                   <div>
@@ -230,9 +230,9 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({ docu
 
         {/* Document Details & Cryptographic Inspector */}
         <div className="w-full lg:w-80 shrink-0 space-y-4">
-          <div className="p-4 rounded-xl border border-slate-200 dark:border-vault-800 bg-slate-50/50 dark:bg-vault-850/50 space-y-3">
+          <div className="p-4 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-slate-50/50 dark:bg-obsidian-900/60 backdrop-blur-sm space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-              <Info className="w-4 h-4 text-indigo-400" /> Document Details
+              <Info className="w-4 h-4 text-emerald-500 dark:text-neon-mint" /> Document Details
             </h4>
 
             <div className="space-y-2 text-xs">
@@ -269,20 +269,20 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({ docu
           </div>
 
           {/* Cryptographic Proof */}
-          <div className="p-4 rounded-xl border border-slate-200 dark:border-vault-800 bg-slate-50/50 dark:bg-vault-850/50 space-y-3">
+          <div className="p-4 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-slate-50/50 dark:bg-obsidian-900/60 backdrop-blur-sm space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-              <Lock className="w-4 h-4 text-indigo-400" /> Security & Integrity
+              <Lock className="w-4 h-4 text-emerald-500 dark:text-neon-mint" /> Security & Integrity
             </h4>
 
             <div className="space-y-2 text-xs">
               <div>
                 <span className="text-slate-500 block text-[11px]">Cipher Algorithm</span>
-                <span className="font-mono text-[11px] text-indigo-400 font-semibold">AES-256-GCM (W3C WebCrypto)</span>
+                <span className="font-mono text-[11px] text-emerald-500 dark:text-neon-mint font-semibold">AES-256-GCM (W3C WebCrypto)</span>
               </div>
 
               <div>
                 <span className="text-slate-500 block text-[11px]">SHA-256 Fingerprint</span>
-                <span className="font-mono text-[10px] text-slate-400 break-all block p-1.5 rounded bg-slate-200 dark:bg-vault-900 border border-slate-300 dark:border-vault-700">
+                <span className="font-mono text-[10px] text-slate-400 break-all block p-2 rounded-lg bg-slate-200 dark:bg-obsidian-950 border border-slate-300 dark:border-white/[0.06]">
                   {document.sha256_hash}
                 </span>
               </div>

@@ -136,7 +136,7 @@ export const Trash: React.FC = () => {
             </span>
           </div>
 
-          <Card className="divide-y divide-slate-100 dark:divide-vault-800 overflow-hidden">
+          <Card className="divide-y divide-slate-100 dark:divide-white/[0.06] overflow-hidden">
             {trashedDocs.map((doc) => (
               <div
                 key={doc.id}
@@ -163,7 +163,7 @@ export const Trash: React.FC = () => {
                     variant="outline"
                     size="sm"
                     onClick={() => handleRestore(doc)}
-                    leftIcon={<RotateCcw className="w-3.5 h-3.5 text-emerald-400" />}
+                    leftIcon={<RotateCcw className="w-3.5 h-3.5 text-emerald-500 dark:text-neon-mint" />}
                   >
                     Restore
                   </Button>

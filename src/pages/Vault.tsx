@@ -9,15 +9,12 @@ import { VaultUnlockModal } from '@/components/vault/VaultUnlockModal';
 import {
   KeyRound,
   Shield,
-  ShieldCheck,
   Lock,
   Unlock,
   Clock,
-  Key,
   RotateCcw,
-  CheckCircle2,
-  AlertTriangle,
   Cpu,
+  Sparkles,
 } from 'lucide-react';
 
 export const Vault: React.FC = () => {
@@ -77,7 +74,7 @@ export const Vault: React.FC = () => {
       {/* Page Title */}
       <div>
         <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
-          <KeyRound className="w-6 h-6 text-indigo-500" />
+          <KeyRound className="w-6 h-6 text-emerald-500 dark:text-neon-mint" />
           <span>Vault Security & Cryptographic Controls</span>
         </h1>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -86,19 +83,23 @@ export const Vault: React.FC = () => {
       </div>
 
       {/* Vault Status Banner */}
-      <Card className="p-6 border-indigo-500/30 bg-gradient-to-r from-slate-900 via-vault-900 to-indigo-950/60 shadow-xl">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <Card className="p-6 border-white/[0.08] bg-gradient-to-r from-obsidian-900 via-obsidian-850 to-obsidian-900 shadow-2xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-neon-mint/[0.06] rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div
               className={`p-4 rounded-2xl ${
-                isUnlocked ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'
+                isUnlocked
+                  ? 'bg-neon-mint/10 text-emerald-500 dark:text-neon-mint shadow-glow-sm'
+                  : 'bg-rose-500/10 text-rose-400'
               }`}
             >
               {isUnlocked ? <Unlock className="w-8 h-8" /> : <Lock className="w-8 h-8" />}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-lg font-bold text-white">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                   {isUnlocked ? 'Vault Is Currently Unlocked' : 'Vault Is Locked'}
                 </h3>
                 <Badge variant={isUnlocked ? 'success' : 'danger'}>
@@ -113,7 +114,7 @@ export const Vault: React.FC = () => {
             </div>
           </div>
 
-          <div className="shrink-0">
+          <div className="shrink-0 relative z-10">
             {isUnlocked ? (
               <Button
                 variant="danger"
@@ -140,25 +141,25 @@ export const Vault: React.FC = () => {
       {/* Cryptographic Architecture Card */}
       <Card className="p-6 space-y-4">
         <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-          <Cpu className="w-4 h-4 text-indigo-400" /> Cryptographic Architecture Specifications
+          <Cpu className="w-4 h-4 text-emerald-500 dark:text-neon-mint" /> Cryptographic Architecture Specifications
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800">
+          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-obsidian-850 border border-slate-200 dark:border-white/[0.06]">
             <span className="text-slate-500 font-semibold block mb-1">Key Derivation (KEK)</span>
-            <p className="font-mono text-indigo-400 font-bold">PBKDF2-HMAC-SHA256</p>
+            <p className="font-mono text-emerald-600 dark:text-neon-mint font-bold">PBKDF2-HMAC-SHA256</p>
             <p className="text-[11px] text-slate-400 mt-1">100,000 iterations + 32-byte CSPRNG salt</p>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800">
+          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-obsidian-850 border border-slate-200 dark:border-white/[0.06]">
             <span className="text-slate-500 font-semibold block mb-1">Document Encryption</span>
-            <p className="font-mono text-indigo-400 font-bold">AES-256-GCM</p>
+            <p className="font-mono text-emerald-600 dark:text-neon-mint font-bold">AES-256-GCM</p>
             <p className="text-[11px] text-slate-400 mt-1">Unique 96-bit IV per file + 128-bit integrity tag</p>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800">
+          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-obsidian-850 border border-slate-200 dark:border-white/[0.06]">
             <span className="text-slate-500 font-semibold block mb-1">Key Wrapping Hierarchy</span>
-            <p className="font-mono text-indigo-400 font-bold">Per-File DEK Envelope</p>
+            <p className="font-mono text-emerald-600 dark:text-neon-mint font-bold">Per-File DEK Envelope</p>
             <p className="text-[11px] text-slate-400 mt-1">Ephemeral Data Encryption Keys wrapped by KEK</p>
           </div>
         </div>
@@ -167,7 +168,7 @@ export const Vault: React.FC = () => {
       {/* Inactivity Auto-Lock Settings */}
       <Card className="p-6 space-y-4">
         <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-          <Clock className="w-4 h-4 text-sky-400" /> Inactivity Auto-Lock Timeout
+          <Clock className="w-4 h-4 text-cyan-500 dark:text-neon-cyan" /> Inactivity Auto-Lock Timeout
         </h3>
         <p className="text-xs text-slate-500 dark:text-slate-400">
           The vault automatically purges encryption keys from browser memory when no user interaction occurs.
@@ -181,14 +182,14 @@ export const Vault: React.FC = () => {
                 key={mins}
                 type="button"
                 onClick={() => handleTimeoutChange(mins)}
-                className={`p-3 rounded-xl border text-center transition-all ${
+                className={`p-3.5 rounded-xl border text-center transition-all cursor-pointer ${
                   isSelected
-                    ? 'border-indigo-500 bg-indigo-500/10 text-indigo-400 font-bold shadow-sm'
-                    : 'border-slate-200 dark:border-vault-800 hover:border-slate-300 dark:hover:border-vault-700 text-slate-600 dark:text-slate-300'
+                    ? 'border-emerald-500/50 dark:border-neon-mint/50 bg-emerald-500/10 text-emerald-600 dark:text-neon-mint font-bold shadow-glow-sm'
+                    : 'border-slate-200 dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/[0.15] text-slate-600 dark:text-slate-300'
                 }`}
               >
-                <span className="text-base font-extrabold block">{mins}</span>
-                <span className="text-[11px] opacity-80">Minutes</span>
+                <span className="text-lg font-black block">{mins}</span>
+                <span className="text-[11px] opacity-80 font-medium">Minutes</span>
               </button>
             );
           })}
@@ -260,4 +261,3 @@ export const Vault: React.FC = () => {
     </div>
   );
 };
-

@@ -9,7 +9,7 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const Card: React.FC<CardProps> = ({
   className,
-  glass = false,
+  glass = true,
   glow = false,
   children,
   ...props
@@ -18,11 +18,11 @@ export const Card: React.FC<CardProps> = ({
     <div
       className={twMerge(
         clsx(
-          'rounded-2xl border transition-all duration-200',
+          'rounded-2xl transition-all duration-300',
           glass
             ? 'glass-card'
-            : 'bg-white dark:bg-vault-900 border-slate-200 dark:border-vault-800 shadow-sm',
-          glow && 'hover:shadow-glow-sm hover:border-indigo-500/40',
+            : 'bg-white dark:bg-obsidian-900 border border-slate-200 dark:border-white/[0.08] shadow-md',
+          glow && 'hover:shadow-glow-brand hover:border-neon-mint/40',
           className
         )
       )}
@@ -32,4 +32,3 @@ export const Card: React.FC<CardProps> = ({
     </div>
   );
 };
-

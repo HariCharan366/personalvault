@@ -35,8 +35,8 @@ export const ProfileSettings: React.FC = () => {
 
   return (
     <Card className="p-6 space-y-6">
-      <div className="flex items-center gap-4 pb-6 border-b border-slate-100 dark:border-vault-800">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-600 text-white font-extrabold text-xl flex items-center justify-center uppercase shadow-md">
+      <div className="flex items-center gap-4 pb-6 border-b border-slate-100 dark:border-white/[0.08]">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-neon-mint text-obsidian-950 font-extrabold text-xl flex items-center justify-center uppercase shadow-glow-sm">
           {profile?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'}
         </div>
         <div>

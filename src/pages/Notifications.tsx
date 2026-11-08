@@ -54,8 +54,8 @@ export const Notifications: React.FC = () => {
   const getIcon = (type: string) => {
     if (type === 'danger') return <AlertCircle className="w-5 h-5 text-rose-400" />;
     if (type === 'warning') return <AlertTriangle className="w-5 h-5 text-amber-400" />;
-    if (type === 'success') return <CheckCircle2 className="w-5 h-5 text-emerald-400" />;
-    return <Info className="w-5 h-5 text-indigo-400" />;
+    if (type === 'success') return <CheckCircle2 className="w-5 h-5 text-emerald-400 dark:text-neon-mint" />;
+    return <Info className="w-5 h-5 text-cyan-400" />;
   };
 
   return (
@@ -63,7 +63,7 @@ export const Notifications: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
-            <Bell className="w-6 h-6 text-indigo-500" />
+            <Bell className="w-6 h-6 text-emerald-500 dark:text-neon-mint" />
             <span>Notification Center</span>
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -88,20 +88,20 @@ export const Notifications: React.FC = () => {
       <div className="flex gap-2">
         <button
           onClick={() => setFilter('all')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
+          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
             filter === 'all'
-              ? 'bg-indigo-600 text-white'
-              : 'bg-slate-100 dark:bg-vault-800 text-slate-500 hover:text-slate-200'
+              ? 'bg-gradient-to-r from-emerald-400 via-neon-mint to-teal-400 text-obsidian-950 font-bold shadow-glow-sm'
+              : 'bg-slate-100 dark:bg-obsidian-850 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-transparent dark:border-white/[0.04]'
           }`}
         >
           All ({notifications.length})
         </button>
         <button
           onClick={() => setFilter('unread')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
+          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
             filter === 'unread'
-              ? 'bg-indigo-600 text-white'
-              : 'bg-slate-100 dark:bg-vault-800 text-slate-500 hover:text-slate-200'
+              ? 'bg-gradient-to-r from-emerald-400 via-neon-mint to-teal-400 text-obsidian-950 font-bold shadow-glow-sm'
+              : 'bg-slate-100 dark:bg-obsidian-850 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-transparent dark:border-white/[0.04]'
           }`}
         >
           Unread ({notifications.filter((n) => !n.is_read).length})
@@ -110,28 +110,28 @@ export const Notifications: React.FC = () => {
 
       {filteredNotifs.length === 0 ? (
         <EmptyState
-          icon={<Bell className="w-8 h-8 text-indigo-400" />}
+          icon={<Bell className="w-8 h-8 text-emerald-500 dark:text-neon-mint" />}
           title="No Notifications"
           description="You are fully caught up! New alerts and document expiration reminders will be delivered here."
         />
       ) : (
-        <Card className="divide-y divide-slate-100 dark:divide-vault-800 overflow-hidden">
+        <Card className="divide-y divide-slate-100 dark:divide-white/[0.06] overflow-hidden">
           {filteredNotifs.map((n) => (
             <div
               key={n.id}
               className={`p-4 flex items-start justify-between gap-4 transition-colors ${
-                n.is_read ? 'opacity-70' : 'bg-indigo-500/5'
+                n.is_read ? 'opacity-70' : 'bg-emerald-500/5'
               }`}
             >
               <div className="flex items-start gap-3 min-w-0">
-                <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-vault-850 shrink-0">
+                <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-obsidian-850 shrink-0 border border-transparent dark:border-white/[0.04]">
                   {getIcon(n.type)}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
                     <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">{n.title}</h4>
                     {!n.is_read && (
-                      <span className="w-2 h-2 rounded-full bg-indigo-500 shrink-0" />
+                      <span className="w-2 h-2 rounded-full bg-neon-mint shadow-[0_0_8px_rgba(0,245,160,0.6)] shrink-0" />
                     )}
                   </div>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">

@@ -13,12 +13,7 @@ import {
   Smartphone,
   Laptop,
   Globe,
-  Download,
-  AlertTriangle,
   Search,
-  Filter,
-  CheckCircle2,
-  XCircle,
   LogOut,
   Clock,
   Radio,
@@ -80,7 +75,7 @@ export const Security: React.FC = () => {
     });
   }, [history, searchQuery, statusFilter, deviceFilter]);
 
-  // Suspicious activity detection (e.g. any failed attempts in last 24h)
+  // Suspicious activity detection
   const failedAttempts = useMemo(() => {
     return history.filter((h) => h.status === 'Failed');
   }, [history]);
@@ -154,7 +149,7 @@ export const Security: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
-            <ShieldCheck className="w-6 h-6 text-indigo-500" />
+            <ShieldCheck className="w-6 h-6 text-emerald-500 dark:text-neon-mint" />
             <span>Security & Login History</span>
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -167,7 +162,7 @@ export const Security: React.FC = () => {
             variant="outline"
             size="sm"
             onClick={handleExportCSV}
-            leftIcon={<FileSpreadsheet className="w-4 h-4 text-emerald-400" />}
+            leftIcon={<FileSpreadsheet className="w-4 h-4 text-emerald-500 dark:text-neon-mint" />}
           >
             Export Audit CSV
           </Button>
@@ -204,12 +199,12 @@ export const Security: React.FC = () => {
       )}
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-vault-800 gap-6">
+      <div className="flex border-b border-slate-200 dark:border-white/[0.08] gap-6">
         <Link
           to="/security/login-history"
           className={`pb-3 text-xs font-semibold flex items-center gap-2 border-b-2 transition-colors ${
             activeTab === 'history'
-              ? 'border-indigo-500 text-indigo-400'
+              ? 'border-emerald-500 dark:border-neon-mint text-emerald-600 dark:text-neon-mint font-bold'
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
@@ -221,7 +216,7 @@ export const Security: React.FC = () => {
           to="/security/active-sessions"
           className={`pb-3 text-xs font-semibold flex items-center gap-2 border-b-2 transition-colors ${
             activeTab === 'sessions'
-              ? 'border-indigo-500 text-indigo-400'
+              ? 'border-emerald-500 dark:border-neon-mint text-emerald-600 dark:text-neon-mint font-bold'
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
@@ -243,7 +238,7 @@ export const Security: React.FC = () => {
                   placeholder="Search browser, OS, IP, location..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-700 pl-8 pr-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-indigo-500"
+                  className="w-full rounded-xl bg-slate-50 dark:bg-obsidian-850 border border-slate-200 dark:border-white/[0.08] pl-8 pr-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint"
                 />
               </div>
 
@@ -251,7 +246,7 @@ export const Security: React.FC = () => {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value as any)}
-                  className="w-full rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-700 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-indigo-500"
+                  className="w-full rounded-xl bg-slate-50 dark:bg-obsidian-850 border border-slate-200 dark:border-white/[0.08] px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint"
                 >
                   <option value="all">All Statuses (Success & Failed)</option>
                   <option value="Success">Success Only</option>
@@ -263,7 +258,7 @@ export const Security: React.FC = () => {
                 <select
                   value={deviceFilter}
                   onChange={(e) => setDeviceFilter(e.target.value as any)}
-                  className="w-full rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-700 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-indigo-500"
+                  className="w-full rounded-xl bg-slate-50 dark:bg-obsidian-850 border border-slate-200 dark:border-white/[0.08] px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint"
                 >
                   <option value="all">All Device Types</option>
                   <option value="Desktop">Desktop PCs</option>
@@ -279,7 +274,7 @@ export const Security: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-vault-800 bg-slate-50 dark:bg-vault-850/60 text-slate-500 uppercase tracking-wider text-[11px]">
+                  <tr className="border-b border-slate-200 dark:border-white/[0.08] bg-slate-50 dark:bg-obsidian-850/60 text-slate-500 uppercase tracking-wider text-[11px]">
                     <th className="p-3.5 pl-4">Date & Time</th>
                     <th className="p-3.5">Device & OS</th>
                     <th className="p-3.5">Browser</th>
@@ -288,7 +283,7 @@ export const Security: React.FC = () => {
                     <th className="p-3.5 pr-4 text-right">Details</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-vault-800">
+                <tbody className="divide-y divide-slate-100 dark:divide-white/[0.06]">
                   {filteredHistory.length === 0 ? (
                     <tr>
                       <td colSpan={6} className="p-8 text-center text-slate-400">
@@ -299,7 +294,7 @@ export const Security: React.FC = () => {
                     filteredHistory.map((item) => (
                       <tr
                         key={item.id}
-                        className="hover:bg-slate-50 dark:hover:bg-vault-850/40 transition-colors"
+                        className="hover:bg-slate-50 dark:hover:bg-obsidian-800/40 transition-colors"
                       >
                         <td className="p-3.5 pl-4 font-mono text-slate-800 dark:text-slate-200">
                           {new Date(item.timestamp).toLocaleString([], {
@@ -313,9 +308,9 @@ export const Security: React.FC = () => {
                         <td className="p-3.5">
                           <div className="flex items-center gap-2">
                             {item.device_type === 'Mobile' ? (
-                              <Smartphone className="w-4 h-4 text-slate-400 shrink-0" />
+                              <Smartphone className="w-4 h-4 text-emerald-500 dark:text-neon-mint shrink-0" />
                             ) : (
-                              <Laptop className="w-4 h-4 text-slate-400 shrink-0" />
+                              <Laptop className="w-4 h-4 text-emerald-500 dark:text-neon-mint shrink-0" />
                             )}
                             <span className="font-semibold text-slate-800 dark:text-slate-200">
                               {item.os || 'Unknown OS'}
@@ -351,7 +346,7 @@ export const Security: React.FC = () => {
                         <td className="p-3.5 pr-4 text-right">
                           <button
                             onClick={() => setSelectedEvent(item)}
-                            className="text-xs text-indigo-400 hover:text-indigo-300 hover:underline"
+                            className="text-xs text-emerald-600 dark:text-neon-mint hover:underline cursor-pointer"
                           >
                             Inspect
                           </button>
@@ -380,13 +375,13 @@ export const Security: React.FC = () => {
                 <Card
                   key={sess.id}
                   className={`p-5 flex flex-col justify-between ${
-                    isCurrent ? 'border-indigo-500/40 bg-indigo-500/5' : ''
+                    isCurrent ? 'border-neon-mint/30 bg-neon-mint/[0.03]' : ''
                   }`}
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-center gap-3">
-                        <div className="p-3 rounded-2xl bg-indigo-500/10 text-indigo-400">
+                        <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-neon-mint">
                           {sess.os?.includes('Android') || sess.os?.includes('iOS') ? (
                             <Smartphone className="w-5 h-5" />
                           ) : (
@@ -411,7 +406,7 @@ export const Security: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-slate-50 dark:bg-vault-850 text-xs space-y-1 text-slate-400">
+                    <div className="p-3 rounded-xl bg-slate-50 dark:bg-obsidian-850 text-xs space-y-1 text-slate-400 border border-slate-200 dark:border-white/[0.06]">
                       <div className="flex items-center justify-between">
                         <span>IP Address:</span>
                         <span className="font-mono text-slate-300">{sess.ip_address || 'Local / LAN'}</span>
@@ -428,7 +423,7 @@ export const Security: React.FC = () => {
                   </div>
 
                   {!isCurrent && (
-                    <div className="pt-3 mt-3 border-t border-slate-100 dark:border-vault-800 flex justify-end">
+                    <div className="pt-3 mt-3 border-t border-slate-100 dark:border-white/[0.06] flex justify-end">
                       <Button
                         variant="danger"
                         size="sm"
@@ -455,7 +450,7 @@ export const Security: React.FC = () => {
       >
         {selectedEvent && (
           <div className="space-y-4 text-xs">
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800 space-y-2">
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-obsidian-850 border border-slate-200 dark:border-white/[0.08] space-y-2">
               <div className="flex justify-between">
                 <span className="text-slate-500">Event ID:</span>
                 <span className="font-mono text-slate-300 break-all">{selectedEvent.id}</span>
@@ -468,7 +463,7 @@ export const Security: React.FC = () => {
                 <span className="text-slate-500">Result:</span>
                 <span
                   className={`font-bold ${
-                    selectedEvent.status === 'Success' ? 'text-emerald-400' : 'text-rose-400'
+                    selectedEvent.status === 'Success' ? 'text-neon-mint' : 'text-rose-400'
                   }`}
                 >
                   {selectedEvent.status}
@@ -507,4 +502,3 @@ export const Security: React.FC = () => {
     </div>
   );
 };
-

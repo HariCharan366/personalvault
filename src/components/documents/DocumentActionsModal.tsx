@@ -100,7 +100,7 @@ export const DocumentActionsModal: React.FC<DocumentActionsModalProps> = ({
       onClose={onClose}
       title={
         <div className="flex items-center gap-2">
-          <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500">
+          <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-500 dark:text-neon-mint">
             <Edit3 className="w-5 h-5" />
           </div>
           <span>Edit Document Properties</span>
@@ -118,13 +118,13 @@ export const DocumentActionsModal: React.FC<DocumentActionsModalProps> = ({
         />
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
-            <FolderIcon className="w-3.5 h-3.5 text-sky-400" /> Destination Folder
+          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5">
+            <FolderIcon className="w-3.5 h-3.5 text-cyan-400" /> Destination Folder
           </label>
           <select
             value={folderId}
             onChange={(e) => setFolderId(e.target.value)}
-            className="w-full text-xs rounded-xl border border-slate-300 dark:border-vault-700 bg-white dark:bg-vault-900 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none"
+            className="w-full text-xs rounded-xl border border-slate-300 dark:border-white/[0.08] bg-white dark:bg-obsidian-850 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint transition-colors"
           >
             <option value="">Root / No Folder</option>
             {folders.map((f) => (
@@ -136,27 +136,27 @@ export const DocumentActionsModal: React.FC<DocumentActionsModalProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
+          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5">
             <Calendar className="w-3.5 h-3.5 text-amber-400" /> Expiry Date (Optional)
           </label>
           <input
             type="date"
             value={expiryDate}
             onChange={(e) => setExpiryDate(e.target.value)}
-            className="w-full text-xs rounded-xl border border-slate-300 dark:border-vault-700 bg-white dark:bg-vault-900 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none"
+            className="w-full text-xs rounded-xl border border-slate-300 dark:border-white/[0.08] bg-white dark:bg-obsidian-850 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint transition-colors"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
-            <Tag className="w-3.5 h-3.5 text-purple-400" /> Tags
+          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5">
+            <Tag className="w-3.5 h-3.5 text-emerald-400" /> Tags
           </label>
           <input
             type="text"
             placeholder="Comma-separated tags"
             value={tagsInput}
             onChange={(e) => setTagsInput(e.target.value)}
-            className="w-full text-xs rounded-xl border border-slate-300 dark:border-vault-700 bg-white dark:bg-vault-900 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none"
+            className="w-full text-xs rounded-xl border border-slate-300 dark:border-white/[0.08] bg-white dark:bg-obsidian-850 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint transition-colors"
           />
         </div>
 

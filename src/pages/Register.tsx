@@ -48,17 +48,17 @@ export const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col justify-center items-center p-4 relative overflow-hidden">
-      {/* Background glow decoration */}
-      <div className="absolute top-1/4 -right-20 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 -left-20 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen bg-obsidian-950 text-slate-100 flex flex-col justify-center items-center p-4 relative overflow-hidden">
+      {/* Background radial glow accents */}
+      <div className="absolute top-1/4 -right-24 w-[500px] h-[500px] bg-emerald-500/[0.07] rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 -left-24 w-[500px] h-[500px] bg-neon-cyan/[0.06] rounded-full blur-3xl pointer-events-none" />
 
       <div className="w-full max-w-md space-y-6 z-10">
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-600 to-indigo-400 text-white shadow-xl shadow-indigo-600/30 mb-2">
-            <Shield className="w-7 h-7" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-400 via-neon-mint to-teal-400 text-obsidian-950 shadow-xl shadow-emerald-500/25 mb-2 hover:scale-105 transition-transform duration-300">
+            <Shield className="w-8 h-8 fill-obsidian-950/20" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+          <h1 className="text-3xl font-extrabold tracking-tight text-white">
             Create PersonalVault
           </h1>
           <p className="text-xs sm:text-sm text-slate-400">
@@ -66,7 +66,7 @@ export const Register: React.FC = () => {
           </p>
         </div>
 
-        <div className="p-6 sm:p-8 rounded-3xl bg-slate-800/80 border border-slate-700/80 shadow-2xl backdrop-blur-xl space-y-5">
+        <div className="p-6 sm:p-8 rounded-3xl bg-obsidian-900/90 border border-white/[0.08] shadow-glass-card backdrop-blur-2xl space-y-5">
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
               label="Full Name"
@@ -108,14 +108,14 @@ export const Register: React.FC = () => {
               required
             />
 
-            <div className="space-y-1.5 p-3 rounded-xl bg-slate-900/60 border border-slate-700/50 text-[11px] text-slate-400">
+            <div className="space-y-1.5 p-3 rounded-xl bg-obsidian-850 border border-white/[0.06] text-[11px] text-slate-400">
               <span className="font-semibold text-slate-300 block mb-1">Security Standards:</span>
               <div className="flex items-center gap-1.5 text-slate-400">
-                <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400" />
-                <span>Encrypted with AES-256-GCM before upload</span>
+                <CheckCircle2 className="w-3.5 h-3.5 text-neon-mint" />
+                <span>Encrypted with AES-256-GCM before cloud upload</span>
               </div>
               <div className="flex items-center gap-1.5 text-slate-400">
-                <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-neon-mint" />
                 <span>Dedicated client-side vault PIN isolation</span>
               </div>
             </div>
@@ -140,7 +140,7 @@ export const Register: React.FC = () => {
 
         <div className="text-center text-xs text-slate-400">
           Already have an account?{' '}
-          <Link to="/login" className="text-indigo-400 font-semibold hover:underline">
+          <Link to="/login" className="text-neon-mint font-semibold hover:underline">
             Sign In
           </Link>
         </div>
@@ -148,4 +148,3 @@ export const Register: React.FC = () => {
     </div>
   );
 };
-

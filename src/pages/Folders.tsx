@@ -24,7 +24,7 @@ export const Folders: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [folderName, setFolderName] = useState('');
   const [parentId, setParentId] = useState<string>('');
-  const [color, setColor] = useState('#38bdf8');
+  const [color, setColor] = useState('#00F5A0');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCreate = async (e: React.FormEvent) => {
@@ -82,11 +82,11 @@ export const Folders: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
-            <FolderOpen className="w-6 h-6 text-sky-400" />
+            <FolderOpen className="w-6 h-6 text-emerald-500 dark:text-neon-mint" />
             <span>Vault Folders</span>
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Organize documents into hierarchical directories
+            Organize confidential files into hierarchical directories
           </p>
         </div>
 
@@ -98,10 +98,10 @@ export const Folders: React.FC = () => {
       {/* Folders Grid */}
       {folders.length === 0 ? (
         <Card className="p-12 text-center border-dashed">
-          <FolderIcon className="w-12 h-12 text-sky-400 mx-auto mb-3 opacity-60" />
+          <FolderIcon className="w-12 h-12 text-emerald-500 dark:text-neon-mint mx-auto mb-3 opacity-60" />
           <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">No Folders Created</h3>
           <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-1 mb-4">
-            Folders let you nest and group confidential files inside categories.
+            Folders let you nest and group confidential files logically.
           </p>
           <Button variant="primary" size="sm" onClick={() => setModalOpen(true)}>
             Create First Folder
@@ -116,27 +116,27 @@ export const Folders: React.FC = () => {
             return (
               <Card
                 key={f.id}
-                className="p-5 flex flex-col justify-between hover:border-sky-500/50 hover:shadow-glow-sm transition-all group"
+                className="p-5 flex flex-col justify-between hover:border-neon-mint/40 hover:shadow-glow-sm transition-all group"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <div
-                      className="p-3 rounded-2xl flex items-center justify-center text-white"
-                      style={{ backgroundColor: f.color }}
+                      className="p-3 rounded-2xl flex items-center justify-center text-obsidian-950 font-bold shadow-sm"
+                      style={{ backgroundColor: f.color || '#00F5A0' }}
                     >
-                      <FolderIcon className="w-5 h-5" />
+                      <FolderIcon className="w-5 h-5 fill-obsidian-950/20" />
                     </div>
 
                     <button
                       onClick={(e) => handleDelete(f, e)}
-                      className="p-1.5 text-slate-400 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="p-1.5 text-slate-400 hover:text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                       title="Delete Folder"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
 
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-sky-400 transition-colors">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-emerald-500 dark:group-hover:text-neon-mint transition-colors">
                     {f.name}
                   </h3>
 
@@ -147,15 +147,15 @@ export const Folders: React.FC = () => {
                     </p>
                   )}
 
-                  <p className="text-[11px] text-slate-400 mt-1">
+                  <p className="text-[11px] text-slate-400 mt-1 font-mono">
                     {folderDocs.length} {folderDocs.length === 1 ? 'document' : 'documents'}
                   </p>
                 </div>
 
-                <div className="pt-3 mt-3 border-t border-slate-100 dark:border-vault-800 flex items-center justify-between text-[11px]">
+                <div className="pt-3 mt-3 border-t border-slate-100 dark:border-white/[0.06] flex items-center justify-between text-[11px]">
                   <Link
                     to={`/documents?folder=${f.id}`}
-                    className="font-semibold text-sky-400 hover:underline flex items-center gap-1"
+                    className="font-semibold text-emerald-600 dark:text-neon-mint hover:underline flex items-center gap-1"
                   >
                     <span>View files</span>
                     <ChevronRight className="w-3.5 h-3.5" />
@@ -191,7 +191,7 @@ export const Folders: React.FC = () => {
             <select
               value={parentId}
               onChange={(e) => setParentId(e.target.value)}
-              className="w-full text-xs rounded-xl border border-slate-300 dark:border-vault-700 bg-white dark:bg-vault-900 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none"
+              className="w-full text-xs rounded-xl border border-slate-300 dark:border-white/[0.08] bg-white dark:bg-obsidian-850 px-3 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
             >
               <option value="">Root (No Parent)</option>
               {folders.map((f) => (
@@ -204,7 +204,7 @@ export const Folders: React.FC = () => {
 
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-              Folder Color
+              Folder Color Accent
             </label>
             <div className="flex items-center gap-2">
               <input
@@ -230,4 +230,3 @@ export const Folders: React.FC = () => {
     </div>
   );
 };
-

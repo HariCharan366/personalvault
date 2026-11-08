@@ -48,7 +48,7 @@ export const SecuritySettings: React.FC = () => {
       {/* Change Password Card */}
       <Card className="p-6 space-y-4">
         <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-          <Key className="w-4 h-4 text-indigo-400" /> Change Account Password
+          <Key className="w-4 h-4 text-emerald-500 dark:text-neon-mint" /> Change Account Password
         </h3>
         <p className="text-xs text-slate-500 dark:text-slate-400">
           Update the password used to authenticate into your personal cloud account.
@@ -92,7 +92,7 @@ export const SecuritySettings: React.FC = () => {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <KeyRound className="w-4 h-4 text-purple-400" /> Vault Master PIN & Key Hierarchy
+              <KeyRound className="w-4 h-4 text-cyan-400" /> Vault Master PIN & Key Hierarchy
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Your vault PIN is separate from your account password and protects your zero-knowledge AES-256-GCM keys.
@@ -124,8 +124,8 @@ export const SecuritySettings: React.FC = () => {
           </div>
         </div>
 
-        <div className="p-4 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800 text-xs text-slate-400 flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-indigo-400 shrink-0" />
+        <div className="p-4 rounded-xl bg-slate-50 dark:bg-obsidian-900/60 border border-slate-200 dark:border-white/[0.08] text-xs text-slate-400 flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-emerald-500 dark:text-neon-mint shrink-0" />
           <span>
             Two-factor authentication is configured in your Supabase Auth dashboard under Authentication → Providers.
           </span>

@@ -35,10 +35,14 @@ export const ForgotPassword: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col justify-center items-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-obsidian-950 text-slate-100 flex flex-col justify-center items-center p-4 relative overflow-hidden">
+      {/* Ambient background glows */}
+      <div className="absolute top-1/4 -left-20 w-80 h-80 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-teal-500/10 rounded-full blur-[120px] pointer-events-none" />
+
       <div className="w-full max-w-md space-y-6 z-10">
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-600 to-indigo-400 text-white shadow-xl shadow-indigo-600/30 mb-2">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-400 via-neon-mint to-teal-400 text-obsidian-950 shadow-glow-brand mb-2">
             <Shield className="w-7 h-7" />
           </div>
           <h1 className="text-2xl font-extrabold tracking-tight text-white">Reset Account Password</h1>
@@ -47,15 +51,15 @@ export const ForgotPassword: React.FC = () => {
           </p>
         </div>
 
-        <div className="p-6 sm:p-8 rounded-3xl bg-slate-800/80 border border-slate-700/80 shadow-2xl backdrop-blur-xl">
+        <div className="p-6 sm:p-8 rounded-3xl bg-obsidian-900/80 border border-white/[0.08] shadow-2xl backdrop-blur-xl">
           {isSubmitted ? (
             <div className="text-center space-y-4 py-4">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mx-auto">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 dark:text-neon-mint flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <h3 className="text-base font-bold text-white">Check Your Email</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                If an account exists for <span className="text-indigo-400 font-mono">{email}</span>, a secure password
+                If an account exists for <span className="text-emerald-400 dark:text-neon-mint font-mono">{email}</span>, a secure password
                 reset link has been sent.
               </p>
               <Link to="/login" className="inline-block mt-4">

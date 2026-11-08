@@ -21,7 +21,7 @@ export const SettingsLayout: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-vault-800 gap-6">
+      <div className="flex border-b border-slate-200 dark:border-white/[0.08] gap-6">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (
@@ -31,10 +31,10 @@ export const SettingsLayout: React.FC = () => {
               className={({ isActive }) =>
                 twMerge(
                   clsx(
-                    'pb-3 text-xs font-semibold flex items-center gap-2 border-b-2 transition-colors',
+                    'pb-3 text-xs font-semibold flex items-center gap-2 border-b-2 transition-all',
                     isActive
-                      ? 'border-indigo-500 text-indigo-400'
-                      : 'border-transparent text-slate-400 hover:text-slate-200'
+                      ? 'border-neon-mint text-emerald-500 dark:text-neon-mint shadow-[0_2px_12px_rgba(0,245,160,0.3)]'
+                      : 'border-transparent text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   )
                 )
               }

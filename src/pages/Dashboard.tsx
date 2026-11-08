@@ -20,7 +20,10 @@ import {
   Activity,
   ArrowUpRight,
   Unlock,
+  Lock,
+  Sparkles,
   ShieldCheck,
+  CheckCircle2,
 } from 'lucide-react';
 import type { DocumentItem, Folder, ActivityLog } from '@/types';
 
@@ -40,10 +43,9 @@ export const Dashboard: React.FC = () => {
 
   useEffect(() => {
     async function loadActivity() {
-      if (user) {
-        const logs = await api.getActivityLogs(user.id);
-        setRecentActivities(logs.slice(0, 6));
-      }
+      if (!user) return;
+      const logs = await api.getActivityLogs(user.id);
+      setRecentActivities(logs.slice(0, 6));
     }
     loadActivity();
   }, [user]);
@@ -73,45 +75,53 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
-      {/* Welcome Banner & Vault Security Alert */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-slate-900 via-vault-900 to-indigo-950/80 border border-slate-700/60 shadow-xl relative overflow-hidden">
-        <div className="space-y-1 z-10">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-bold text-indigo-400 uppercase tracking-widest">
-              Digital Locker Overview
-            </span>
-            {isUnlocked ? (
-              <Badge variant="success" size="sm">
-                Vault Unlocked
-              </Badge>
-            ) : (
-              <Badge variant="warning" size="sm">
-                Vault Locked
-              </Badge>
-            )}
-          </div>
-          <h2 className="text-xl sm:text-2xl font-extrabold text-white">
-            Welcome back, {profile?.full_name || 'Vault Owner'}
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-300 max-w-xl">
-            All files are protected with zero-knowledge AES-256-GCM encryption. Documents cannot be decrypted on the server.
-          </p>
-        </div>
+      {/* Hero Digital Locker Banner */}
+      <div className="relative overflow-hidden rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-obsidian-900 via-obsidian-850 to-obsidian-900 border border-white/[0.08] shadow-2xl">
+        {/* Subtle decorative glow accents */}
+        <div className="absolute top-0 right-0 w-80 h-80 bg-neon-mint/[0.08] rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/3 w-60 h-60 bg-neon-cyan/[0.05] rounded-full blur-2xl pointer-events-none" />
 
-        <div className="flex items-center gap-3 z-10 shrink-0">
-          <Link to="/vault">
-            <Button
-              variant={isUnlocked ? 'secondary' : 'primary'}
-              size="sm"
-              leftIcon={isUnlocked ? <Unlock className="w-4 h-4" /> : <Shield className="w-4 h-4" />}
-            >
-              {isUnlocked ? 'Vault Controls' : 'Unlock Documents'}
-            </Button>
-          </Link>
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2.5">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-bold bg-neon-mint/10 text-emerald-600 dark:text-neon-mint border border-neon-mint/30 uppercase tracking-wider">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-neon-mint animate-pulse" />
+                Zero-Knowledge Cryptographic Locker
+              </span>
+              {isUnlocked ? (
+                <Badge variant="success" size="sm">
+                  Active Session
+                </Badge>
+              ) : (
+                <Badge variant="outline" size="sm">
+                  Encrypted & Locked
+                </Badge>
+              )}
+            </div>
+
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              Welcome back, {profile?.full_name || 'Vault Owner'}
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-300 max-w-xl leading-relaxed">
+              Your confidential documents are secured with end-to-end client encryption (AES-256-GCM). Data is encrypted on your device prior to cloud transmission.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0">
+            <Link to="/vault">
+              <Button
+                variant={isUnlocked ? 'secondary' : 'primary'}
+                size="md"
+                leftIcon={isUnlocked ? <Unlock className="w-4 h-4 text-emerald-500 dark:text-neon-mint" /> : <Lock className="w-4 h-4" />}
+              >
+                {isUnlocked ? 'Vault Security' : 'Unlock Documents'}
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* Expiry Warning Alert */}
+      {/* Expiry Warning Alert (if any documents expiring) */}
       {expiringSoon.length > 0 && (
         <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3 text-xs text-amber-200">
           <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
@@ -132,57 +142,60 @@ export const Dashboard: React.FC = () => {
       {/* Top 4 Statistic Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Documents */}
-        <Card className="p-5 flex items-center justify-between">
+        <Card className="p-5 flex items-center justify-between hover:border-neon-mint/30 hover:shadow-glow-sm transition-all group">
           <div>
             <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Total Documents</p>
-            <h3 className="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mt-1 group-hover:text-emerald-500 dark:group-hover:text-neon-mint transition-colors">
               {totalDocuments}
             </h3>
-            <p className="text-[11px] text-emerald-500 font-medium mt-1">Encrypted in cloud</p>
+            <p className="text-[11px] text-emerald-600 dark:text-neon-mint font-medium mt-1 flex items-center gap-1">
+              <CheckCircle2 className="w-3 h-3" />
+              <span>Encrypted in cloud</span>
+            </p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-neon-mint flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
             <Files className="w-6 h-6" />
           </div>
         </Card>
 
         {/* Total Storage Used */}
-        <Card className="p-5 flex items-center justify-between">
+        <Card className="p-5 flex items-center justify-between hover:border-cyan-500/30 transition-all group">
           <div>
             <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Storage Used</p>
-            <h3 className="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
-              {usedMB} <span className="text-sm font-semibold text-slate-400">MB</span>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mt-1 group-hover:text-neon-cyan transition-colors">
+              {usedMB} <span className="text-sm font-semibold text-slate-400 font-normal">MB</span>
             </h3>
-            <p className="text-[11px] text-slate-400 mt-1">{usedPercentage.toFixed(1)}% of {totalQuotaGB} GB</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">{usedPercentage.toFixed(1)}% of {totalQuotaGB} GB</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-500 dark:text-sky-400 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-neon-cyan flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
             <HardDrive className="w-6 h-6" />
           </div>
         </Card>
 
         {/* Available Storage */}
-        <Card className="p-5 flex items-center justify-between">
+        <Card className="p-5 flex items-center justify-between hover:border-emerald-500/30 transition-all group">
           <div>
-            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Available Storage</p>
-            <h3 className="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
-              {availableGB} <span className="text-sm font-semibold text-slate-400">GB</span>
+            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Available Quota</p>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mt-1 group-hover:text-neon-mint transition-colors">
+              {availableGB} <span className="text-sm font-semibold text-slate-400 font-normal">GB</span>
             </h3>
-            <p className="text-[11px] text-emerald-500 font-medium mt-1">Sufficient quota</p>
+            <p className="text-[11px] text-emerald-600 dark:text-neon-mint font-medium mt-1">High headroom</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-neon-teal flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
             <Shield className="w-6 h-6" />
           </div>
         </Card>
 
         {/* Total Folders */}
-        <Card className="p-5 flex items-center justify-between">
+        <Card className="p-5 flex items-center justify-between hover:border-purple-500/30 transition-all group">
           <div>
             <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Active Folders</p>
-            <h3 className="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mt-1 group-hover:text-purple-400 transition-colors">
               {folders.length}
             </h3>
-            <p className="text-[11px] text-purple-400 font-medium mt-1">Structured directories</p>
+            <p className="text-[11px] text-purple-400 font-medium mt-1">Structured storage</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-500 dark:text-purple-400 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
             <FolderOpen className="w-6 h-6" />
           </div>
         </Card>
@@ -194,36 +207,36 @@ export const Dashboard: React.FC = () => {
         <Card className="p-6 lg:col-span-1 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <HardDrive className="w-4 h-4 text-indigo-400" /> Storage Capacity
+              <HardDrive className="w-4 h-4 text-emerald-500 dark:text-neon-mint" /> Storage Capacity
             </h3>
-            <span className="text-xs font-mono text-slate-400">{usedPercentage.toFixed(1)}%</span>
+            <span className="text-xs font-mono font-bold text-emerald-600 dark:text-neon-mint">{usedPercentage.toFixed(1)}%</span>
           </div>
 
-          {/* Progress Bar */}
-          <div className="w-full bg-slate-100 dark:bg-vault-800 rounded-full h-3 overflow-hidden">
+          {/* Glowing Gradient Progress Bar */}
+          <div className="w-full bg-slate-200 dark:bg-obsidian-800 rounded-full h-2.5 overflow-hidden">
             <div
-              className="bg-gradient-to-r from-indigo-500 to-sky-400 h-3 rounded-full transition-all duration-500"
-              style={{ width: `${Math.max(usedPercentage, 2)}%` }}
+              className="bg-gradient-to-r from-emerald-400 via-neon-mint to-teal-400 h-2.5 rounded-full transition-all duration-500 shadow-glow-sm"
+              style={{ width: `${Math.max(usedPercentage, 3)}%` }}
             />
           </div>
 
-          <div className="space-y-3 pt-2 text-xs">
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800 flex items-center justify-between">
-              <span className="text-slate-500">Encrypted Documents</span>
-              <span className="font-semibold text-slate-800 dark:text-slate-200">{totalDocuments} files</span>
+          <div className="space-y-2.5 pt-2 text-xs">
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-obsidian-850 border border-slate-200 dark:border-white/[0.06] flex items-center justify-between">
+              <span className="text-slate-500 dark:text-slate-400">Encrypted Documents</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200 font-mono">{totalDocuments} files</span>
             </div>
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800 flex items-center justify-between">
-              <span className="text-slate-500">Active Folders</span>
-              <span className="font-semibold text-slate-800 dark:text-slate-200">{folders.length} folders</span>
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-white/[0.06] flex items-center justify-between">
+              <span className="text-slate-500 dark:text-slate-400">Active Folders</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200 font-mono">{folders.length} folders</span>
             </div>
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800 flex items-center justify-between">
-              <span className="text-slate-500">Cipher Protocol</span>
-              <span className="font-mono text-indigo-400 font-semibold">AES-256-GCM</span>
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-white/[0.06] flex items-center justify-between">
+              <span className="text-slate-500 dark:text-slate-400">Encryption Standard</span>
+              <span className="font-mono text-emerald-600 dark:text-neon-mint font-bold">AES-256-GCM</span>
             </div>
           </div>
 
-          <div className="pt-2 border-t border-slate-100 dark:border-vault-800">
-            <Link to="/settings/storage" className="text-xs font-semibold text-indigo-500 hover:underline flex items-center gap-1">
+          <div className="pt-2 border-t border-slate-200 dark:border-white/[0.06]">
+            <Link to="/settings/storage" className="text-xs font-semibold text-emerald-600 dark:text-neon-mint hover:underline flex items-center gap-1">
               <span>View storage settings & cloud status</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>
@@ -234,37 +247,37 @@ export const Dashboard: React.FC = () => {
         <Card className="p-6 lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <Clock className="w-4 h-4 text-sky-400" /> Recent Document Uploads
+              <Clock className="w-4 h-4 text-cyan-500 dark:text-neon-cyan" /> Recent Document Uploads
             </h3>
-            <Link to="/documents" className="text-xs font-semibold text-indigo-500 hover:underline">
+            <Link to="/documents" className="text-xs font-semibold text-emerald-600 dark:text-neon-mint hover:underline">
               View all ({totalDocuments}) →
             </Link>
           </div>
 
           {recentlyUploaded.length === 0 ? (
-            <div className="p-8 text-center rounded-2xl bg-slate-50 dark:bg-vault-850/50 border border-dashed border-slate-200 dark:border-vault-800">
-              <UploadCloud className="w-8 h-8 text-indigo-400 mx-auto mb-2" />
+            <div className="p-10 text-center rounded-2xl bg-slate-50 dark:bg-obsidian-850/60 border border-dashed border-slate-200 dark:border-white/[0.08]">
+              <UploadCloud className="w-8 h-8 text-emerald-500 dark:text-neon-mint mx-auto mb-2 opacity-80" />
               <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">Your vault is clean</p>
               <p className="text-[11px] text-slate-400 mt-1">Upload your first confidential file to get started.</p>
             </div>
           ) : (
-            <div className="divide-y divide-slate-100 dark:divide-vault-800">
+            <div className="divide-y divide-slate-100 dark:divide-white/[0.06]">
               {recentlyUploaded.map((doc) => (
                 <div
                   key={doc.id}
                   onClick={() => setSelectedDocForPreview(doc)}
-                  className="py-3 flex items-center justify-between gap-3 hover:bg-slate-50 dark:hover:bg-vault-850/60 p-2 rounded-xl transition-colors cursor-pointer group"
+                  className="py-3 flex items-center justify-between gap-3 hover:bg-slate-50 dark:hover:bg-obsidian-800/60 p-2.5 rounded-xl transition-all cursor-pointer group"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400 group-hover:scale-105 transition-transform">
+                    <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-500 dark:text-neon-mint group-hover:scale-105 transition-transform">
                       <FileText className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-indigo-400 transition-colors">
+                      <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-emerald-500 dark:group-hover:text-neon-mint transition-colors">
                         {doc.title || doc.original_filename}
                       </p>
                       <div className="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">
-                        <span>{(doc.file_size / 1024).toFixed(1)} KB</span>
+                        <span className="font-mono">{(doc.file_size / 1024).toFixed(1)} KB</span>
                         <span>•</span>
                         <span>{new Date(doc.created_at).toLocaleDateString()}</span>
                       </div>
@@ -275,7 +288,7 @@ export const Dashboard: React.FC = () => {
                     <Badge variant="outline" size="sm">
                       AES-256
                     </Badge>
-                    <ArrowUpRight className="w-4 h-4 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-neon-mint transition-colors" />
                   </div>
                 </div>
               ))}
@@ -290,7 +303,7 @@ export const Dashboard: React.FC = () => {
           <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
             <Activity className="w-4 h-4 text-purple-400" /> Recent Security & Vault Activity
           </h3>
-          <Link to="/activity" className="text-xs font-semibold text-indigo-500 hover:underline">
+          <Link to="/activity" className="text-xs font-semibold text-emerald-600 dark:text-neon-mint hover:underline">
             Full audit trail →
           </Link>
         </div>
@@ -302,14 +315,14 @@ export const Dashboard: React.FC = () => {
             {recentActivities.map((act) => (
               <div
                 key={act.id}
-                className="p-3 rounded-xl bg-slate-50 dark:bg-vault-850/60 border border-slate-200/60 dark:border-vault-800 flex items-center justify-between gap-2"
+                className="p-3 rounded-xl bg-slate-50 dark:bg-obsidian-850/70 border border-slate-200/80 dark:border-white/[0.06] flex items-center justify-between gap-2 hover:border-emerald-500/30 transition-colors"
               >
                 <div className="min-w-0">
-                  <p className="font-medium text-slate-800 dark:text-slate-200 truncate">
+                  <p className="font-semibold text-slate-800 dark:text-slate-200 truncate">
                     {act.action.replace(/_/g, ' ')}
                     {act.entity_name ? ` • "${act.entity_name}"` : ''}
                   </p>
-                  <p className="text-[10px] text-slate-400">
+                  <p className="text-[10px] text-slate-400 mt-0.5">
                     {new Date(act.created_at).toLocaleString([], {
                       month: 'short',
                       day: 'numeric',

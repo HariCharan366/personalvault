@@ -49,7 +49,9 @@ export const StorageSettings: React.FC = () => {
           <div className="flex items-center gap-3">
             <div
               className={`p-3 rounded-2xl ${
-                isConfigured ? 'bg-emerald-500/10 text-emerald-400' : 'bg-indigo-500/10 text-indigo-400'
+                isConfigured
+                  ? 'bg-emerald-500/10 text-emerald-500 dark:text-neon-mint'
+                  : 'bg-emerald-500/10 text-emerald-500 dark:text-neon-mint'
               }`}
             >
               <Cloud className="w-6 h-6" />
@@ -101,17 +103,17 @@ export const StorageSettings: React.FC = () => {
       {/* Storage Quota Information */}
       <Card className="p-6 space-y-4">
         <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-          <HardDrive className="w-4 h-4 text-sky-400" /> Storage Capacity & Quota
+          <HardDrive className="w-4 h-4 text-cyan-400" /> Storage Capacity & Quota
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-          <div className="p-4 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800">
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-obsidian-900/60 border border-slate-200 dark:border-white/[0.08]">
             <span className="text-slate-500 block mb-1">Account Tier</span>
             <p className="text-base font-bold text-slate-900 dark:text-slate-100">Personal Vault Pro</p>
             <p className="text-[11px] text-slate-400 mt-1">Unlimited encrypted document uploads up to quota</p>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800">
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-obsidian-900/60 border border-slate-200 dark:border-white/[0.08]">
             <span className="text-slate-500 block mb-1">Total Dedicated Quota</span>
             <p className="text-base font-bold text-slate-900 dark:text-slate-100">{quotaGB} GB</p>
             <p className="text-[11px] text-slate-400 mt-1">Managed via PostgreSQL profiles table</p>
@@ -122,27 +124,27 @@ export const StorageSettings: React.FC = () => {
       {/* Supabase Connection Setup Instructions */}
       <Card className="p-6 space-y-4">
         <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-          <Server className="w-4 h-4 text-indigo-400" /> Connecting Supabase Cloud (Optional / Production)
+          <Server className="w-4 h-4 text-emerald-500 dark:text-neon-mint" /> Connecting Supabase Cloud (Optional / Production)
         </h3>
         <p className="text-xs text-slate-500 dark:text-slate-400">
           To link your own Supabase project, follow these two quick steps:
         </p>
 
         <div className="space-y-3 text-xs text-slate-300">
-          <div className="p-3.5 rounded-xl bg-slate-900/70 border border-slate-700/60 font-mono space-y-1.5">
-            <p className="text-indigo-400 font-bold">1. Apply Database Migrations:</p>
+          <div className="p-3.5 rounded-xl bg-obsidian-950/80 border border-white/[0.08] font-mono space-y-1.5">
+            <p className="text-emerald-400 font-bold">1. Apply Database Migrations:</p>
             <p className="text-slate-400 text-[11px]">
               Open your Supabase Dashboard → SQL Editor, and execute the SQL file located in:
             </p>
-            <code className="text-amber-300 block text-[11px]">
+            <code className="text-neon-mint block text-[11px]">
               supabase/migrations/20261108000000_personalvault_schema.sql
             </code>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-900/70 border border-slate-700/60 font-mono space-y-1.5">
-            <p className="text-indigo-400 font-bold">2. Set Environment Variables in .env:</p>
+          <div className="p-3.5 rounded-xl bg-obsidian-950/80 border border-white/[0.08] font-mono space-y-1.5">
+            <p className="text-emerald-400 font-bold">2. Set Environment Variables in .env:</p>
             <p className="text-slate-400 text-[11px]">Add your project URL and public anon key:</p>
-            <div className="text-[11px] text-emerald-400 space-y-0.5">
+            <div className="text-[11px] text-neon-mint space-y-0.5">
               <p>VITE_SUPABASE_URL=https://your-project-id.supabase.co</p>
               <p>VITE_SUPABASE_ANON_KEY=eyJhbGciOi...</p>
             </div>

@@ -254,7 +254,7 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
       maxWidth="2xl"
       title={
         <div className="flex items-center gap-2">
-          <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500">
+          <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-neon-mint">
             <UploadCloud className="w-5 h-5" />
           </div>
           <span>Upload Encrypted Documents</span>
@@ -278,8 +278,8 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
           onClick={() => fileInputRef.current?.click()}
           className={`cursor-pointer border-2 border-dashed rounded-2xl p-6 text-center transition-all duration-200 ${
             isDragOver
-              ? 'border-indigo-500 bg-indigo-500/10'
-              : 'border-slate-300 dark:border-vault-700 hover:border-indigo-500/50 hover:bg-slate-50 dark:hover:bg-vault-850/50'
+              ? 'border-emerald-500 dark:border-neon-mint bg-emerald-500/10'
+              : 'border-slate-300 dark:border-white/[0.1] hover:border-emerald-500/50 hover:bg-slate-50 dark:hover:bg-obsidian-850/50'
           }`}
         >
           <input
@@ -289,7 +289,7 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
             className="hidden"
             onChange={(e) => e.target.files && handleFilesSelected(e.target.files)}
           />
-          <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 flex items-center justify-center mx-auto mb-3">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-neon-mint flex items-center justify-center mx-auto mb-3 shadow-sm">
             <UploadCloud className="w-6 h-6" />
           </div>
           <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
@@ -301,15 +301,15 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
         </div>
 
         {/* Organization & Metadata Fields */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-800">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-obsidian-900/60 border border-slate-200 dark:border-white/[0.06] shadow-inner">
           <div>
-            <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1 flex items-center gap-1">
-              <FolderIcon className="w-3.5 h-3.5 text-sky-400" /> Destination Folder
+            <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1 flex items-center gap-1.5">
+              <FolderIcon className="w-3.5 h-3.5 text-cyan-400" /> Destination Folder
             </label>
             <select
               value={selectedFolderId}
               onChange={(e) => setSelectedFolderId(e.target.value)}
-              className="w-full text-xs rounded-lg border border-slate-300 dark:border-vault-700 bg-white dark:bg-vault-900 px-2.5 py-1.5 text-slate-800 dark:text-slate-200 outline-none"
+              className="w-full text-xs rounded-lg border border-slate-300 dark:border-white/[0.08] bg-white dark:bg-obsidian-850 px-2.5 py-1.5 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint transition-colors"
             >
               <option value="">Root (No Folder)</option>
               {folders.map((f) => (
@@ -321,27 +321,27 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1 flex items-center gap-1">
+            <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1 flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5 text-amber-400" /> Expiry Date (Optional)
             </label>
             <input
               type="date"
               value={expiryDate}
               onChange={(e) => setExpiryDate(e.target.value)}
-              className="w-full text-xs rounded-lg border border-slate-300 dark:border-vault-700 bg-white dark:bg-vault-900 px-2.5 py-1.5 text-slate-800 dark:text-slate-200 outline-none"
+              className="w-full text-xs rounded-lg border border-slate-300 dark:border-white/[0.08] bg-white dark:bg-obsidian-850 px-2.5 py-1.5 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1 flex items-center gap-1">
-              <Tag className="w-3.5 h-3.5 text-purple-400" /> Tags (Comma separated)
+            <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1 flex items-center gap-1.5">
+              <Tag className="w-3.5 h-3.5 text-emerald-400" /> Tags (Comma separated)
             </label>
             <input
               type="text"
               placeholder="e.g. passport, urgent, tax"
               value={tagsInput}
               onChange={(e) => setTagsInput(e.target.value)}
-              className="w-full text-xs rounded-lg border border-slate-300 dark:border-vault-700 bg-white dark:bg-vault-900 px-2.5 py-1.5 text-slate-800 dark:text-slate-200 outline-none"
+              className="w-full text-xs rounded-lg border border-slate-300 dark:border-white/[0.08] bg-white dark:bg-obsidian-850 px-2.5 py-1.5 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint transition-colors"
             />
           </div>
         </div>
@@ -352,10 +352,10 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
             {queue.map((item) => (
               <div
                 key={item.id}
-                className="p-3 rounded-xl border border-slate-200 dark:border-vault-800 bg-white dark:bg-vault-900 flex items-center justify-between gap-3 text-xs"
+                className="p-3 rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white dark:bg-obsidian-850/80 flex items-center justify-between gap-3 text-xs backdrop-blur-sm"
               >
                 <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                  <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-500">
+                  <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 dark:text-neon-mint">
                     <File className="w-4 h-4" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -375,9 +375,9 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
                     )}
 
                     {(item.status === 'encrypting' || item.status === 'uploading') && (
-                      <div className="w-full bg-slate-200 dark:bg-vault-800 rounded-full h-1.5 mt-1.5 overflow-hidden">
+                      <div className="w-full bg-slate-200 dark:bg-obsidian-950 rounded-full h-1.5 mt-1.5 overflow-hidden">
                         <div
-                          className="bg-indigo-600 h-1.5 rounded-full transition-all duration-300"
+                          className="bg-gradient-to-r from-emerald-500 to-neon-mint h-1.5 rounded-full transition-all duration-300"
                           style={{ width: `${item.progress}%` }}
                         />
                       </div>
@@ -389,7 +389,7 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
                   {item.status === 'complete' && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
                   {item.status === 'pending' && <Badge variant="outline">Ready</Badge>}
                   {item.status === 'encrypting' && <Badge variant="info">Encrypting</Badge>}
-                  {item.status === 'uploading' && <Badge variant="purple">Uploading</Badge>}
+                  {item.status === 'uploading' && <Badge variant="success">Uploading</Badge>}
                   <button
                     onClick={() => removeItem(item.id)}
                     className="text-slate-400 hover:text-rose-500 transition-colors p-1"
@@ -406,8 +406,8 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
         {/* Action Controls */}
         <div className="flex items-center justify-between pt-2">
           <div className="text-xs text-slate-500 flex items-center gap-1.5">
-            <Lock className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Encrypted with AES-256-GCM + unique IV</span>
+            <Lock className="w-3.5 h-3.5 text-emerald-500 dark:text-neon-mint" />
+            <span className="font-mono text-[11px]">AES-256-GCM zero-knowledge encryption</span>
           </div>
 
           <div className="flex items-center gap-2">

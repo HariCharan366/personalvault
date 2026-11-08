@@ -41,10 +41,10 @@ export const DashboardLayout: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-vault-950 flex items-center justify-center">
+      <div className="min-h-screen bg-obsidian-950 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin" />
-          <p className="text-xs text-slate-400 font-mono tracking-wider">INITIALIZING PERSONALVAULT...</p>
+          <div className="w-10 h-10 border-4 border-emerald-500/20 border-t-neon-mint rounded-full animate-spin" />
+          <p className="text-xs text-neon-mint font-mono tracking-wider">INITIALIZING PERSONALVAULT...</p>
         </div>
       </div>
     );
@@ -55,7 +55,7 @@ export const DashboardLayout: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-vault-950 flex text-slate-900 dark:text-slate-100">
+    <div className="min-h-screen bg-slate-50 dark:bg-obsidian-950 flex text-slate-900 dark:text-slate-100 selection:bg-neon-mint selection:text-obsidian-950">
       {/* Sidebar */}
       <Sidebar
         isOpen={sidebarOpen}

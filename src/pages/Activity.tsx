@@ -71,11 +71,9 @@ export const Activity: React.FC = () => {
   }, [logs, searchQuery, dateRange, activityType]);
 
   const getActionIcon = (action: string) => {
-    if (action.includes('document')) return <FileText className="w-4 h-4 text-indigo-400" />;
+    if (action.includes('document')) return <FileText className="w-4 h-4 text-emerald-500 dark:text-neon-mint" />;
     if (action.includes('vault')) return <Lock className="w-4 h-4 text-amber-400" />;
-    if (action.includes('category') || action.includes('folder'))
-      return <Layers className="w-4 h-4 text-sky-400" />;
-    if (action.includes('favorite')) return <Star className="w-4 h-4 text-purple-400" />;
+    if (action.includes('folder')) return <Layers className="w-4 h-4 text-cyan-400" />;
     return <ActivityIcon className="w-4 h-4 text-slate-400" />;
   };
 
@@ -83,7 +81,7 @@ export const Activity: React.FC = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
-          <ActivityIcon className="w-6 h-6 text-indigo-500" />
+          <ActivityIcon className="w-6 h-6 text-emerald-500 dark:text-neon-mint" />
           <span>Activity Audit Trail</span>
         </h1>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -101,7 +99,7 @@ export const Activity: React.FC = () => {
               placeholder="Search activity, entity name, device..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-700 pl-8 pr-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-indigo-500"
+              className="w-full rounded-xl bg-slate-50 dark:bg-obsidian-900 border border-slate-200 dark:border-white/[0.08] pl-8 pr-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint transition-colors"
             />
           </div>
 
@@ -109,7 +107,7 @@ export const Activity: React.FC = () => {
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value as any)}
-              className="w-full rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-700 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-indigo-500"
+              className="w-full rounded-xl bg-slate-50 dark:bg-obsidian-900 border border-slate-200 dark:border-white/[0.08] px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint transition-colors"
             >
               <option value="all">All Time</option>
               <option value="today">Today</option>
@@ -122,12 +120,11 @@ export const Activity: React.FC = () => {
             <select
               value={activityType}
               onChange={(e) => setActivityType(e.target.value)}
-              className="w-full rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-700 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-indigo-500"
+              className="w-full rounded-xl bg-slate-50 dark:bg-obsidian-900 border border-slate-200 dark:border-white/[0.08] px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint transition-colors"
             >
               <option value="all">All Activity Types</option>
               <option value="document">Documents</option>
               <option value="vault">Vault Security</option>
-              <option value="category">Categories</option>
               <option value="folder">Folders</option>
               <option value="auth">Authentication</option>
             </select>
@@ -138,7 +135,7 @@ export const Activity: React.FC = () => {
       {/* Logs Table / List */}
       {filteredLogs.length === 0 ? (
         <EmptyState
-          icon={<ActivityIcon className="w-8 h-8 text-indigo-400" />}
+          icon={<ActivityIcon className="w-8 h-8 text-emerald-500 dark:text-neon-mint" />}
           title="No Activity Found"
           description="Actions performed in your vault will be recorded in this audit timeline."
         />
@@ -147,19 +144,19 @@ export const Activity: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-slate-200 dark:border-vault-800 bg-slate-50 dark:bg-vault-850/60 text-slate-500 uppercase tracking-wider text-[11px]">
+                <tr className="border-b border-slate-200 dark:border-white/[0.08] bg-slate-50 dark:bg-obsidian-900/60 text-slate-500 uppercase tracking-wider text-[11px]">
                   <th className="p-3.5 pl-4">Action</th>
                   <th className="p-3.5">Target Entity</th>
                   <th className="p-3.5">Device / Client</th>
                   <th className="p-3.5 pr-4 text-right">Timestamp</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-vault-800">
+              <tbody className="divide-y divide-slate-100 dark:divide-white/[0.04]">
                 {filteredLogs.map((log) => (
-                  <tr key={log.id} className="hover:bg-slate-50 dark:hover:bg-vault-850/40 transition-colors">
+                  <tr key={log.id} className="hover:bg-slate-50 dark:hover:bg-obsidian-850/60 transition-colors">
                     <td className="p-3.5 pl-4">
                       <div className="flex items-center gap-2.5">
-                        <div className="p-2 rounded-lg bg-slate-100 dark:bg-vault-800 shrink-0">
+                        <div className="p-2 rounded-lg bg-slate-100 dark:bg-obsidian-800 shrink-0">
                           {getActionIcon(log.action)}
                         </div>
                         <span className="font-semibold text-slate-900 dark:text-slate-100 capitalize">

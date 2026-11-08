@@ -110,7 +110,7 @@ export const Documents: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
-            <Files className="w-6 h-6 text-indigo-500" />
+            <Files className="w-6 h-6 text-emerald-500 dark:text-neon-mint" />
             <span>Vault Documents</span>
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -120,12 +120,12 @@ export const Documents: React.FC = () => {
 
         {/* View toggles */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center p-1 rounded-xl bg-slate-200 dark:bg-vault-850 border border-slate-300 dark:border-vault-700">
+          <div className="flex items-center p-1 rounded-xl bg-slate-200 dark:bg-obsidian-900 border border-slate-300 dark:border-white/[0.08]">
             <button
               onClick={() => setViewMode('grid')}
               className={`p-1.5 rounded-lg text-xs transition-colors ${
                 viewMode === 'grid'
-                  ? 'bg-white dark:bg-vault-700 text-indigo-500 shadow-sm'
+                  ? 'bg-white dark:bg-obsidian-800 text-emerald-600 dark:text-neon-mint shadow-sm'
                   : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
               }`}
               title="Grid View"
@@ -137,7 +137,7 @@ export const Documents: React.FC = () => {
               onClick={() => setViewMode('list')}
               className={`p-1.5 rounded-lg text-xs transition-colors ${
                 viewMode === 'list'
-                  ? 'bg-white dark:bg-vault-700 text-indigo-500 shadow-sm'
+                  ? 'bg-white dark:bg-obsidian-800 text-emerald-600 dark:text-neon-mint shadow-sm'
                   : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
               }`}
               title="List View"
@@ -160,7 +160,7 @@ export const Documents: React.FC = () => {
               placeholder="Search by title or tag..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-700 pl-8 pr-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-indigo-500"
+              className="w-full rounded-xl bg-slate-50 dark:bg-obsidian-900 border border-slate-200 dark:border-white/[0.08] pl-8 pr-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint transition-colors"
             />
           </div>
 
@@ -169,7 +169,7 @@ export const Documents: React.FC = () => {
             <select
               value={selectedFolder}
               onChange={(e) => setSelectedFolder(e.target.value)}
-              className="w-full rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-700 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-indigo-500"
+              className="w-full rounded-xl bg-slate-50 dark:bg-obsidian-900 border border-slate-200 dark:border-white/[0.08] px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint transition-colors"
             >
               <option value="all">All Folders</option>
               {folders.map((f) => (
@@ -185,7 +185,7 @@ export const Documents: React.FC = () => {
             <select
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
-              className="w-full rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-700 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-indigo-500"
+              className="w-full rounded-xl bg-slate-50 dark:bg-obsidian-900 border border-slate-200 dark:border-white/[0.08] px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint transition-colors"
             >
               <option value="all">All File Types</option>
               <option value="pdf">PDF Documents</option>
@@ -200,7 +200,7 @@ export const Documents: React.FC = () => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="w-full rounded-xl bg-slate-50 dark:bg-vault-850 border border-slate-200 dark:border-vault-700 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-indigo-500"
+              className="w-full rounded-xl bg-slate-50 dark:bg-obsidian-900 border border-slate-200 dark:border-white/[0.08] px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint transition-colors"
             >
               <option value="date_desc">Newest First</option>
               <option value="date_asc">Oldest First</option>
@@ -224,13 +224,13 @@ export const Documents: React.FC = () => {
           {filteredDocuments.map((doc) => (
             <Card
               key={doc.id}
-              className="p-4 hover:border-indigo-500/50 hover:shadow-glow-sm transition-all flex flex-col justify-between group cursor-pointer"
+              className="p-4 hover:border-emerald-500/50 hover:shadow-glow-sm transition-all flex flex-col justify-between group cursor-pointer"
               onClick={() => setPreviewDoc(doc)}
             >
               {/* Card Header */}
               <div>
                 <div className="flex items-start justify-between gap-2 mb-3">
-                  <div className="p-3 rounded-2xl bg-indigo-500/10 text-indigo-500 group-hover:scale-105 transition-transform">
+                  <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-500 dark:text-neon-mint group-hover:scale-105 transition-transform">
                     <FileText className="w-5 h-5" />
                   </div>
                   <div className="flex items-center gap-1">
@@ -254,7 +254,7 @@ export const Documents: React.FC = () => {
                   </div>
                 </div>
 
-                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate group-hover:text-indigo-400 transition-colors">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate group-hover:text-emerald-500 dark:group-hover:text-neon-mint transition-colors">
                   {doc.title || doc.original_filename}
                 </h3>
                 <p className="text-[11px] text-slate-500 truncate mt-0.5">{doc.original_filename}</p>
@@ -265,7 +265,7 @@ export const Documents: React.FC = () => {
                     {doc.tags.slice(0, 2).map((t) => (
                       <span
                         key={t}
-                        className="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-vault-800 text-slate-400"
+                        className="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-obsidian-800 text-slate-400"
                       >
                         #{t}
                       </span>
@@ -275,7 +275,7 @@ export const Documents: React.FC = () => {
               </div>
 
               {/* Card Footer */}
-              <div className="pt-3 mt-3 border-t border-slate-100 dark:border-vault-800 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+              <div className="pt-3 mt-3 border-t border-slate-100 dark:border-white/[0.06] flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
                 <span>{(doc.file_size / 1024).toFixed(1)} KB</span>
 
                 <div className="flex items-center gap-1">
@@ -284,7 +284,7 @@ export const Documents: React.FC = () => {
                       e.stopPropagation();
                       setVersionDoc(doc);
                     }}
-                    className="p-1 text-slate-400 hover:text-indigo-400"
+                    className="p-1 text-slate-400 hover:text-emerald-500 dark:hover:text-neon-mint"
                     title={`Version ${doc.current_version}`}
                   >
                     <History className="w-3.5 h-3.5" />
@@ -300,7 +300,7 @@ export const Documents: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-slate-200 dark:border-vault-800 bg-slate-50 dark:bg-vault-850/60 text-slate-500 uppercase tracking-wider text-[11px]">
+                <tr className="border-b border-slate-200 dark:border-white/[0.08] bg-slate-50 dark:bg-obsidian-900/60 text-slate-500 uppercase tracking-wider text-[11px]">
                   <th className="p-3 pl-4">Name</th>
                   <th className="p-3">Size</th>
                   <th className="p-3">Uploaded</th>
@@ -308,16 +308,16 @@ export const Documents: React.FC = () => {
                   <th className="p-3 pr-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-vault-800">
+              <tbody className="divide-y divide-slate-100 dark:divide-white/[0.04]">
                 {filteredDocuments.map((doc) => (
                   <tr
                     key={doc.id}
                     onClick={() => setPreviewDoc(doc)}
-                    className="hover:bg-slate-50 dark:hover:bg-vault-850/40 cursor-pointer transition-colors"
+                    className="hover:bg-slate-50 dark:hover:bg-obsidian-850/60 cursor-pointer transition-colors"
                   >
                     <td className="p-3 pl-4">
                       <div className="flex items-center gap-2.5">
-                        <FileText className="w-4 h-4 text-indigo-400 shrink-0" />
+                        <FileText className="w-4 h-4 text-emerald-500 dark:text-neon-mint shrink-0" />
                         <span className="font-semibold text-slate-900 dark:text-slate-100 truncate max-w-xs">
                           {doc.title || doc.original_filename}
                         </span>
@@ -334,21 +334,21 @@ export const Documents: React.FC = () => {
                       <div className="flex items-center justify-end gap-1" onClick={(e) => e.stopPropagation()}>
                         <button
                           onClick={() => setPreviewDoc(doc)}
-                          className="p-1.5 text-slate-400 hover:text-indigo-400"
+                          className="p-1.5 text-slate-400 hover:text-emerald-500 dark:hover:text-neon-mint"
                           title="Preview & Decrypt"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => setVersionDoc(doc)}
-                          className="p-1.5 text-slate-400 hover:text-indigo-400"
+                          className="p-1.5 text-slate-400 hover:text-emerald-500 dark:hover:text-neon-mint"
                           title="Versions"
                         >
                           <History className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => setActionDoc(doc)}
-                          className="p-1.5 text-slate-400 hover:text-indigo-400"
+                          className="p-1.5 text-slate-400 hover:text-emerald-500 dark:hover:text-neon-mint"
                           title="Edit"
                         >
                           <Edit className="w-4 h-4" />

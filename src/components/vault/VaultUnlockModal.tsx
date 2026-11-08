@@ -140,7 +140,7 @@ export const VaultUnlockModal: React.FC<VaultUnlockModalProps> = ({ isOpen, onCl
       onClose={onClose}
       title={
         <div className="flex items-center gap-2">
-          <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500">
+          <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-500 dark:text-neon-mint">
             {isUnlocked ? <Unlock className="w-5 h-5" /> : <Lock className="w-5 h-5" />}
           </div>
           <span>
@@ -163,7 +163,7 @@ export const VaultUnlockModal: React.FC<VaultUnlockModalProps> = ({ isOpen, onCl
       {/* 1. INITIALIZE VAULT MODE */}
       {!isVaultInitialized && !generatedPhrase && (
         <form onSubmit={handleInitialize} className="space-y-4">
-          <div className="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-300">
+          <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-600 dark:text-neon-mint">
             <strong>Client-Side Zero-Knowledge:</strong> Your documents are encrypted using AES-256-GCM in your browser.
             Your PIN is never sent to the server.
           </div>
@@ -204,11 +204,11 @@ export const VaultUnlockModal: React.FC<VaultUnlockModalProps> = ({ isOpen, onCl
             </div>
           </div>
 
-          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 p-3 rounded-xl bg-slate-900/80 border border-slate-700/60 font-mono text-xs">
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 p-3 rounded-xl bg-slate-900/80 border border-white/[0.08] font-mono text-xs">
             {generatedPhrase.map((word, idx) => (
-              <div key={idx} className="flex items-center gap-1.5 p-1.5 rounded-lg bg-vault-800 border border-vault-700 text-slate-200">
+              <div key={idx} className="flex items-center gap-1.5 p-1.5 rounded-lg bg-obsidian-850 border border-white/[0.08] text-slate-200">
                 <span className="text-slate-500 text-[10px] w-4">{idx + 1}.</span>
-                <span className="font-semibold text-indigo-300">{word}</span>
+                <span className="font-semibold text-emerald-500 dark:text-neon-mint">{word}</span>
               </div>
             ))}
           </div>
@@ -283,7 +283,7 @@ export const VaultUnlockModal: React.FC<VaultUnlockModalProps> = ({ isOpen, onCl
                 setError(null);
                 setMode('recover');
               }}
-              className="text-xs text-indigo-400 hover:text-indigo-300 hover:underline inline-flex items-center gap-1"
+              className="text-xs text-emerald-600 dark:text-neon-mint hover:underline inline-flex items-center gap-1 cursor-pointer font-medium"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               Forgot PIN? Recover using 12-word phrase

@@ -167,7 +167,7 @@ export const DocumentVersionModal: React.FC<DocumentVersionModalProps> = ({
       maxWidth="lg"
       title={
         <div className="flex items-center gap-2">
-          <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500">
+          <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-500 dark:text-neon-mint">
             <History className="w-5 h-5" />
           </div>
           <span>Version History & Rollback</span>
@@ -177,16 +177,16 @@ export const DocumentVersionModal: React.FC<DocumentVersionModalProps> = ({
     >
       <div className="space-y-6">
         {/* Upload New Version Section */}
-        <form onSubmit={handleUploadNewVersion} className="p-4 rounded-xl border border-slate-200 dark:border-vault-800 bg-slate-50 dark:bg-vault-850 space-y-3">
+        <form onSubmit={handleUploadNewVersion} className="p-4 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-slate-50 dark:bg-obsidian-900/60 space-y-3">
           <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-            <UploadCloud className="w-4 h-4 text-indigo-400" /> Upload New Version (v{document.current_version + 1})
+            <UploadCloud className="w-4 h-4 text-emerald-500 dark:text-neon-mint" /> Upload New Version (v{document.current_version + 1})
           </h4>
 
           <div>
             <input
               type="file"
               onChange={(e) => setNewFile(e.target.files?.[0] || null)}
-              className="text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 cursor-pointer"
+              className="text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-gradient-to-r file:from-emerald-400 file:to-neon-mint file:text-obsidian-950 file:font-bold hover:opacity-90 cursor-pointer"
             />
           </div>
 
@@ -195,7 +195,7 @@ export const DocumentVersionModal: React.FC<DocumentVersionModalProps> = ({
             placeholder="Change summary / notes (optional)"
             value={changeSummary}
             onChange={(e) => setChangeSummary(e.target.value)}
-            className="w-full text-xs rounded-lg border border-slate-300 dark:border-vault-700 bg-white dark:bg-vault-900 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none"
+            className="w-full text-xs rounded-lg border border-slate-300 dark:border-white/[0.08] bg-white dark:bg-obsidian-850 px-3 py-2 text-slate-800 dark:text-slate-200 outline-none focus:border-neon-mint transition-colors"
           />
 
           <Button
@@ -216,14 +216,14 @@ export const DocumentVersionModal: React.FC<DocumentVersionModalProps> = ({
           </h4>
 
           {/* Current Active Version */}
-          <div className="p-3 mb-2 rounded-xl border border-indigo-500/30 bg-indigo-500/5 flex items-center justify-between text-xs">
+          <div className="p-3 mb-2 rounded-xl border border-emerald-500/30 bg-emerald-500/5 flex items-center justify-between text-xs">
             <div className="flex items-center gap-2">
               <Badge variant="success">Current (v{document.current_version})</Badge>
               <span className="text-slate-500">{(document.file_size / 1024).toFixed(1)} KB</span>
               <span>•</span>
               <span className="text-slate-500">{new Date(document.updated_at).toLocaleString()}</span>
             </div>
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 dark:text-neon-mint" />
           </div>
 
           {versions.length === 0 ? (
@@ -233,7 +233,7 @@ export const DocumentVersionModal: React.FC<DocumentVersionModalProps> = ({
               {versions.map((v) => (
                 <div
                   key={v.id}
-                  className="p-3 rounded-xl border border-slate-200 dark:border-vault-800 bg-white dark:bg-vault-900 flex items-center justify-between text-xs gap-3"
+                  className="p-3 rounded-xl border border-slate-200 dark:border-white/[0.06] bg-white dark:bg-obsidian-850/80 flex items-center justify-between text-xs gap-3 backdrop-blur-sm"
                 >
                   <div>
                     <div className="flex items-center gap-2">

@@ -46,22 +46,23 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col justify-center items-center p-4 relative overflow-hidden">
-      {/* Background glow decoration */}
-      <div className="absolute top-1/4 -left-20 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen bg-obsidian-950 text-slate-100 flex flex-col justify-center items-center p-4 relative overflow-hidden">
+      {/* Background radial glow accents */}
+      <div className="absolute top-1/4 -left-24 w-[500px] h-[500px] bg-emerald-500/[0.07] rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-24 w-[500px] h-[500px] bg-neon-cyan/[0.06] rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-radial from-neon-mint/[0.03] to-transparent rounded-full blur-2xl pointer-events-none" />
 
       <div className="w-full max-w-md space-y-6 z-10">
         {/* Brand Header */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-600 to-indigo-400 text-white shadow-xl shadow-indigo-600/30 mb-2">
-            <Shield className="w-7 h-7" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-400 via-neon-mint to-teal-400 text-obsidian-950 shadow-xl shadow-emerald-500/25 mb-2 hover:scale-105 transition-transform duration-300">
+            <Shield className="w-8 h-8 fill-obsidian-950/20" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+          <h1 className="text-3xl font-extrabold tracking-tight text-white">
             PersonalVault
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400">
-            Advanced Secure Personal Cloud Document Storage
+          <p className="text-xs sm:text-sm text-slate-400 max-w-xs mx-auto">
+            Zero-knowledge encrypted cloud locker. Private & client-side sealed.
           </p>
         </div>
 
@@ -70,10 +71,11 @@ export const Login: React.FC = () => {
           <span
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono border ${
               isSupabaseConfigured()
-                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                : 'bg-indigo-500/10 text-indigo-300 border-indigo-500/20'
+                ? 'bg-emerald-500/10 text-neon-mint border-emerald-500/30'
+                : 'bg-cyan-500/10 text-neon-cyan border-cyan-500/20'
             }`}
           >
+            <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
             <ShieldCheck className="w-3.5 h-3.5" />
             {isSupabaseConfigured()
               ? 'Supabase Cloud Connected'
@@ -82,7 +84,7 @@ export const Login: React.FC = () => {
         </div>
 
         {/* Login Card */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-slate-800/80 border border-slate-700/80 shadow-2xl backdrop-blur-xl space-y-5">
+        <div className="p-6 sm:p-8 rounded-3xl bg-obsidian-900/90 border border-white/[0.08] shadow-glass-card backdrop-blur-2xl space-y-5">
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
               label="Account Email"
@@ -111,14 +113,14 @@ export const Login: React.FC = () => {
                 <input
                   type="checkbox"
                   defaultChecked
-                  className="rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-0"
+                  className="rounded border-white/[0.1] bg-obsidian-850 text-emerald-500 focus:ring-0"
                 />
                 Remember this device
               </label>
 
               <Link
                 to="/forgot-password"
-                className="text-indigo-400 hover:text-indigo-300 transition-colors"
+                className="text-emerald-400 hover:text-neon-mint transition-colors"
               >
                 Forgot password?
               </Link>
@@ -142,14 +144,14 @@ export const Login: React.FC = () => {
           </form>
 
           {/* Quick Demo Autofill */}
-          <div className="pt-2 border-t border-slate-700/60">
+          <div className="pt-2 border-t border-white/[0.06]">
             <button
               type="button"
               onClick={handleQuickDemo}
-              className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-medium text-slate-300 bg-slate-700/40 hover:bg-slate-700/70 border border-slate-600/50 transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-semibold text-slate-300 bg-obsidian-850 hover:bg-obsidian-800 border border-white/[0.06] hover:border-neon-mint/30 transition-all cursor-pointer group"
             >
-              <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-              Auto-fill Demo Credentials
+              <Sparkles className="w-3.5 h-3.5 text-neon-mint group-hover:rotate-12 transition-transform" />
+              <span>Auto-fill Demo Credentials</span>
             </button>
           </div>
         </div>
@@ -158,17 +160,16 @@ export const Login: React.FC = () => {
         <div className="text-center text-xs text-slate-400 space-y-2">
           <p>
             Don't have an account yet?{' '}
-            <Link to="/register" className="text-indigo-400 font-semibold hover:underline">
+            <Link to="/register" className="text-neon-mint font-semibold hover:underline">
               Create an account
             </Link>
           </p>
-          <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500">
-            <KeyRound className="w-3 h-3" />
-            <span>End-to-End Encrypted Personal Storage</span>
+          <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500 font-mono">
+            <KeyRound className="w-3 h-3 text-neon-mint" />
+            <span>End-to-End Client Encrypted Personal Storage</span>
           </div>
         </div>
       </div>
     </div>
   );
 };
-
