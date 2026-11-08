@@ -518,6 +518,7 @@ export const api = {
 
   // Active Sessions
   async getActiveSessions(userId: string): Promise<ActiveSession[]> {
+    let sessions: ActiveSession[] = [];
     if (isSupabaseConfigured()) {
       try {
         const { data, error } = await supabase
@@ -526,18 +527,37 @@ export const api = {
           .eq('user_id', userId)
           .order('last_active_at', { ascending: false });
         if (!error && data && data.length > 0) {
-          return data;
+          sessions = data;
         }
       } catch (e) {
         console.warn('Get active sessions from Supabase fallback:', e);
       }
     }
-    const all = await localGetAll<ActiveSession>('active_sessions');
-    const local = all
-      .filter((s) => s.user_id === userId || s.user_id.includes('haricharan') || userId.includes('haricharan'))
-      .sort((a, b) => new Date(b.last_active_at).getTime() - new Date(a.last_active_at).getTime());
+    if (sessions.length === 0) {
+      const all = await localGetAll<ActiveSession>('active_sessions');
+      sessions = all
+        .filter((s) => s.user_id === userId || s.user_id.includes('haricharan') || userId.includes('haricharan'))
+        .sort((a, b) => new Date(b.last_active_at).getTime() - new Date(a.last_active_at).getTime());
+    }
 
-    if (local.length === 0) {
+    // Deduplicate sessions: Keep only the most recent active session per device/browser
+    const seen = new Set<string>();
+    const unique: ActiveSession[] = [];
+    for (const s of sessions) {
+      const key = `${s.device_name || 'PC'}_${s.browser || 'Browser'}_${s.os || 'OS'}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        unique.push(s);
+      } else {
+        // Prune stale duplicate session from previous login on this same device
+        localDelete('active_sessions', s.id).catch(() => {});
+        if (isSupabaseConfigured()) {
+          Promise.resolve(supabase.from('active_sessions').delete().eq('id', s.id)).catch(() => {});
+        }
+      }
+    }
+
+    if (unique.length === 0) {
       const currentSession: ActiveSession = {
         id: crypto.randomUUID(),
         user_id: userId,
@@ -554,7 +574,7 @@ export const api = {
       await localPut('active_sessions', currentSession);
       return [currentSession];
     }
-    return local;
+    return unique;
   },
 
   async upsertActiveSession(session: ActiveSession): Promise<void> {

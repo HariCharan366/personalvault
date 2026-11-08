@@ -58,7 +58,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setUser(u);
             const prof = await api.getProfile(u.id);
             if (prof && mounted) setProfile(prof);
-            setCurrentSessionId(data.session.access_token.slice(-16));
+            const savedSessionId = localStorage.getItem('personalvault_current_session_id');
+            setCurrentSessionId(savedSessionId || data.session.access_token.slice(-16));
             restored = true;
           }
         } catch (e) {
@@ -84,7 +85,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
             setUser(parsed.user);
             setProfile(parsed.profile);
-            setCurrentSessionId(parsed.sessionId || 'sess_default_active');
+            const savedSessionId = localStorage.getItem('personalvault_current_session_id');
+            setCurrentSessionId(savedSessionId || parsed.sessionId || 'sess_default_active');
           } catch {
             localStorage.removeItem(LOCAL_STORAGE_AUTH_KEY);
           }
@@ -256,11 +258,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(mockUser);
     setProfile(prof);
     setCurrentSessionId(sessionId);
+    localStorage.setItem('personalvault_current_session_id', sessionId);
 
     localStorage.setItem(
       LOCAL_STORAGE_AUTH_KEY,
       JSON.stringify({ user: mockUser, profile: prof, sessionId })
     );
+
+    // Invalidate any previous session for this device
+    try {
+      const prev = await api.getActiveSessions(localUserId);
+      for (const s of prev) {
+        if (s.device_name === device.deviceName || s.ip_address === ip) {
+          await api.revokeSession(s.id);
+        }
+      }
+    } catch {
+      // ignore
+    }
 
     // Record login
     await api.recordLogin({
@@ -334,18 +349,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     const userId = user?.id;
-    const sessId = currentSessionId;
+    const sessId = currentSessionId || localStorage.getItem('personalvault_current_session_id');
     const device = detectDeviceInfo();
 
-    if (userId && sessId) {
-      await api.logActivity({
-        user_id: userId,
-        action: 'logout',
-        entity_type: 'auth',
-        entity_id: sessId,
-        entity_name: device.deviceName,
-      });
-      await api.revokeSession(sessId);
+    if (userId) {
+      if (sessId) {
+        await api.logActivity({
+          user_id: userId,
+          action: 'logout',
+          entity_type: 'auth',
+          entity_id: sessId,
+          entity_name: device.deviceName,
+        });
+        await api.revokeSession(sessId);
+      }
+      try {
+        const allSessions = await api.getActiveSessions(userId);
+        for (const s of allSessions) {
+          if (s.id === sessId || s.is_current || s.device_name === device.deviceName) {
+            await api.revokeSession(s.id);
+          }
+        }
+      } catch (e) {
+        console.warn('Error cleaning up sessions on logout:', e);
+      }
     }
 
     if (isSupabaseConfigured()) {
@@ -357,6 +384,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     localStorage.removeItem(LOCAL_STORAGE_AUTH_KEY);
+    localStorage.removeItem('personalvault_current_session_id');
     setUser(null);
     setProfile(null);
     setCurrentSessionId(null);

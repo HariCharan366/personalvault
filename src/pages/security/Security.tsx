@@ -366,8 +366,8 @@ export const Security: React.FC = () => {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {sessions.map((sess) => {
-              const isCurrent = sess.id === currentSessionId || sess.is_current;
+            {sessions.map((sess, idx) => {
+              const isCurrent = currentSessionId ? sess.id === currentSessionId : idx === 0;
               return (
                 <Card
                   key={sess.id}
