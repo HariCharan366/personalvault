@@ -16,7 +16,6 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON ROUTINES TO anon, authent
 -- 2. CONFIRM USER EMAIL FOR HARICHARAN SO SUPABASE AUTH SESSION SUCCEEDS
 UPDATE auth.users 
 SET email_confirmed_at = COALESCE(email_confirmed_at, now()),
-    confirmed_at = COALESCE(confirmed_at, now()),
     updated_at = now()
 WHERE email = 'panduhari718@gmail.com';
 
