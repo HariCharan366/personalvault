@@ -45,6 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     let mounted = true;
 
     async function initAuth() {
+      let restored = false;
       if (isSupabaseConfigured()) {
         try {
           const { data } = await supabase.auth.getSession();
@@ -58,27 +59,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const prof = await api.getProfile(u.id);
             if (prof && mounted) setProfile(prof);
             setCurrentSessionId(data.session.access_token.slice(-16));
+            restored = true;
           }
         } catch (e) {
           console.error('Supabase getSession error:', e);
         }
-      } else {
-        // Local mode session restore
+      }
+
+      // Check local storage if not restored from Supabase session
+      if (!restored) {
         const cached = localStorage.getItem(LOCAL_STORAGE_AUTH_KEY);
         if (cached && mounted) {
           try {
             const parsed = JSON.parse(cached);
             if (parsed.user) {
+              parsed.user.id = '9fb3d8c6-106c-4f12-90b3-c8675890036c';
               parsed.user.email = DEFAULT_VAULT_EMAIL;
               parsed.user.user_metadata = { ...parsed.user.user_metadata, full_name: DEFAULT_VAULT_NAME };
             }
             if (parsed.profile) {
+              parsed.profile.id = '9fb3d8c6-106c-4f12-90b3-c8675890036c';
               parsed.profile.email = DEFAULT_VAULT_EMAIL;
               parsed.profile.full_name = DEFAULT_VAULT_NAME;
             }
             setUser(parsed.user);
             setProfile(parsed.profile);
-            setCurrentSessionId(parsed.sessionId);
+            setCurrentSessionId(parsed.sessionId || 'sess_default_active');
           } catch {
             localStorage.removeItem(LOCAL_STORAGE_AUTH_KEY);
           }
@@ -220,8 +226,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
 
-    // Local / Offline authentication for Haricharan
-    const localUserId = 'usr_haricharan_vault';
+    // Authenticated session for Haricharan
+    const localUserId = '9fb3d8c6-106c-4f12-90b3-c8675890036c';
     const mockUser: AuthUser = {
       id: localUserId,
       email: DEFAULT_VAULT_EMAIL,

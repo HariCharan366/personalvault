@@ -11,16 +11,15 @@ Neither Supabase nor any cloud host can view, inspect, or decrypt your personal 
 
 - **Client-Side Zero-Knowledge Cryptography**:
   - **AES-256-GCM**: Document ciphertext and per-file 128-bit authentication tags.
-  - **PBKDF2 Key Derivation**: Derives a 256-bit Key Encryption Key (KEK) from your master Vault PIN using SHA-256 and **100,000 iterations** with a 32-byte CSPRNG salt.
+  - **PBKDF2 Key Derivation**: Derives a 256-bit Key Encryption Key (KEK) from your master password using SHA-256 and **100,000 iterations** with a 32-byte CSPRNG salt.
   - **Envelope Encryption**: Each document generates a unique ephemeral Data Encryption Key (DEK) wrapped by the KEK.
   - **Integrity Validation & Tamper Proofing**: Modifications to encrypted bytes trigger an immediate authentication failure.
-  - **12-Word Mnemonic Recovery Phrase**: Zero-knowledge emergency recovery mechanism in case the vault PIN is forgotten.
 - **In-Memory Key Residency**:
   - Raw derived encryption keys are stored exclusively in transient browser memory and are **never** persisted to localStorage, cookies, or remote databases.
-  - Configurable inactivity auto-lock (5, 15, 30, 60 minutes) automatically flushes keys from memory.
-  - Immediate manual lock button.
-- **Complete Document Management**:
+  - Seamless transparent encryption and decryption upon authenticated login.
+- **Complete Document & Folder Management**:
   - Drag-and-drop multiple file uploads with live progress.
+  - Arbitrary nested directory organization (create subfolders inside folders).
   - Real-time SHA-256 duplicate detection before upload.
   - Instant in-browser decryption & preview for PDFs, Images (PNG, JPG, WEBP), and text/CSV records.
   - Full Document Versioning (upload revisions, audit changes, rollback to prior versions).
@@ -81,13 +80,12 @@ VITE_STORAGE_BUCKET=vault-documents
 VITE_APP_NAME=PersonalVault
 ```
 
-> **Note**: If you haven't created a Supabase project yet, PersonalVault will run in **Local Sandbox Mode** with full AES-256-GCM encryption enabled via client storage!
+> **Note**: If you haven't created a Supabase project yet, PersonalVault runs in **Local Sandbox Mode** with full AES-256-GCM client encryption enabled via IndexedDB!
 
 ### 3. Run Development Server
 ```bash
 npm run dev
 ```
-Open your browser at `http://localhost:5173`.
 
 ### 4. Run Test Suite
 Execute the Vitest automated test suite:
@@ -108,26 +106,20 @@ Follow these steps to connect your own Supabase project:
 
 ### Step 1: Create a Supabase Project
 1. Log in to [supabase.com](https://supabase.com) and create a new project.
-2. Note your **Project URL** and **anon public key** from `Settings` -> `API`.
+2. Note your **Project URL** and **anon public key** from `Project Settings` -> `API`.
 
 ### Step 2: Apply Database Schema & RLS Migrations
 1. In the Supabase Dashboard, open the **SQL Editor**.
 2. Open the file `supabase/migrations/20261108000000_personalvault_schema.sql` from this repository.
 3. Paste the contents into the SQL Editor and click **Run**.
 4. This will create:
-   - 11 relational tables (`profiles`, `vault_settings`, `categories`, `folders`, `documents`, `document_versions`, `document_tags`, `activity_logs`, `login_history`, `active_sessions`, `notifications`)
-   - 8 pre-seeded default categories (Identity, Education, Banking, Medical, Employment, Personal, Government, Other)
-   - Triggers for user creation and updated timestamps
-   - Strict **Row Level Security (RLS)** policies ensuring user isolation
-   - Private storage bucket `vault-documents` with access policies restricted to `auth.uid() = foldername`
+   - Relational tables (`profiles`, `folders`, `documents`, `document_versions`, `activity_logs`, `login_history`, `active_sessions`, `notifications`)
+   - Strict **Row Level Security (RLS)** policies ensuring complete user isolation
+   - Private storage bucket `vault-documents` with access policies restricted to authenticated owners
 
-### Step 3: Update `.env`
-Update `.env` with your real credentials:
-```env
-VITE_SUPABASE_URL=https://<your-project-id>.supabase.co
-VITE_SUPABASE_ANON_KEY=<your-anon-key>
-```
-Restart `npm run dev`. PersonalVault will now connect directly to your live Supabase cloud!
+### Step 3: Create Private Storage Bucket
+1. Go to **Storage** -> **New bucket**.
+2. Name: `vault-documents` (Private).
 
 ---
 
@@ -135,37 +127,36 @@ Restart `npm run dev`. PersonalVault will now connect directly to your live Supa
 
 ```
 +-------------------------------------------------------------+
-|                     User Vault PIN                          |
+|                     Master Password                         |
 +-------------------------------------------------------------+
                                |
                    PBKDF2-HMAC-SHA256 (100,000 iter)
                    Salt: 32-byte CSPRNG
                                |
                                v
-               +-------------------------------+
-               | Key Encryption Key (KEK, 256) |
-               +-------------------------------+
+                +-------------------------------+
+                | Key Encryption Key (KEK, 256) |
+                +-------------------------------+
                                |
-        +----------------------+----------------------+
-        |                                             |
-   AES-256-GCM Wrap                              AES-256-GCM Wrap
-        |                                             |
-        v                                             v
+         +----------------------+----------------------+
+         |                                             |
+    AES-256-GCM Wrap                              AES-256-GCM Wrap
+         |                                             |
+         v                                             v
 +-------------------------------+             +-------------------------------+
 | Wrapped DEK 1                 |             | Wrapped DEK 2                 |
 +-------------------------------+             +-------------------------------+
-        |                                             |
-   AES-256-GCM (12-byte IV)                      AES-256-GCM (12-byte IV)
-        |                                             |
-        v                                             v
+         |                                             |
+    AES-256-GCM (12-byte IV)                      AES-256-GCM (12-byte IV)
+         |                                             |
+         v                                             v
 [ Encrypted Document Ciphertext ]             [ Encrypted Document Ciphertext ]
 ```
 
-1. **Vault Master PIN**: Master secret chosen by the user. Never stored or sent across the network.
-2. **KEK (Key Encryption Key)**: Derived on demand in browser memory using 100,000 PBKDF2 iterations.
-3. **DEK (Data Encryption Key)**: Random 256-bit AES key generated for each document.
+1. **Master Password**: Secret entered at login. Never stored in plaintext or sent raw across the network.
+2. **KEK (Key Encryption Key)**: Derived on demand in browser memory using 100,000 PBKDF2 iterations with a 32-byte CSPRNG salt.
+3. **DEK (Data Encryption Key)**: Random 256-bit AES key generated for each uploaded document.
 4. **Ciphertext Storage**: Uploaded to private cloud storage as an encrypted binary blob with a 128-bit authentication tag.
-5. **Zero-Knowledge Recovery**: 12-word mnemonic phrase derived using CSPRNG entropy allows resetting the PIN if forgotten without exposing keys to third parties.
 
 ---
 
@@ -173,22 +164,18 @@ Restart `npm run dev`. PersonalVault will now connect directly to your live Supa
 
 | Route | Description |
 |---|---|
-| `/login` | Account login with device and audit detection |
-| `/register` | Account creation |
-| `/forgot-password` | Password recovery request |
-| `/reset-password` | Set new account password |
-| `/dashboard` | Real-time statistics, storage breakdown chart, quick upload, and recent activity |
+| `/login` | Minimalist master password entry |
+| `/dashboard` | Storage overview, quick upload, and recent activity |
 | `/documents` | Full document manager (Grid/List, filter by folder & file type, sort, versions) |
 | `/documents/:id` | Detailed document inspector, cryptographic hash, and version history |
-| `/folders` | Directory manager with nested subfolder support |
-| `/vault` | Vault PIN settings, auto-lock timeout, and cryptographic specs |
+| `/folders` | Directory manager with nested subfolder hierarchy support |
 | `/activity` | Tamper-resistant audit trail with date/type filtering |
 | `/security/login-history` | Authentication audit log with CSV export |
 | `/security/active-sessions` | Session management and remote device revocation |
 | `/trash` | Recycle bin with restore and permanent cloud shredding |
 | `/notifications` | Expiry notifications, upload confirmations, and security alerts |
-| `/settings/profile` | Profile details |
-| `/settings/security` | Password update and 2FA configuration |
+| `/settings/profile` | Profile name and email settings |
+| `/settings/security` | Master password updates |
 | `/settings/storage` | Storage quota breakdown and Supabase Cloud connection status |
 
 ---
@@ -197,20 +184,17 @@ Restart `npm run dev`. PersonalVault will now connect directly to your live Supa
 
 1. Push your repository to GitHub:
    ```bash
-   git init
-   git add .
-   git commit -m "PersonalVault production release"
-   git branch -M main
-   git remote add origin https://github.com/your-username/PersonalVault.git
-   git push -u origin main
+   git remote add origin https://github.com/<your-username>/personalvault.git
+   git push -u origin master
    ```
 2. Log in to [Vercel](https://vercel.com) and click **Add New Project**.
-3. Import the GitHub repository.
+3. Import the `personalvault` GitHub repository.
 4. In the **Environment Variables** section, add:
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_ANON_KEY`
    - `VITE_STORAGE_BUCKET`
-5. Click **Deploy**. Vercel will build and deploy the production application globally with HTTPS.
+   - `VITE_APP_NAME`
+5. Click **Deploy**. Vercel will build and deploy the production application globally with HTTPS and automatic SPA client routing.
 
 ---
 

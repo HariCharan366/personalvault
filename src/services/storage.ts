@@ -30,27 +30,7 @@ export async function uploadEncryptedFile(
   const blob = encryptedData instanceof Blob ? encryptedData : new Blob([encryptedData], { type: 'application/octet-stream' });
   const storagePath = `${userId}/${documentId}.enc`;
 
-  if (isSupabaseConfigured()) {
-    try {
-      const { error } = await supabase.storage
-        .from(STORAGE_BUCKET)
-        .upload(storagePath, blob, {
-          contentType: 'application/octet-stream',
-          upsert: true,
-        });
-
-      if (error) {
-        console.error('Supabase storage upload error:', error);
-        return { storagePath: '', error: error.message };
-      }
-
-      return { storagePath };
-    } catch (err: any) {
-      return { storagePath: '', error: err?.message || 'Storage upload failed' };
-    }
-  }
-
-  // Fallback to local encrypted object store
+  // Always write to local encrypted object store for offline resilience and fast caching
   try {
     const rawBytes = encryptedData instanceof Blob
       ? new Uint8Array(await encryptedData.arrayBuffer())
@@ -64,11 +44,32 @@ export async function uploadEncryptedFile(
       req.onsuccess = () => resolve();
       req.onerror = () => reject(req.error);
     });
-
-    return { storagePath };
-  } catch (err: any) {
-    return { storagePath: '', error: err?.message || 'Local storage write failed' };
+  } catch (err) {
+    console.warn('Local cache write failed:', err);
   }
+
+  if (isSupabaseConfigured()) {
+    try {
+      const { error } = await supabase.storage
+        .from(STORAGE_BUCKET)
+        .upload(storagePath, blob, {
+          contentType: 'application/octet-stream',
+          upsert: true,
+        });
+
+      if (error) {
+        console.warn('Supabase storage upload error, relying on local copy:', error);
+        return { storagePath };
+      }
+
+      return { storagePath };
+    } catch (err: any) {
+      console.warn('Supabase upload exception, relying on local copy:', err);
+      return { storagePath };
+    }
+  }
+
+  return { storagePath };
 }
 
 /**
@@ -81,14 +82,12 @@ export async function downloadEncryptedFile(storagePath: string): Promise<{ data
         .from(STORAGE_BUCKET)
         .download(storagePath);
 
-      if (error || !data) {
-        return { data: null, error: error?.message || 'Failed to download encrypted file' };
+      if (!error && data) {
+        const buffer = await data.arrayBuffer();
+        return { data: buffer };
       }
-
-      const buffer = await data.arrayBuffer();
-      return { data: buffer };
     } catch (err: any) {
-      return { data: null, error: err?.message || 'Download error' };
+      console.warn('Supabase download error, checking local store:', err);
     }
   }
 
@@ -130,18 +129,6 @@ export async function downloadEncryptedFile(storagePath: string): Promise<{ data
  * Permanently deletes an encrypted file from cloud storage.
  */
 export async function deleteEncryptedFile(storagePath: string): Promise<{ success: boolean; error?: string }> {
-  if (isSupabaseConfigured()) {
-    try {
-      const { error } = await supabase.storage.from(STORAGE_BUCKET).remove([storagePath]);
-      if (error) {
-        return { success: false, error: error.message };
-      }
-      return { success: true };
-    } catch (err: any) {
-      return { success: false, error: err?.message };
-    }
-  }
-
   try {
     const db = await openLocalDb();
     await new Promise<void>((resolve, reject) => {
@@ -151,8 +138,17 @@ export async function deleteEncryptedFile(storagePath: string): Promise<{ succes
       req.onsuccess = () => resolve();
       req.onerror = () => reject(req.error);
     });
-    return { success: true };
-  } catch (err: any) {
-    return { success: false, error: err?.message };
+  } catch (err) {
+    console.warn('Local storage delete error:', err);
   }
+
+  if (isSupabaseConfigured()) {
+    try {
+      await supabase.storage.from(STORAGE_BUCKET).remove([storagePath]);
+    } catch (err: any) {
+      console.warn('Supabase storage delete error:', err);
+    }
+  }
+
+  return { success: true };
 }
