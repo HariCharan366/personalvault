@@ -18,6 +18,8 @@ import {
   Clock,
   Radio,
   FileSpreadsheet,
+  RefreshCw,
+  Loader2,
 } from 'lucide-react';
 import type { LoginHistoryItem, ActiveSession } from '@/types';
 
@@ -56,7 +58,7 @@ export const Security: React.FC = () => {
 
   useEffect(() => {
     loadData();
-  }, [user]);
+  }, [user, location.pathname]);
 
   // Filter login history
   const filteredHistory = useMemo(() => {
@@ -155,6 +157,16 @@ export const Security: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={loadData}
+            isLoading={isLoading}
+            leftIcon={<RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />}
+            title="Refresh Security Log"
+          >
+            Refresh
+          </Button>
           <Button
             variant="outline"
             size="sm"
@@ -281,7 +293,14 @@ export const Security: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-white/[0.06]">
-                  {filteredHistory.length === 0 ? (
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan={6} className="p-8 text-center text-slate-400">
+                        <Loader2 className="w-6 h-6 animate-spin mx-auto text-emerald-500 dark:text-neon-mint mb-2" />
+                        <p className="text-xs font-semibold">Loading security audit records...</p>
+                      </td>
+                    </tr>
+                  ) : filteredHistory.length === 0 ? (
                     <tr>
                       <td colSpan={6} className="p-8 text-center text-slate-400">
                         No login events matched the selected filters.
@@ -294,13 +313,20 @@ export const Security: React.FC = () => {
                         className="hover:bg-slate-50 dark:hover:bg-obsidian-800/40 transition-colors"
                       >
                         <td className="p-3.5 pl-4 font-mono text-slate-800 dark:text-slate-200">
-                          {new Date(item.timestamp).toLocaleString([], {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
+                          <div>
+                            {new Date(item.timestamp).toLocaleString([], {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </div>
+                          {item.logout_at && (
+                            <div className="text-[10px] text-slate-400 font-sans mt-0.5">
+                              Logged out: {new Date(item.logout_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </div>
+                          )}
                         </td>
                         <td className="p-3.5">
                           <div className="flex items-center gap-2">
@@ -488,6 +514,14 @@ export const Security: React.FC = () => {
                 <span className="text-slate-500">Session Identifier:</span>
                 <span className="font-mono text-slate-300">{selectedEvent.session_id || '—'}</span>
               </div>
+              {selectedEvent.logout_at && (
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Terminated At:</span>
+                  <span className="font-mono text-amber-300">
+                    {new Date(selectedEvent.logout_at).toLocaleString()} {selectedEvent.logout_reason ? `(${selectedEvent.logout_reason})` : ''}
+                  </span>
+                </div>
+              )}
             </div>
 
             <Button variant="outline" className="w-full" onClick={() => setSelectedEvent(null)}>

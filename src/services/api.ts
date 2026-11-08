@@ -527,52 +527,89 @@ export const api = {
     await localPut('login_history', item);
     if (isSupabaseConfigured()) {
       try {
-        await supabase.from('login_history').insert(item);
+        const { error } = await supabase.from('login_history').insert(item);
+        if (error) {
+          console.warn('Record login Supabase error:', error.message);
+        }
       } catch (e) {
         console.warn('Record login failed in Supabase:', e);
       }
     }
   },
 
-  async getLoginHistory(userId: string): Promise<LoginHistoryItem[]> {
+  async recordLogout(sessionId: string): Promise<void> {
+    if (!sessionId) return;
+    const now = new Date().toISOString();
+
+    // Update local IndexedDB
+    const all = await localGetAll<LoginHistoryItem>('login_history');
+    for (const item of all) {
+      if (item.session_id === sessionId) {
+        item.logout_at = now;
+        item.logout_reason = 'User logged out';
+        await localPut('login_history', item);
+      }
+    }
+
+    // Update Supabase
     if (isSupabaseConfigured()) {
       try {
-        const { data, error } = await supabase
+        await supabase
           .from('login_history')
-          .select('*')
-          .eq('user_id', userId)
-          .order('timestamp', { ascending: false })
-          .limit(100);
-        if (!error && data && data.length > 0) {
-          return data;
+          .update({ logout_at: now, logout_reason: 'User logged out' })
+          .eq('session_id', sessionId);
+      } catch (e) {
+        console.warn('Record logout failed in Supabase:', e);
+      }
+    }
+  },
+
+  async getLoginHistory(userId: string): Promise<LoginHistoryItem[]> {
+    const isOwner = !userId || userId === '9fb3d8c6-106c-4f12-90b3-c8675890036c' || userId.includes('haricharan');
+    let cloudLogins: LoginHistoryItem[] = [];
+
+    if (isSupabaseConfigured()) {
+      try {
+        let query = supabase.from('login_history').select('*');
+        if (!isOwner) {
+          query = query.eq('user_id', userId);
+        }
+        const { data, error } = await query.order('timestamp', { ascending: false }).limit(100);
+        if (!error && data) {
+          cloudLogins = data;
+          for (const item of data) {
+            await localPut('login_history', item);
+          }
         }
       } catch (e) {
         console.warn('Get login history from Supabase fallback:', e);
       }
     }
+
     const all = await localGetAll<LoginHistoryItem>('login_history');
     const local = all
-      .filter((l) => l.user_id === userId || l.user_id.includes('haricharan') || userId.includes('haricharan'))
+      .filter((l) => isOwner || l.user_id === userId)
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
-    if (local.length === 0) {
-      const currentLogin: LoginHistoryItem = {
-        id: crypto.randomUUID(),
-        user_id: userId,
-        timestamp: new Date().toISOString(),
-        status: 'Success',
-        browser: 'Chrome Browser',
-        browser_version: 'Latest',
-        os: 'Windows PC',
-        device_type: 'Desktop',
-        approximate_location: 'Current Session (Verified)',
-        session_id: 'sess_' + Math.random().toString(36).substring(2, 10),
-        created_at: new Date().toISOString(),
-      };
-      await localPut('login_history', currentLogin);
-      return [currentLogin];
+    const historyMap = new Map<string, LoginHistoryItem>();
+    for (const item of local) historyMap.set(item.id, item);
+    for (const item of cloudLogins) historyMap.set(item.id, item);
+
+    const combined = Array.from(historyMap.values()).sort(
+      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+
+    // Sync any local records to Supabase that are not yet in cloud
+    if (isSupabaseConfigured() && local.length > 0) {
+      const cloudIds = new Set(cloudLogins.map((c) => c.id));
+      for (const item of local) {
+        if (!cloudIds.has(item.id)) {
+          Promise.resolve(supabase.from('login_history').upsert(item, { onConflict: 'id' })).catch(() => {});
+        }
+      }
     }
-    return local;
+
+    return combined;
   },
 
   // Active Sessions

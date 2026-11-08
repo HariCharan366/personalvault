@@ -152,7 +152,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Require master password Haricharan@2008
     if (password !== VAULT_MASTER_PASSWORD) {
       await api.recordLogin({
-        user_id: '00000000-0000-0000-0000-000000000000',
+        user_id: '9fb3d8c6-106c-4f12-90b3-c8675890036c',
         status: 'Failed',
         timestamp: new Date().toISOString(),
         ip_address: ip,
@@ -354,6 +354,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (userId) {
       if (sessId) {
+        await api.recordLogout(sessId);
         await api.logActivity({
           user_id: userId,
           action: 'logout',
