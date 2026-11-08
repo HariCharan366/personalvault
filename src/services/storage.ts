@@ -27,7 +27,6 @@ export async function uploadEncryptedFile(
   documentId: string,
   encryptedData: ArrayBuffer | Blob
 ): Promise<{ storagePath: string; error?: string }> {
-  const blob = encryptedData instanceof Blob ? encryptedData : new Blob([encryptedData], { type: 'application/octet-stream' });
   const storagePath = `${userId}/${documentId}.enc`;
 
   // Always write to local encrypted object store for offline resilience and fast caching
@@ -50,9 +49,13 @@ export async function uploadEncryptedFile(
 
   if (isSupabaseConfigured()) {
     try {
+      const payload = encryptedData instanceof Blob
+        ? encryptedData
+        : (encryptedData instanceof Uint8Array ? encryptedData : new Uint8Array(encryptedData));
+
       const { error } = await supabase.storage
         .from(STORAGE_BUCKET)
-        .upload(storagePath, blob, {
+        .upload(storagePath, payload, {
           contentType: 'application/octet-stream',
           upsert: true,
         });

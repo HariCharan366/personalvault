@@ -290,6 +290,7 @@ export const api = {
 
   // Documents
   async getDocuments(userId: string, includeDeleted = false): Promise<DocumentItem[]> {
+    let cloudDocs: DocumentItem[] = [];
     if (isSupabaseConfigured()) {
       try {
         let query = supabase.from('documents').select('*');
@@ -298,18 +299,10 @@ export const api = {
         }
         const { data, error } = await query.order('created_at', { ascending: false });
         if (!error && data) {
+          cloudDocs = data;
           for (const d of data) {
             await localPut('documents', d);
           }
-          // Also sync any local docs that aren't yet in cloud up to Supabase
-          const local = await localGetAll<DocumentItem>('documents');
-          const remoteIds = new Set(data.map((d) => d.id));
-          for (const lDoc of local) {
-            if (!remoteIds.has(lDoc.id)) {
-              Promise.resolve(supabase.from('documents').insert(lDoc)).catch(() => {});
-            }
-          }
-          return data;
         }
       } catch (e) {
         console.warn('Failed to load documents from Supabase:', e);
@@ -321,13 +314,26 @@ export const api = {
       .filter((d) => (d.user_id === userId || d.user_id.includes('haricharan') || userId.includes('haricharan')) && (includeDeleted || !d.is_deleted))
       .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
+    // Merge cloud and local documents so nothing is lost
+    const docMap = new Map<string, DocumentItem>();
+    for (const d of local) docMap.set(d.id, d);
+    for (const d of cloudDocs) docMap.set(d.id, d);
+    const combined = Array.from(docMap.values())
+      .filter((d) => includeDeleted || !d.is_deleted)
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+    // Sync any local docs that are not yet in the cloud (strip tags for schema compatibility)
     if (isSupabaseConfigured() && local.length > 0) {
+      const cloudIds = new Set(cloudDocs.map((d) => d.id));
       for (const d of local) {
-        Promise.resolve(supabase.from('documents').upsert(d, { onConflict: 'id' })).catch(() => {});
+        if (!cloudIds.has(d.id)) {
+          const { tags, ...dbDoc } = d;
+          Promise.resolve(supabase.from('documents').upsert(dbDoc, { onConflict: 'id' })).catch(() => {});
+        }
       }
     }
 
-    return local;
+    return combined;
   },
 
   async getDocumentById(id: string): Promise<DocumentItem | null> {
@@ -353,8 +359,9 @@ export const api = {
     await localPut('documents', newDoc);
     if (isSupabaseConfigured()) {
       try {
-        const { data, error } = await supabase.from('documents').insert(newDoc).select().single();
-        if (!error && data) return data;
+        const { tags, ...dbDoc } = newDoc;
+        const { data, error } = await supabase.from('documents').insert(dbDoc).select().single();
+        if (!error && data) return { ...data, tags: newDoc.tags || [] };
       } catch (e) {
         console.warn('Create document Supabase fallback:', e);
       }
@@ -370,7 +377,10 @@ export const api = {
     }
     if (isSupabaseConfigured()) {
       try {
-        await supabase.from('documents').update({ ...updates, updated_at: new Date().toISOString() }).eq('id', id);
+        const { tags, ...dbUpdates } = updates;
+        if (Object.keys(dbUpdates).length > 0) {
+          await supabase.from('documents').update({ ...dbUpdates, updated_at: new Date().toISOString() }).eq('id', id);
+        }
       } catch (e) {
         console.warn('Update document Supabase fallback:', e);
       }
