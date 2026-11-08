@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useVault } from '@/contexts/VaultContext';
 import { useToast } from '@/contexts/ToastContext';
@@ -25,7 +25,7 @@ interface DocumentUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
   folders: Folder[];
-  currentFolderId?: string;
+  currentFolderId?: string | null;
   onUploadComplete: () => void;
 }
 
@@ -80,6 +80,13 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const abortControllersRef = useRef<Map<string, boolean>>(new Map());
 
+  // Keep destination folder in sync when opened from inside a specific folder
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedFolderId(currentFolderId || '');
+    }
+  }, [isOpen, currentFolderId]);
+
   const handleFilesSelected = async (files: FileList | File[]) => {
     const newItems: QueuedFile[] = [];
 
@@ -110,35 +117,6 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
     }
 
     setQueue((prev) => [...prev, ...newItems]);
-
-    // Check for duplicates in background
-    if (user) {
-      const existingDocs = await api.getDocuments(user.id);
-      for (const item of newItems) {
-        const buffer = await item.file.arrayBuffer();
-        const hash = await calculateSha256(buffer);
-        const dup = existingDocs.find((d) => d.sha256_hash === hash && !d.is_deleted);
-        if (dup) {
-          setQueue((prev) =>
-            prev.map((q) =>
-              q.id === item.id
-                ? {
-                    ...q,
-                    sha256: hash,
-                    isDuplicate: true,
-                    status: 'duplicate_warning',
-                    error: `Matches existing file "${dup.original_filename}"`,
-                  }
-                : q
-            )
-          );
-        } else {
-          setQueue((prev) =>
-            prev.map((q) => (q.id === item.id ? { ...q, sha256: hash } : q))
-          );
-        }
-      }
-    }
   };
 
   const removeItem = (id: string) => {
@@ -362,12 +340,6 @@ export const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
                       <p className="font-semibold text-slate-800 dark:text-slate-200 truncate">{item.name}</p>
                       <span className="text-[10px] text-slate-500">({(item.size / 1024).toFixed(1)} KB)</span>
                     </div>
-
-                    {item.status === 'duplicate_warning' && (
-                      <p className="text-[11px] text-amber-500 flex items-center gap-1 mt-0.5">
-                        <AlertTriangle className="w-3 h-3" /> Duplicate detected. {item.error}
-                      </p>
-                    )}
 
                     {item.status === 'error' && (
                       <p className="text-[11px] text-rose-500 mt-0.5">{item.error}</p>

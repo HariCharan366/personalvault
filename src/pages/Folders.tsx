@@ -22,6 +22,7 @@ import {
   FolderPlus,
   Eye,
   Layers,
+  UploadCloud,
 } from 'lucide-react';
 import type { Folder, DocumentItem } from '@/types';
 
@@ -29,6 +30,7 @@ interface ContextType {
   folders: Folder[];
   documents: DocumentItem[];
   refreshData: () => void;
+  onOpenUpload?: () => void;
 }
 
 const PRESET_COLORS = [
@@ -45,7 +47,7 @@ const PRESET_COLORS = [
 export const Folders: React.FC = () => {
   const { user } = useAuth();
   const { showToast } = useToast();
-  const { folders, documents, refreshData } = useOutletContext<ContextType>();
+  const { folders, documents, refreshData, onOpenUpload } = useOutletContext<ContextType>();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Active folder ID from URL or null (Root)
@@ -349,12 +351,34 @@ export const Folders: React.FC = () => {
               <FileText className="w-4 h-4 text-cyan-400" />
               <span>Files inside "{currentFolder.name}" ({currentDocuments.length})</span>
             </h2>
+            {onOpenUpload && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onOpenUpload}
+                leftIcon={<UploadCloud className="w-3.5 h-3.5 text-emerald-500 dark:text-neon-mint" />}
+              >
+                Upload File Here
+              </Button>
+            )}
           </div>
 
           {currentDocuments.length === 0 ? (
-            <p className="text-xs text-slate-500 italic py-3">
-              No files uploaded directly in this folder yet.
-            </p>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-xl border border-dashed border-slate-200 dark:border-white/[0.08] my-2">
+              <p className="text-xs text-slate-500 italic">
+                No files uploaded directly in this folder yet.
+              </p>
+              {onOpenUpload && (
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={onOpenUpload}
+                  leftIcon={<UploadCloud className="w-3.5 h-3.5" />}
+                >
+                  Upload File Here
+                </Button>
+              )}
+            </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {currentDocuments.map((doc) => (
