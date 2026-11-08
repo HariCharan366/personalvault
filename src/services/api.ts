@@ -221,6 +221,15 @@ export const api = {
   // Folders
   async getFolders(userId: string): Promise<Folder[]> {
     const isOwner = !userId || userId === '9fb3d8c6-106c-4f12-90b3-c8675890036c' || userId.includes('haricharan');
+    const PRUNED_DEFAULT_FOLDER_IDS = new Set([
+      '11111111-aaaa-bbbb-cccc-111111111111',
+      '22222222-aaaa-bbbb-cccc-222222222222',
+      '33333333-aaaa-bbbb-cccc-333333333333',
+      '44444444-aaaa-bbbb-cccc-444444444444',
+      '55555555-aaaa-bbbb-cccc-555555555555',
+      '66666666-aaaa-bbbb-cccc-666666666666',
+    ]);
+
     let cloudFolders: Folder[] = [];
 
     if (isSupabaseConfigured()) {
@@ -231,8 +240,8 @@ export const api = {
         }
         const { data, error } = await query.order('name');
         if (!error && data) {
-          cloudFolders = data;
-          for (const f of data) {
+          cloudFolders = data.filter((f) => !PRUNED_DEFAULT_FOLDER_IDS.has(f.id));
+          for (const f of cloudFolders) {
             await localPut('folders', f);
           }
         }
@@ -242,7 +251,14 @@ export const api = {
     }
 
     const all = await localGetAll<Folder>('folders');
-    const local = all.filter((f) => isOwner || f.user_id === userId);
+    // Clean up any pruned default folders from local IndexedDB
+    for (const f of all) {
+      if (PRUNED_DEFAULT_FOLDER_IDS.has(f.id)) {
+        await localDelete('folders', f.id);
+      }
+    }
+
+    const local = all.filter((f) => (isOwner || f.user_id === userId) && !PRUNED_DEFAULT_FOLDER_IDS.has(f.id));
 
     const folderMap = new Map<string, Folder>();
     for (const f of local) folderMap.set(f.id, f);
@@ -250,11 +266,11 @@ export const api = {
 
     const combined = Array.from(folderMap.values()).sort((a, b) => a.name.localeCompare(b.name));
 
-    // Sync any local folders to Supabase that are not yet in cloud
+    // Sync any user-created local folders to Supabase that are not yet in cloud
     if (isSupabaseConfigured() && local.length > 0) {
       const cloudIds = new Set(cloudFolders.map((c) => c.id));
       for (const f of local) {
-        if (!cloudIds.has(f.id)) {
+        if (!cloudIds.has(f.id) && !PRUNED_DEFAULT_FOLDER_IDS.has(f.id)) {
           Promise.resolve(supabase.from('folders').upsert(f, { onConflict: 'id' })).catch(() => {});
         }
       }
